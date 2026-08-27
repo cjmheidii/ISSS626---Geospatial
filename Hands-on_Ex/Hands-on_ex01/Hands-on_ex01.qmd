@@ -3,7 +3,7 @@ title: "Hands on Exercise 1"
 author: "Heidi"
 ---
 
-#Getting Started
+# Getting Started
 
 ## Install and Launching R packages
 
@@ -13,7 +13,7 @@ This code chunk below uses p_load() of pacman package to check if tidyverse pack
 pacman::p_load(sf, tidyverse, tmap)
 ```
 
-##importing the data 
+##importing the data
 
 ```{r}
 mpsz <- st_read("data/geospatial/MasterPlan2014SubzoneBoundaryNoSea.geojson")
@@ -23,8 +23,7 @@ neighbourhoods <- st_read("data/geospatial/neighbourhoods.geojson")
 
 ```
 
-now that the data is imported, the polygon feature data will be imported in shapefile format 
-
+now that the data is imported, the polygon feature data will be imported in shapefile format
 
 ```{r}
 
@@ -35,12 +34,11 @@ neighbourhoods <- st_transform(neighbourhoods, 3414)
 
 ```
 
+With the data loaded in with the proper formats, we will check the contents.
 
-With the data loaded in with the proper formats, we will check the contents. 
+There are 3 ways to do this :
 
-There are 3 ways to do this : 
-
-####st_geometry 
+####st_geometry
 
 ```{r}
 st_geometry(mpsz)
@@ -58,8 +56,7 @@ glimpse(mpsz)
 head(mpsz,n=5)
 ```
 
-##Plotting
-We are also interested to visualise the geospatial features so lets look at some samples : 
+##Plotting We are also interested to visualise the geospatial features so lets look at some samples :
 
 ```{r}
 plot(mpsz)
@@ -73,7 +70,6 @@ We can however choose to plot only the geometry or the sf object with the follow
 plot(st_geometry(mpsz))
 ```
 
-
 ```{r}
 plot(mpsz["PLN_AREA_N"])
 ```
@@ -86,10 +82,7 @@ plot(st_geometry(preschools),
      add = TRUE)
 ```
 
-
-
-Now we work with projection 
-First look at the example of  using st_crs() of sf package to show the coordinate system of mpsz
+Now we work with projection First look at the example of using st_crs() of sf package to show the coordinate system of mpsz
 
 ```{r}
 st_crs(mpsz)
@@ -97,16 +90,13 @@ st_crs(mpsz)
 
 Currently the EPSG code is correct (last line) being 3414. However if its wrong just use the following code chunk to fix the code.
 
-
 ```{r}
 mpsz <- st_set_crs(mpsz, 3414)
 ```
 
-
-##Transforming from wgs84 to svy21. 
+##Transforming from wgs84 to svy21.
 
 It is very common for us to transform the original data from geographic coordinate system to projected coordinate system. This is because geographic coordinate system is not appropriate if the analysis need to use distance or/and area measurements. it is very common for us to transform the original data from geographic coordinate system to projected coordinate system. This is because geographic coordinate system is not appropriate if the analysis need to use distance or/and area measurements.
-
 
 Let us perform the projection transformation by using the code chunk below.
 
@@ -126,6 +116,7 @@ plot(st_geometry(preschools),
 ## Aspatial data
 
 Now let us import the aspatial data to work with it. After importing the data file we also examine it to ensure the file is imported correctly
+
 ```{r}
 listings <- read_csv("data/aspatial/listings.csv")
 
@@ -134,7 +125,7 @@ list(listings)
 
 ### create a simple feature data frame from aspatial data frame
 
-The following code converts listing data frame into a simple feature data frame by using st_as_sf() of sf packages. 
+The following code converts listing data frame into a simple feature data frame by using st_as_sf() of sf packages.
 
 We will also examine the contents afterwards through glimpse()
 
@@ -146,7 +137,9 @@ listings_sf <- st_as_sf(listings,
 
 glimpse(listings_sf)
 ```
+
 so lets plot listing_sf on top of mpsz layer
+
 ```{r}
 plot(st_geometry(mpsz))
 plot(st_geometry(listings_sf), 
@@ -154,35 +147,33 @@ plot(st_geometry(listings_sf),
 ```
 
 ## Geoprocessing with sf package
+
 sf package also offers a wide range of geoprocessing (also known as GIS analysis) functions.
 
 ### Use case 1 : Land acquisition analysis
+
 Scenario : The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 metres of reserved land on the both sides of the existing cycling path. You are tasked to determine the extend of the land need to be acquired and their total area.
 
-Solution :
-1. st_buffer() of sf package is used to compute the 5-meter buffers around cycling paths.
+Solution : 1. st_buffer() of sf package is used to compute the 5-meter buffers around cycling paths.
 
 ```{r}
 buffer_cycling <- st_buffer(
   cycling_path, dist = 5, nQuadSegs = 30)
 ```
 
-
-
-2. calculate the area of the buffers as shown in the code chunk below
+2.  calculate the area of the buffers as shown in the code chunk below
 
 ```{r}
 buffer_cycling$AREA <- st_area(buffer_cycling)
 ```
 
-
-3. sum() of Base R will be used to derive the total land involved
+3.  sum() of Base R will be used to derive the total land involved
 
 ```{r}
 sum(buffer_cycling$AREA)
 ```
 
-** Note, a plot showing the buffer by a selected planning zone can be created, assuming we are interested on the land acquisition in Tampines West planning subzone. 
+\*\* Note, a plot showing the buffer by a selected planning zone can be created, assuming we are interested on the land acquisition in Tampines West planning subzone.
 
 Firstly, filter() of dplyr package will be used to extract polygon feature of Tampines West by using the code chunk below.
 
@@ -198,27 +189,24 @@ buffer_cycling_selected <- st_intersection(
   buffer_cycling, mpsz_selected)
 ```
 
-
-
 ### Use Case 2 : To determine the number of pre-schools by planning subzone
 
 Scenario : The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.
 
+Solution: Identify pre-schools located inside each Planning Subzone by using st_intersects(). Next, length() of Base R is used to calculate numbers of pre-schools that fall inside each planning subzone.
 
-Solution: 
-Identify pre-schools located inside each Planning Subzone by using st_intersects(). Next, length() of Base R is used to calculate numbers of pre-schools that fall inside each planning subzone.
 ```{r}
 mpsz$`PreSch Count`<- lengths(st_intersects(mpsz, preschool))
 ```
 
-Lets see the summary and statistics of the file 
-
+Lets see the summary and statistics of the file
 
 ```{r}
 summary(mpsz$`PreSch Count`)
 ```
 
 #### Most number of preschools (Top_n)
+
 ```{r}
 top_n(mpsz, 1, `PreSch Count`)
 ```
@@ -237,14 +225,16 @@ mpsz <- mpsz %>%
   mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
 ```
 
-Finally we plot some diagrams to show the insights. 
+Finally we plot some diagrams to show the insights.
 
-#### PreSch Density Distribution 
+#### PreSch Density Distribution
+
 ```{r}
 hist(mpsz$`PreSch Density`)
 ```
 
 #### ggplot2 usage
+
 ```{r}
 ggplot(data=mpsz, 
        aes(x= as.numeric(`PreSch Density`)))+
@@ -257,8 +247,8 @@ ggplot(data=mpsz,
       y = "Frequency")
 ```
 
+#### Scatter plot
 
-#### Scatter plot 
 ```{r}
 ggplot(data=mpsz, 
        aes(y = `PreSch Count`, 
