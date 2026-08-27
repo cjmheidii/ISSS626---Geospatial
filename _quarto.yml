@@ -5,17 +5,35 @@ website:
   title: "ISSS626 - Geospatial"
   navbar:
     left:
+      - text: "Hands-on Exercise"
+        menu:
+          - href: "Hands-on_Ex/Hands-on_ex01/"
+            text: "Hands-on Exercise 1"
+          - href: "Hands-on_Ex/Hands-on_ex02/"
+            text: "Hands-on Exercise 2"
+          - href: "Hands-on_Ex/Hands-on_ex03/"
+            text: "Hands-on Exercise 3"
+          - href: "Hands-on_Ex/Hands-on_ex04/"
+            text: "Hands-on Exercise 4"
+          - href: "Hands-on_Ex/Hands-on_ex05/"
+            text: "Hands-on Exercise 5"
+          - href: "Hands-on_Ex/Hands-on_ex06/"
+            text: "Hands-on Exercise 6"
+          - href: "Hands-on_Ex/Hands-on_ex07/"
+            text: "Hands-on Exercise 7"
+          - href: "Hands-on_Ex/Hands-on_ex08/"
+            text: "Hands-on Exercise 8"
+    right:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About
 
 format:
   html:
     theme:
-      - cosmo
-      - brand
+      - minty
     css: styles.css
     toc: true
 
 editor: visual
-
