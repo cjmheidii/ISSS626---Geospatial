@@ -4,7 +4,7 @@ website:
     left:
       - text: "Hands-on Exercise"
         menu:
-          - href: "Hands-on_Ex/Hands-on_ex01/Hands-on_ex01.qmd"
+          - href: "Hands-on_Ex/Hands-on_ex01.html"
             text: "Hands-on Exercise 1"
           - href: "Hands-on_Ex/Hands-on_ex02/"
             text: "Hands-on Exercise 2"
