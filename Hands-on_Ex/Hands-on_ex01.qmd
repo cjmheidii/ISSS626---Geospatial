@@ -16,10 +16,10 @@ pacman::p_load(sf, tidyverse, tmap)
 ##importing the data
 
 ```{r}
-mpsz <- st_read("Hands-on_ex01/data/geospatial/MasterPlan2014SubzoneBoundaryNoSea.geojson")
-preschools <- st_read("Hands-on_ex01/data/geospatial/PreSchoolsLocation.geojson")
-cycling_path <- st_read("Hands-on_ex01/data/geospatial/CyclingPathNetworkGEOJSON.geojson")
-neighbourhoods <- st_read("Hands-on_ex01/data/geospatial/neighbourhoods.geojson")
+mpsz <- st_read("data/geospatial/MasterPlan2014SubzoneBoundaryNoSea.geojson")
+preschools <- st_read("data/geospatial/PreSchoolsLocation.geojson")
+cycling_path <- st_read("data/geospatial/CyclingPathNetworkGEOJSON.geojson")
+neighbourhoods <- st_read("data/geospatial/neighbourhoods.geojson")
 
 ```
 
@@ -118,7 +118,7 @@ plot(st_geometry(preschools),
 Now let us import the aspatial data to work with it. After importing the data file we also examine it to ensure the file is imported correctly
 
 ```{r}
-listings <- read_csv("Hands-on_ex01/data/aspatial/listings.csv")
+listings <- read_csv("data/aspatial/listings.csv")
 
 list(listings) 
 ```
