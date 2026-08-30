@@ -8,8 +8,8 @@ website:
     left:
     - text: "Hands-on Exercise"
       menu:
-        - href: "Hands-on_Ex/Hands_on_ex01.html"         
-        text: "Hands-on Exercise 1A"
+          - href: Hands-on_Ex/Hands-on_ex01.html
+            text: "Hands-on Exercise 1A"
 
     right:
       - href: index.qmd
