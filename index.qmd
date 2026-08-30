@@ -6,5 +6,7 @@ Welcome to **ISSS626 Geo-spatial Analytics** Home Page. In this website, you wil
 
 Within it will have my Hands-on exercises as well as take home exercise submissions.
 
+![](images/Screenshot 2026-08-30 200245-01.png)
+
 ```         
 ```
