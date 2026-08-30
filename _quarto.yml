@@ -2,10 +2,10 @@ website:
   title: "ISSS626 - Geospatial"
   navbar:
     left:
-      - text: "Hands-on Exercise"
-        menu:
-          - href: "Hands-on_Ex/Hands on 1.html"
-            text: "Hands-on Exercise 1"
+    - text: "Hands-on Exercise"
+      menu:
+        - href: "Hands-on_Ex/Hands on 1.html"
+          text: "Hands-on Exercise 1A"
 
     right:
       - href: index.qmd
