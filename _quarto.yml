@@ -1,10 +1,14 @@
+project:
+  type: website
+  output-dir: _site
+
 website:
   title: "ISSS626 - Geospatial"
   navbar:
     left:
     - text: "Hands-on Exercise"
       menu:
-        - href: "Hands-on_Ex/Hands on 1.html"
+        - href: "Hands-on_Ex/Hands_on_ex01.html"
           text: "Hands-on Exercise 1A"
 
     right:
