@@ -1,5 +1,6 @@
 project:
   type: website
+  output-dir: "."
 
 website:
   title: "ISSS626 - Geospatial"
@@ -7,7 +8,7 @@ website:
     left:
     - text: "Hands-on Exercise"
       menu:
-        - href: "Hands-on_Ex/Hands_on_ex01.html"
+        - href: Hands-on_Ex/Hands_on_ex01.html
           text: "Hands-on Exercise 1A"
 
     right:
