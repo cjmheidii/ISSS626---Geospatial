@@ -1,7 +1,6 @@
 project:
   type: website
   output-dir: "."
-
 website:
   title: "ISSS626 - Geospatial"
   navbar:
@@ -10,18 +9,17 @@ website:
       menu:
           - href: Hands-on_Ex/Hands-on_ex01.html
             text: "Hands-on Exercise 1A"
-
+          - href: Hands-on_Ex/Hands-on_ex01B.html
+            text: "Hands-on Exercise 1B"
     right:
       - href: index.qmd
         text: Home
       - href: about.qmd
         text: About
-
 format:
   html:
     theme:
-      - minty
+      - flatly
     css: styles.css
     toc: true
-
 editor: visual

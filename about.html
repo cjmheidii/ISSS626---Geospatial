@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -80,7 +45,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0c993683fdd6a26c1aa2f976085b22ef.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -139,6 +104,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex01.html">
  <span class="dropdown-text">Hands-on Exercise 1A</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex01B.html">
+ <span class="dropdown-text">Hands-on Exercise 1B</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -162,8 +131,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#about-geospatial-analytics" id="toc-about-geospatial-analytics" class="nav-link active" data-scroll-target="#about-geospatial-analytics">About Geospatial Analytics</a>
+  <ul class="collapse">
+  <li><a href="#some-questions-some-may-ask-would-be" id="toc-some-questions-some-may-ask-would-be" class="nav-link" data-scroll-target="#some-questions-some-may-ask-would-be">Some questions some may ask would be :</a></li>
+  </ul></li>
+  <li><a href="#things-to-learn" id="toc-things-to-learn" class="nav-link" data-scroll-target="#things-to-learn">Things to Learn</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -187,15 +166,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>About this site</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<section id="about-geospatial-analytics" class="level2">
+<h2 class="anchored" data-anchor-id="about-geospatial-analytics">About Geospatial Analytics</h2>
+<div class="hero-banner">
+<section id="some-questions-some-may-ask-would-be" class="level3 hero-content">
+<h3 class="anchored" data-anchor-id="some-questions-some-may-ask-would-be">Some questions some may ask would be :</h3>
+<ul>
+<li><p>Where should the next new business outlet be located in order to optimise the profit?</p></li>
+<li><p>What are the location factors that affect the resale prices of HDB housing units?</p></li>
+<li><p>Where do these observed patterns and processes occur?</p></li>
+<li><p>Are they at random or are they being constrained by geographical factors?</p></li>
+</ul>
+</section>
+</div>
+<p>These and many other related questions are the challenges faced by data scientists and data analysts today especially when geographical data are used.</p>
+<p>Geospatial Analytics offers the solutions to these questions by providing data scientists and analysts a problem-driven and data-centric analysis framework.</p>
+<p>This is focusing on discovering actionable understanding from geographically referenced data. It will make use of geospatial data wrangling, geoprocessing, spatial statistical, geospatial machine learning and spatial data visualisation techniques to support decision- and strategy-making.</p>
+</section>
+<section id="things-to-learn" class="level2">
+<h2 class="anchored" data-anchor-id="things-to-learn">Things to Learn</h2>
+<div class="hero-banner">
+<div class="hero-content">
+<p>Overall, in this course the following topics will be covered</p>
+<ul>
+<li><p>performing geospatial data science tasks such as importing, tidying, manipulating, transforming, projecting and processing geospatial data programmatically,</p></li>
+<li><p>visualising, analysing and describing geographical patterns and processes using appropriate geovisualisation and thematic mapping techniques,</p></li>
+<li><p>conducting geospatial analysis by using appropriate spatial statistics and Geomachine learning methods and</p></li>
+<li><p>communicating the geospatial analysis pipeline in a reproducible report.</p></li>
+</ul>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

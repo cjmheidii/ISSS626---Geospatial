@@ -2,8 +2,40 @@
 title: "About"
 ---
 
-About this site
+## About Geospatial Analytics
 
-```{r}
-1 + 1
-```
+:::: hero-banner
+::: hero-content
+### Some questions some may ask would be :
+
+- Where should the next new business outlet be located in order to optimise the profit?
+
+- What are the location factors that affect the resale prices of HDB housing units?
+
+- Where do these observed patterns and processes occur?
+
+- Are they at random or are they being constrained by geographical factors?
+:::
+::::
+
+These and many other related questions are the challenges faced by data scientists and data analysts today especially when geographical data are used.
+
+Geospatial Analytics offers the solutions to these questions by providing data scientists and analysts a problem-driven and data-centric analysis framework.
+
+This is focusing on discovering actionable understanding from geographically referenced data. It will make use of geospatial data wrangling, geoprocessing, spatial statistical, geospatial machine learning and spatial data visualisation techniques to support decision- and strategy-making.
+
+## Things to Learn
+
+:::: hero-banner
+::: hero-content
+Overall, in this course the following topics will be covered
+
+- performing geospatial data science tasks such as importing, tidying, manipulating, transforming, projecting and processing geospatial data programmatically,
+
+- visualising, analysing and describing geographical patterns and processes using appropriate geovisualisation and thematic mapping techniques,
+
+- conducting geospatial analysis by using appropriate spatial statistics and Geomachine learning methods and
+
+- communicating the geospatial analysis pipeline in a reproducible report. 
+:::
+::::

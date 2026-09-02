@@ -1,1 +1,124 @@
-/* css styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono&display=swap');
+
+/* ===== Geospatial theme ===== */
+:root {
+  --geo-ocean: #1b3a4b;
+  --geo-teal: #2a9d8f;
+  --geo-sand: #e9c46a;
+  --geo-contour: #2a9d8f40;
+  --geo-grid: #2a9d8f22;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  position: relative;
+  min-height: 100vh;
+  background-color: #f5f8f7;
+  background-image:
+    repeating-linear-gradient(0deg, var(--geo-grid) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(90deg, var(--geo-grid) 0 1px, transparent 1px 48px),
+    radial-gradient(circle at 10% 15%, var(--geo-contour) 0, transparent 25%),
+    radial-gradient(circle at 90% 10%, var(--geo-contour) 0, transparent 20%),
+    radial-gradient(circle at 50% 90%, var(--geo-contour) 0, transparent 30%);
+  background-attachment: fixed;
+  animation: driftBg 60s ease-in-out infinite alternate;
+}
+
+@keyframes driftBg {
+  0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 24px 24px, 24px 24px, 60px 40px, -50px 70px, 40px -50px; }
+}
+
+code, pre {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+/* Radar field: single sweeping ring system + markers pulsing continuously, overlapping */
+.radar-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.radar-field svg { width: 100%; height: 100%; }
+
+.radar-ring {
+  fill: none;
+  stroke: var(--geo-teal);
+  stroke-width: 1.5;
+  opacity: 0.3;
+}
+
+.radar-dot {
+  fill: var(--geo-sand);
+  opacity: 0.55;
+}
+
+.radar-blip {
+  fill: var(--geo-sand);
+  opacity: 0;
+  animation: radarBlip 6s ease-out infinite;
+}
+
+@keyframes radarBlip {
+  0%   { opacity: 0;    r: 5; }
+  8%   { opacity: 0.9;  r: 5; }
+  25%  { opacity: 0;    r: 20; }
+  100% { opacity: 0;    r: 5; }
+}
+
+/* Make sure real page content sits above the radar field */
+.navbar, .page, main, #quarto-content, .content, body > * {
+  position: relative;
+  z-index: 1;
+}
+.radar-field { z-index: 0; }
+
+/* Hero text banner, fully rounded, sitting as a contained card */
+.hero-banner {
+  position: relative;
+  padding: 3.5rem 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  background:
+    radial-gradient(circle at 20% 30%, var(--geo-contour) 0, transparent 40%),
+    radial-gradient(circle at 80% 70%, var(--geo-contour) 0, transparent 40%),
+    linear-gradient(135deg, var(--geo-ocean) 0%, #14532d 100%);
+  color: #fff;
+  text-align: center;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: -50px;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 40px);
+  animation: driftGrid 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes driftGrid {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+.hero-content {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.hero-content strong {
+  color: var(--geo-sand);
+}
+
+/* Navbar accent to tie in the theme */
+.navbar {
+  border-bottom: 3px solid var(--geo-teal) !important;
+}

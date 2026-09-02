@@ -2,11 +2,52 @@
 title: "ISSS626 - Geospatial"
 ---
 
-Welcome to **ISSS626 Geo-spatial Analytics** Home Page. In this website, you will find my coursework prepared for this course.
+```{=html}
+<div class="radar-field" aria-hidden="true">
+  <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <!-- RING system with closer spacing -->
+    <circle class="radar-ring" cx="600" cy="400" r="180"/>  <!-- Reduced from 220 -->
+    <circle class="radar-ring" cx="600" cy="400" r="320"/>  <!-- Reduced from 400 -->
+    <circle class="radar-ring" cx="600" cy="400" r="460"/>  <!-- Reduced from 580 -->
+    <circle class="radar-ring" cx="600" cy="400" r="600"/>  <!-- Reduced from 760 -->
+
+    <!-- 10 markers with BIGGER dots -->
+    <circle class="radar-dot" cx="120" cy="90"  r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="600" cy="60"  r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="1080" cy="100" r="8"/>   <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="90"  cy="400" r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="1110" cy="380" r="8"/>   <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="300" cy="700" r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="600" cy="740" r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="900" cy="710" r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="350" cy="250" r="8"/>    <!-- Increased from 5 -->
+    <circle class="radar-dot" cx="850" cy="550" r="8"/>    <!-- Increased from 5 -->
+
+    <!-- Pulsing blips with BIGGER dots -->
+    <circle class="radar-blip" cx="120" cy="90"  r="8" style="animation-delay:0s"/>
+    <circle class="radar-blip" cx="600" cy="60"  r="8" style="animation-delay:0.6s"/>
+    <circle class="radar-blip" cx="1080" cy="100" r="8" style="animation-delay:1.2s"/>
+    <circle class="radar-blip" cx="90"  cy="400" r="8" style="animation-delay:1.8s"/>
+    <circle class="radar-blip" cx="1110" cy="380" r="8" style="animation-delay:2.4s"/>
+    <circle class="radar-blip" cx="300" cy="700" r="8" style="animation-delay:3.0s"/>
+    <circle class="radar-blip" cx="600" cy="740" r="8" style="animation-delay:3.6s"/>
+    <circle class="radar-blip" cx="900" cy="710" r="8" style="animation-delay:4.2s"/>
+    <circle class="radar-blip" cx="350" cy="250" r="8" style="animation-delay:4.8s"/>
+    <circle class="radar-blip" cx="850" cy="550" r="8" style="animation-delay:5.4s"/>
+  </svg>
+</div>
+```
+
+::: {.hero-banner}
+<div class="hero-content">
+Welcome to **ISSS626 Geo-spatial Analytics** Home Page.
+
+In this website, you will find my coursework prepared for this course.
 
 Within it will have my Hands-on exercises as well as take home exercise submissions.
 
-![](images/Screenshot 2026-08-30 200245-01.png)
+Click on the Hands-on Exercise dropdown to select and review all lessons learnt at home before class.
 
-```         
-```
+Click on the Take-Home Exercise dropdown to select and review all assignments that are completed within this course.
+</div>
+:::

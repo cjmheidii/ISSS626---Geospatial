@@ -1,5 +1,5 @@
 ---
-title: "Hands on Exercise 1"
+title: "Hands on Exercise 1A"
 author: "Heidi"
 ---
 
@@ -55,6 +55,14 @@ glimpse(mpsz)
 ```{r}
 head(mpsz,n=5)
 ```
+
+::: callout-note
+*Geometry :* Only to check spatial properties
+
+*Glimpse :* To use to understand more on data types/column composition
+
+*Head :* If we want to see the actual data rows
+:::
 
 ##Plotting We are also interested to visualise the geospatial features so lets look at some samples :
 
