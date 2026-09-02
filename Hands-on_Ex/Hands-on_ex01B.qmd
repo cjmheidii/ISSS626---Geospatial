@@ -2,7 +2,9 @@
 title: "Hands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R"
 ---
 
-#Overview thematic mapping involves the use of map symbols to visualize selected properties of geographic features that are not naturally visible, such as population, temperature, crime rate, etc...
+# Overview
+
+thematic mapping involves the use of map symbols to visualize selected properties of geographic features that are not naturally visible, such as population, temperature, crime rate, etc...
 
 But Geovisusalisation is the process of using visual representations and cartographic techniques to explore, analyse and communicate using geospatial data.
 
@@ -398,21 +400,21 @@ Overall, you will realise the following
   - Differences become more apparent with n=6, where analyses can be made in greater detail.
   - Classifications with many over 10 classes gives a very fine detailed view of the classification. However it makes it very hard to distinguish between the colours, with too many details to have a good sense of what is going on.
 
-### 2. Preparing with Custome Break 
-For all the built-in styles, the category breaks are computed internally. In order to override these defaults, the breakpoints can be set explicitly by means of the breaks argument to the tm_scale_intervals(). 
+### 2. Preparing with Custome Break
+
+For all the built-in styles, the category breaks are computed internally. In order to override these defaults, the breakpoints can be set explicitly by means of the breaks argument to the tm_scale_intervals().
 
 Take note that n tmap the breaks include a minimum and maximum. So for n categories, n+1 elements HAVE to be specified (in increasing order for values)
 
-
-It is best to look at the descriptive statsitics before diving into this method of classifciation. Summary will be used 
+It is best to look at the descriptive statsitics before diving into this method of classifciation. Summary will be used
 
 ```{r}
 summary(mpsz_pop2024$DEPENDENCY)
 ```
 
-With reference to the results above, we set break point at 0.60, 0.70, 0.80, and 0.90. In addition, we also need to include a minimum and maximum, which we set at 0 and 100. Our breaks vector is thus c(0, 0.60, 0.70, 0.80, 0.90, 1.00). 
+With reference to the results above, we set break point at 0.60, 0.70, 0.80, and 0.90. In addition, we also need to include a minimum and maximum, which we set at 0 and 100. Our breaks vector is thus c(0, 0.60, 0.70, 0.80, 0.90, 1.00).
 
-Only with these break points specified then we will create the map using this method. 
+Only with these break points specified then we will create the map using this method.
 
 ```{r}
 tm_shape(mpsz_pop2024)+
@@ -423,11 +425,11 @@ tm_shape(mpsz_pop2024)+
 
 ```
 
-###Colours 
+###Colours
 
-tmap can also support uses of different colours using the RColorBrewer package. 
+tmap can also support uses of different colours using the RColorBrewer package.
 
-#### ColourBrewer Palette 
+#### ColourBrewer Palette
 
 ```{r}
 tm_shape(mpsz_pop2024) +
@@ -441,7 +443,7 @@ tm_shape(mpsz_pop2024) +
 
 Now its shaded in green! (Tada :D)
 
-Add a "-" prefix now to reverse the colour shading! 
+Add a "-" prefix now to reverse the colour shading!
 
 ```{r}
 tm_shape(mpsz_pop2024) +
@@ -453,12 +455,11 @@ tm_shape(mpsz_pop2024) +
   tm_borders(fill_alpha = 0.5)
 ```
 
-### Cathograpic Furniture 
+### Cathograpic Furniture
 
-tmap also provides arguments to draw other map furnitures like compass, scale bar and gridlines and data sources! 
+tmap also provides arguments to draw other map furnitures like compass, scale bar and gridlines and data sources!
 
 Using tm_compass(), tm_scale_bar(), tm_grid() and tm_credit() respectively!
-
 
 ```{r}
 tm_shape(mpsz_pop2024) +
@@ -474,13 +475,13 @@ tm_shape(mpsz_pop2024) +
              position = c("left", "bottom"))
 ```
 
-
-### Map Layout 
+### Map Layout
 
 This is the combination of all map elements into a cohesive map. With background, frame, typography, scale, margins, etc...
 
-#### Map Legend 
-This can help to change the placement, format and appearance of the legend. 
+#### Map Legend
+
+This can help to change the placement, format and appearance of the legend.
 
 ```{R}
 
@@ -502,7 +503,7 @@ tm_shape(mpsz_pop2024) +
 
 Notice the legends of this visual and the one from before, see the difference? in the title!
 
-#### Map Style 
+#### Map Style
 
 A wide variety of layout settings can be changed here, using tmap_style()
 
@@ -517,17 +518,17 @@ tm_shape(mpsz_pop2024) +
   tmap_style("natural")
 ```
 
-Now the map looks like Singapore in the sea :D 
+Now the map looks like Singapore in the sea :D
 
-But if you want to reverse back to normal just use : 
+But if you want to reverse back to normal just use :
 
 ```{r}
 tmap_style("white")
 ```
 
-## Small Multiple Choropleth Maps 
+## Small Multiple Choropleth Maps
 
-Known as facet maps, it has many maps arranged side by side and can be stacked vertically at times! 
+Known as facet maps, it has many maps arranged side by side and can be stacked vertically at times!
 
 Used to see how spatial relationships change with respect to another variable like time.
 
@@ -537,7 +538,8 @@ In tmap, small multiple maps can be plotted in three ways:
 - creating multiple stand-alone maps with tmap_arrange()
 - defining a group-by variable in tm_facets()
 
-### Assigning multiple values to at least 1 aesthetic arguments 
+### Assigning multiple values to at least 1 aesthetic arguments
+
 assigning two variables to the visual variable (i.e. fill)
 
 ```{r}
@@ -556,7 +558,8 @@ tm_shape(mpsz_pop2024) +
 
 ```
 
-### Arranging in Grid layout 
+### Arranging in Grid layout
+
 tmap_arrnage() is used to arrnage them in a grid layout.
 
 ```{r}
@@ -588,8 +591,8 @@ tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
 
 ```
 
+### Defining a group-by variable
 
-### Defining a group-by variable 
 In this example, multiple small choropleth maps are created by using tm_facets().
 
 ```{r}
@@ -627,8 +630,8 @@ mpsz_pop2024 %>%
 
 ```
 
+### Complementing thematic map with statistical chart
 
-### Complementing thematic map with statistical chart 
 Maps and statistical charts complement each other by visually representing different aspects of the same data, offering a more comprehensive understanding. Maps excel at showing spatial relationships and geographical patterns, while charts effectively display numerical data, trends, and comparisons. Combining both allows for a more insightful and engaging data narrative, especially when dealing with spatial data that also has quantifiable characteristics.
 
 With tmap, statistical chart and be incorporate into the map visualisation by using fill.chat argument of map layers and legend chart feature as shown in the code chunk below.
@@ -647,7 +650,6 @@ mpsz_pop2024 %>%
   tm_layout(asp = 0.8)
 
 ```
-
 
 The visual representation can be improved further by highlighting and labelling the outliers on the choropleth map.
 
@@ -675,7 +677,7 @@ tm_shape(outlier_sf) +
   tm_layout(asp = 0.8)
 ```
 
-### Interactive maps 
+### Interactive maps
 
 Interactive maps let users actively explore and interact with the data they display. Unlike static maps, you can zoom in and out, pan across areas, click on locations for more information, and even work with data overlays or visualizations—making the experience more dynamic and informative. One of the great things about tmap is that it lets you switch easily between static and interactive maps using tmap_mode(), so you can choose the view that best suits your analysis.
 
@@ -702,9 +704,10 @@ tm_shape(region_selected,
   tm_shape(outlier_sf) +
   tm_borders(col = "red", lwd = 2)
 ```
-Yes we can interact with the map now!!! VERY INTERESTING :D 
 
-We can also edit this further to set zooming limits to the map (currently we can zoom in and out). 
+Yes we can interact with the map now!!! VERY INTERESTING :D
+
+We can also edit this further to set zooming limits to the map (currently we can zoom in and out).
 
 ```{R}
 region_selected <- mpsz_pop2024 %>%
