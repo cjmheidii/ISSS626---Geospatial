@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 2A"
+title: "Hands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods"
 ---
 
 # Overview
@@ -61,9 +61,7 @@ childcare_sf <- st_transform(childcare_sf, 3414)
 mpsz_cl <-st_transform(mpsz, 3414)
 ```
 
-
-
-# Plotting of dataset 
+# Plotting of dataset
 
 First we plot out the map
 
@@ -89,15 +87,15 @@ Always remember to switch back to plot mode after the interactive map. This is b
 tmap_mode('plot')
 ```
 
+# Geospatial Data wrangling
 
-# Geospatial Data wrangling 
-spatstat relies on its own specific data structures like ppp (planar point pattern) for point data and owin for observation windows. 
+spatstat relies on its own specific data structures like ppp (planar point pattern) for point data and owin for observation windows.
 
-Now we will convert sd objects into statstat ppp and owin. 
+Now we will convert sd objects into statstat ppp and owin.
 
-## Convert from sf to ppp 
+## Convert from sf to ppp
 
-spatstat requires the point event data in ppp object form. The code chunk below uses [as.ppp()] of spatstat package to convert childcare_sf to ppp format.
+spatstat requires the point event data in ppp object form. The code chunk below uses \[as.ppp()\] of spatstat package to convert childcare_sf to ppp format.
 
 we will verify class using class() and summary() to look at the quick stats of the newly converted ppp
 
@@ -121,7 +119,8 @@ plot(sg_owin)
 
 ```
 
-## Combining point event and owin 
+## Combining point event and owin
+
 In this last step of geospatial data wrangling, we will extract childcare events that are located within Singapore and The output object combined both the point and polygon feature in one ppp object class as shown below.
 
 ```{r}
@@ -131,12 +130,11 @@ childcareSG_ppp
 
 ```
 
-# Nearest Neighbour Analysis 
+# Nearest Neighbour Analysis
 
 Nearest Neighbor Analysis (NNA) is a spatial statistics method that calculates the average distance between each point and its closest neighbor to determine if a pattern of points is clustered, dispersed, or randomly distributed.
 
 Clark-Evans test is a specific statistical method used within NNA to quantify whether a point pattern is clustered, random, or uniformly spaced, using the Clark-Evans aggregation index (R) to describe this pattern. NNA provides a numerical value that describes the degree of clustering or regularity, and the Clark-Evans test calculates a specific index (R) for this purpose
-
 
 We will perform the Clark-Evans test of aggregation for a spatial point pattern by using clarkevans.test() of spatstat.explore package.
 
@@ -149,24 +147,25 @@ The test hypotheses are:
 The 95% confident interval will be used.
 
 ## Clark-Evans test without CSR
+
 ```{r}
 clarkevans.test(childcareSG_ppp,
                 correction="none",
                 clipregion="sg_owin",
                 alternative=c("clustered"))
 ```
-::: callout-note
-The Clark-Evans test statistic R = 0.49444 is significantly less than 1 and a P value < 2.2e-16
 
-Therefore we can reject the Null hypothesis that The distribution of childcare services are randomly distributed without the CSR. Since p< 0.05. 
+::: callout-note
+The Clark-Evans test statistic R = 0.49444 is significantly less than 1 and a P value \< 2.2e-16
+
+Therefore we can reject the Null hypothesis that The distribution of childcare services are randomly distributed without the CSR. Since p\< 0.05.
 
 We have proven that the distribution of childcare services in Singapore are highly clustered, where the nearest-neighbor distance between childcare centers is roughly half of what we would expect if they were randomly distributed (R value of 0.49)
-
 :::
 
-##Clark-Evans test WITH CSR 
+##Clark-Evans test WITH CSR
 
-The argument method = “MonteCarlo” is used here. 
+The argument method = “MonteCarlo” is used here.
 
 The p-value for the test is computed by comparing the observed value of R to the results obtained from nsim (i.e. 39, 99, 999) simulated realisations of Complete Spatial Randomness conditional on the observed number of points.
 
@@ -184,10 +183,9 @@ clarkevans.test(childcareSG_ppp,
 ::: callout-note
 The Clark-Evans test statistic R = 0.4944 is significantly less than 1 and a P value =0.01
 
-Therefore we can reject the Null hypothesis that The distribution of childcare services are randomly distributed without the CSR. Since p< 0.05. 
+Therefore we can reject the Null hypothesis that The distribution of childcare services are randomly distributed without the CSR. Since p\< 0.05.
 
 We have proven that the distribution of childcare services in Singapore are highly clustered, where the nearest-neighbor distance between childcare centers is roughly half of what we would expect if they were randomly distributed (R value of 0.49)
-
 :::
 
 #Kernal Density Estimation method
@@ -196,8 +194,7 @@ Kernel Density Estimation (KDE) is a valuable tool for visualising and analyzing
 
 ## Automatic bandwidth selection method
 
-The following configurations of density() of spatstat is used : 
-- bw.diggle() automatic bandwidth selection method. Other recommended methods are bw.CvL(), bw.scott() or bw.ppl().
+The following configurations of density() of spatstat is used : - bw.diggle() automatic bandwidth selection method. Other recommended methods are bw.CvL(), bw.scott() or bw.ppl().
 
 - The smoothing kernel used is gaussian, which is the default. Other smoothing methods are: “epanechnikov”, “quartic” or “disc”.
 
@@ -212,7 +209,8 @@ kde_SG_diggle <- density(
 
 ```
 
-now we plot to display the kernal density derived 
+now we plot to display the kernal density derived
+
 ```{r}
 plot(kde_SG_diggle)
 
@@ -220,13 +218,14 @@ summary(kde_SG_diggle)
 ```
 
 We can retrive the bandwidth used to compete the kde layer by using the code chunk below :
+
 ```{r}
 bw <- bw.diggle(childcareSG_ppp)
 bw
 
 ```
 
-##Rescaling KDE values 
+##Rescaling KDE values
 
 To rescale the KDE values, rescale.ppp() is used to covert the unit of measurement from meter to kilometer
 
@@ -256,23 +255,24 @@ Notice that output image looks identical to the earlier version, the only change
 Besides bw.diggle(), there are three other spatstat functions can be used to determine the bandwidth, they are: bw.CvL(), bw.scott(), and bw.ppl().
 
 ### bw.CvL
+
 ```{r}
 bw.CvL(childcareSG_ppp_km)
 ```
 
-
 ### bw.scott
+
 ```{r}
 bw.scott(childcareSG_ppp_km)
 ```
 
-
 ### bw.ppl
+
 ```{r}
 bw.ppl(childcareSG_ppp_km)
 ```
 
-### bw.diggle 
+### bw.diggle
 
 ```{r}
 bw.diggle(childcareSG_ppp_km)
@@ -292,7 +292,7 @@ plot(kde_childcareSG.ppl, main = "bw.ppl")
 
 ```
 
-## Different kernal methods 
+## Different kernal methods
 
 By default, the kernel method used in density.ppp() is gaussian. But there are three other options, namely: Epanechnikov, Quartic and Dics.
 
@@ -324,10 +324,11 @@ plot(density(childcareSG_ppp_km,
 
 ```
 
-# Fixed and Adaptive KDE 
+# Fixed and Adaptive KDE
+
 ## Computing KDE by fixed bandwidth
 
-By defining a bandwidth of 600m, let us compute a KDE layer. 
+By defining a bandwidth of 600m, let us compute a KDE layer.
 
 ```{r}
 kde_childcareSG_fb <- density(childcareSG_ppp_km,
@@ -338,7 +339,7 @@ plot(kde_childcareSG_fb)
 
 ```
 
-::: callout-note 
+::: callout-note
 the sigma value used is 0.6 since the unit of measurement of childcareSG_ppp_km object is in kilometer, hence the 600m is 0.6km.
 :::
 
@@ -346,7 +347,7 @@ the sigma value used is 0.6 since the unit of measurement of childcareSG_ppp_km 
 
 Fixed bandwidth method is very sensitive to highly skew distribution of spatial point patterns over geographical units for example urban versus rural. One way to overcome this problem is by using adaptive bandwidth instead.
 
-`In this section, you will learn how to derive adaptive kernel density estimation by using density.adaptive() of spatstat.
+\`In this section, you will learn how to derive adaptive kernel density estimation by using density.adaptive() of spatstat.
 
 ```{r}
 kde_childcareSG_ab <- adaptive.density(
@@ -355,13 +356,13 @@ kde_childcareSG_ab <- adaptive.density(
 plot(kde_childcareSG_ab)
 ```
 
-The fixed and adaptive KDEs can be compared using this: 
+The fixed and adaptive KDEs can be compared using this:
+
 ```{r}
 par(mfrow=c(1,2))
 plot(kde_childcareSG_fb, main = "Fixed bandwidth")
 plot(kde_childcareSG_ab, main = "Adaptive bandwidth")
 ```
-
 
 # Plotting cartographic quality KDE map
 
@@ -409,13 +410,13 @@ tm_shape(kde_childcareSG_bw_terra) +
   tm_layout(scale = 1.0)
 ```
 
-
 # First Order SPAA at planning subzone level
 
-## Geospatial Data wrangling 
-### Extract Study area 
+## Geospatial Data wrangling
 
-The following target planning areas are extracted. 
+### Extract Study area
+
+The following target planning areas are extracted.
 
 ```{r}
 pg <- mpsz_cl %>%
@@ -429,7 +430,7 @@ jw <- mpsz_cl %>%
 ```
 
 ::: callout-note
-It is always a good practice to review the extracted areas.It is now done below 
+It is always a good practice to review the extracted areas.It is now done below
 :::
 
 ```{r}
@@ -441,7 +442,7 @@ plot(st_geometry(jw), main = "Jurong West")
 
 ```
 
-### Creating owin object 
+### Creating owin object
 
 Now the sf objects are convered to owin since its required by spatstat
 
@@ -452,7 +453,7 @@ ck_owin = as.owin(ck)
 jw_owin = as.owin(jw)
 ```
 
-### Combining point events and owin 
+### Combining point events and owin
 
 ```{r}
 
@@ -463,8 +464,7 @@ childcare_jw_ppp = childcare_ppp[jw_owin]
 
 ```
 
-
-Now rescaling is done to transform the unit measurement from metre to kilometre 
+Now rescaling is done to transform the unit measurement from metre to kilometre
 
 ```{r}
 childcare_pg_ppp.km = rescale.ppp(childcare_pg_ppp, 1000, "km")
@@ -487,7 +487,8 @@ plot(unmark(childcare_jw_ppp.km),
   main="Jurong West")
 ```
 
-## Clark and Evans Test 
+## Clark and Evans Test
+
 ### Choa Chu Kang Planning area
 
 clarkevans.test() of spatstat is used to performs Clark-Evans test of aggregation for childcare centre in Choa Chu Kang planning area.
@@ -538,16 +539,11 @@ plot(density(childcare_jw_ppp.km,
      main="Jurong West")
 ```
 
+# Example 1: Opening up a new Preschool location drilling into specific branches.
 
-# Example 1: Opening up a new Preschool location drilling into specific branches. 
+Now in this case study, we look at the different preschool locations within the 4 planning areas : Woodlands, Bishan, Orchard, Choa Chu Kang.
 
-Now in this case study, we look at the different preschool locations within the 4 planning areas : Woodlands, Bishan, Orchard, Choa Chu Kang. 
-
-Make the assumption that we want to see the outlook of expanding and opening a new preschool in these areas :
-- Woodlands
-- Bishan
-- Orchard
-- Choa Chu Kang
+Make the assumption that we want to see the outlook of expanding and opening a new preschool in these areas : - Woodlands - Bishan - Orchard - Choa Chu Kang
 
 ```{r}
 #Load & prepare data
@@ -612,7 +608,7 @@ plot(density(preschool_ck_ppp.km,
 
 # Example 2: Plotting an overview to see density outlook (KDE map with tmap)
 
-In this example, we assume that we are analysts, and a client pharmacy : Best Pharmacy wants us to create a visual to show the density view of all current Retail pharmacy locations, to sift out potential competitors in Singapore. 
+In this example, we assume that we are analysts, and a client pharmacy : Best Pharmacy wants us to create a visual to show the density view of all current Retail pharmacy locations, to sift out potential competitors in Singapore.
 
 ```{r}
 # Load & prepare data 
@@ -621,7 +617,6 @@ mpsz <- st_read("data/geospatial/MasterPlan2014SubzoneBoundaryNoSea.geojson")
 pharm_proj <- st_transform(pharm, 3414)
 mpsz_cl <- st_transform(mpsz, 3414)
 ```
-
 
 ```{r}
 # Create owin and ppp objects
@@ -662,8 +657,9 @@ tm_shape(kde_pharm_terra) +
   tm_layout(scale = 1.0)
 ```
 
-# Example 3: Exploring nearest Neighbour Analysis for Pharmacies 
-Now with the plot given out, the client Best Pharmacy wants to the neighbour analysis to be conducted for more specific insights. 
+# Example 3: Exploring nearest Neighbour Analysis for Pharmacies
+
+Now with the plot given out, the client Best Pharmacy wants to the neighbour analysis to be conducted for more specific insights.
 
 ```{r}
 # Subset points to the study area
@@ -686,15 +682,15 @@ clarkevans.test(pharmSG_ppp,
                 method = "MonteCarlo",
                 nsim = 999)
 ```
-The Clark-Evans test statistic is R = 0.25045 <1 in both tests (the standard Z-test and the Monte Carlo simulation). 
 
-The p-value is extremely small (p < 2.2e-16 for the Z-test, and p = 0.001 for the Monte Carlo test).
+The Clark-Evans test statistic is R = 0.25045 \<1 in both tests (the standard Z-test and the Monte Carlo simulation).
 
-Since both p-values < 0.05, we reject the null hypothesis (H₀) that the retail pharmacies are randomly distributed. Hence, concluding there is strong statistical evidence that the distribution of retail pharmacies in Singapore is highly clustered.
+The p-value is extremely small (p \< 2.2e-16 for the Z-test, and p = 0.001 for the Monte Carlo test).
+
+Since both p-values \< 0.05, we reject the null hypothesis (H₀) that the retail pharmacies are randomly distributed. Hence, concluding there is strong statistical evidence that the distribution of retail pharmacies in Singapore is highly clustered.
 
 The R-value of 0.25 indicates that the average distance between a pharmacy and its nearest neighbor is roughly only 25% of what we would expect if they were distributed randomly. This represents a very strong degree of spatial clustering.
 
-
 Therefore, retail pharmacies in Singapore are strategically located in dense, highly concentrated clusters rather than being spread out across the country, possibly being at central areas near the MRT or main shopping malls for increased accessibility.
 
-Recommendation : Avoid entering already saturated hotspots where cannibalization is likely. Instead, use the plotted out map in example 2 to identify the geographical gaps in coverage should expansion be the aim of analysis. If not, more resources should be focused on the hotspots to deal with competitors.  
+Recommendation : Avoid entering already saturated hotspots where cannibalization is likely. Instead, use the plotted out map in example 2 to identify the geographical gaps in coverage should expansion be the aim of analysis. If not, more resources should be focused on the hotspots to deal with competitors.
