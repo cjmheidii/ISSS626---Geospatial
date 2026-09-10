@@ -73,13 +73,13 @@ From checking the data, below are the regions within Kepulauan Bangka Belitung. 
 Below is the code to transform and filter out the data in usual circumstances. However since the file is too large, the filtering is done in the console on prior step to shrink the kbb file.
 
 ```{r}
-kbb <- kbb %>%
-  filter(WADMPR == "Kepulauan Bangka Belitung",
-         !WADMKK %in% c("Belitung", "Belitung Timur"),
-         !WADMKC %in% c("Kepulauan Pongok", "Lepar Pongok")) %>%
-  st_union() %>%
-  st_zm(drop = TRUE, what = "ZM") %>%
-  st_transform(crs = 32748)
+#kbb <- kbb %>%
+  #filter(WADMPR == "Kepulauan Bangka Belitung",
+         #!WADMKK %in% c("Belitung", "Belitung Timur"),
+         #!WADMKC %in% c("Kepulauan Pongok", "Lepar Pongok")) %>%
+  #st_union() %>%
+  #st_zm(drop = TRUE, what = "ZM") %>%
+  #st_transform(crs = 32748)
 ```
 
 ```{r}
