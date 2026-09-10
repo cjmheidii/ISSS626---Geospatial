@@ -1,0 +1,359 @@
+---
+title: "Hands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis"
+date: "September 7 2026"
+date-modified: "last-modified"
+execute:
+  echo: true
+  eval: true
+  message: false 
+  warning: false
+  freeze: true 
+---
+
+# Overview
+
+A spatio-temporal point process (space-time / spatial-temporal point process) is a random collection of points, where each point represents the time and location of an event.
+
+- E.g incidence of disease
+
+- E.g sightings or births of a species
+
+- E.g occurrences of fires, earthquakes, lightning strikes, tsunamis, volcanic eruptions.
+
+The analysis of spatio-temporal point patterns is becoming increasingly necessary, due to the rapid emergence of geographically and temporally indexed data in a wide range of fields. Several spatio-temporal point patterns analysis methods have been introduced and implemented in R in the last ten years.
+
+# Getting Started
+
+## importing of data
+
+The following data packages will be used. They are:
+
+- [**sf**](https://r-spatial.github.io/sf/) provides functions for importing processing and wrangling geospatial data,,
+
+- [**raster**](https://rspatial.org/raster/) for handling raster data in R,
+
+- [**spatstat**](https://cran.r-project.org/web/packages/spatstat/index.html) for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc.,
+
+- [**sparr**](https://tilmandavies.github.io/sparr/index.html) provides functions to estimate fixed and adaptive kernel-smoothed spatial relative risk surfaces via the density-ratio method and perform subsequent inference. Fixed-bandwidth spatiotemporal density and relative risk estimation is also supported
+
+- [**tmap**](https://r-tmap.github.io/tmap/) provides functions to produce cartographic quality thematic maps, and
+
+- [**tidyverse**](https://www.tidyverse.org/), a family of R packages that provide functions to perform common data science tasks including and not limited to data import, data transformation, data wrangling and data visualisation.
+
+```{r}
+pacman::p_load(sf, spatstat, sparr, 
+               tmap, stpp, tidyverse)
+```
+
+Now let's import the data!
+
+### Loading in Indonesia ESRI Shapefile
+
+Due to additional complications in loading in data, for this exercise the loading of both datasets are written and explained separately.
+
+```{r}
+library(sf)
+library(dplyr)
+
+kbb <- st_read(
+  dsn = "data/geospatial/kbb_simplified.gpkg",
+  layer = "kbb",
+  quiet = TRUE
+)
+
+kbb_owin <- as.owin(kbb)
+```
+
+From checking the data, below are the regions within Kepulauan Bangka Belitung. However since the exercise in the hands on notes does not include Belitung and Belitung Timur, we will be removing these for easier walkthrough of data. Kepulauan Pongok will also be removed (a small subsection of the island)
+
+```         
+[1] "Belitung"            "Belitung Timur"      "Bangka Selatan"      "Bangka Tengah"       [5] "Bangka"              "Bangka Barat"        "Kota Pangkal Pinang"
+```
+
+Below is the code to transform and filter out the data in usual circumstances. However since the file is too large, the filtering is done in the console on prior step to shrink the kbb file.
+
+```{r}
+kbb <- kbb %>%
+  filter(WADMPR == "Kepulauan Bangka Belitung",
+         !WADMKK %in% c("Belitung", "Belitung Timur"),
+         !WADMKC %in% c("Kepulauan Pongok", "Lepar Pongok")) %>%
+  st_union() %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(crs = 32748)
+```
+
+```{r}
+head(kbb, 5)
+kbb_owin
+```
+
+### Loading in Fire dataset in Indonesia.
+
+Now we load in the second dataset.
+
+```{r}
+fire_sf <- read_csv("data/aspatial/modis_2023_Indonesia.csv") %>%
+  st_as_sf(coords = c("longitude", "latitude"),
+           crs = 4326) %>%
+  st_transform(crs = 32748)
+
+fire_sf <- st_intersection(fire_sf, kbb)
+```
+
+::: callout-note
+To note : When initially adding the fire_sf file, there are a lot of points on the left bottom of map which is not part of the Kepulauan Bangka Belitung region as wanted.
+
+Therefore, an intersection line is written to say that the points not on the island of Kepulauan Bangka Belitung is required (since in the other shape file the correct lands are already extracted out).
+:::
+
+```{r}
+fire_sf <- fire_sf %>% 
+  mutate(DayofYear = yday(acq_date)) %>%
+  mutate(Month_num = month(acq_date)) %>%
+  mutate(Month_fac = month(acq_date, 
+                           label = TRUE, 
+                           abbr = FALSE))
+```
+
+## Viewing the plots!
+
+```{r}
+tm_shape(kbb)+
+  tm_polygons() +
+  tm_shape(fire_sf) +
+  tm_dots()
+```
+
+This is a separate version of code to put this overall data and segregate it into months.
+
+```{r}
+tm_shape(kbb)+
+  tm_polygons() +
+  tm_shape(fire_sf) +
+  tm_dots(size = 0.1) +
+  tm_facets(by="Month_fac", 
+            free.coords=FALSE, 
+            drop.units = TRUE)
+```
+
+# Computing STKDE by Month
+
+STKDE will be computed here using the [`spattemp.density()`](https://tilmandavies.github.io/sparr/reference/spattemp.density.html) of **sparr** package. 
+
+## 1. Extracting Forest Fires by month.
+
+Here, we will remove the unwanted fields from *fire_sf* sf data.frame. This is because `as.ppp()` only need the mark field and geometry field from the input sf data.frame.
+
+```{r}
+fire_month <- fire_sf %>% 
+  select(Month_num)
+```
+
+## 2. Creating ppp
+
+Then we derive a **ppp** object called *fire_month* from *fire_month* sf data.frame. Where it is recommended to check the output is in the correct class using summary().
+
+```{r}
+fire_month_ppp <- as.ppp(fire_month)
+fire_month_ppp
+
+summary(fire_month_ppp)
+```
+
+It is also recommended to check and ensure there are no duplicated units which can
+
+1.  Cause data loading to be a lot slower
+2.  Cause inaccuracies when analysing data
+
+If output is FALSE, we are good to go ! :D
+
+```{r}
+any(duplicated(fire_month_ppp))
+```
+
+## 3. Including OWIN object
+
+Now, the following code will combine *origin_am_ppp* and *am_owin* objects into one. To also ensure the correctness/accuracy of the overall output object,we will plot out the result of the combination.
+
+```{r}
+fire_month_owin <- fire_month_ppp[kbb_owin]
+summary(fire_month_owin)
+
+plot(fire_month_owin)
+```
+
+## 4. Computing Spatio-Temporal KDE
+
+Now, the STKDE is computed here with the preparations done!
+
+```{r}
+st_kde <- spattemp.density(fire_month_owin)
+summary(st_kde)
+```
+
+The results are plotted here below
+
+```{r}
+tims <- c(7,8,9,10,11,12)
+par(mfcol=c(2,3))
+for(i in tims){ 
+  plot(st_kde, i, 
+       override.par=FALSE, 
+       fix.range=TRUE, 
+       main=paste("KDE at month",i))
+}
+```
+
+# Computing STKDE by Day of Year
+
+Now, we look at another direction, which is the day of year. The steps process to this is similar to that of Month! Only now the extraction is not needed.
+
+## 1. Creating ppp
+
+Now we create the DayofYear field and include it in the output ppp object
+
+```{r}
+fire_yday_ppp <- fire_sf %>% 
+  select(DayofYear) %>%
+  as.ppp()
+```
+
+## 3. Including OWIN object
+
+Now, the following code will combine *ppp & owin* objects into one.
+
+```{r}
+fire_yday_owin <- fire_yday_ppp[kbb_owin]
+summary(fire_yday_owin)
+```
+
+## 4. Computing Spatio-Temporal KDE
+
+Now, the STKDE is computed here with the preparations done!
+
+```{r}
+kde_yday <- spattemp.density(
+  fire_yday_owin)
+summary(kde_yday)
+```
+
+The results are plotted here below
+
+```{r}
+plot(kde_yday)
+```
+
+# Improved method to compute STKDE for Day of Year
+
+A nice function in the sparr package is `BOOT.spattemp()`. It support bandwidth selection for standalone spatiotemporal density/intensity based on bootstrap estimation of the MISE, providing an isotropic scalar spatial bandwidth and a scalar temporal bandwidth.
+
+```{r}
+set.seed(1234)
+BOOT.spattemp(fire_yday_owin) 
+```
+
+::: callout-note
+TAKE NOTE : the set seed is important so that the output will always stay the same! So this line can NEVER be forgotten!
+:::
+
+## Computing Spatio-Temporal KDE
+
+Now, the STKDE is computed here with the preparations done! Similar final step to the other 2 parts above.
+
+```{r}
+kde_yday <- spattemp.density(fire_yday_owin,
+                             h = 9000,
+                             lambda = 19)
+summary(kde_yday)
+```
+
+The results are plotted here below
+
+```{r}
+plot(kde_yday)
+```
+
+# Spatio-Temporal Point Pattern Analysis : stpp methods
+
+It is also possible to use the stpp package to perform the Spatio-Temporal Point Pattern Analysis.
+
+## 1. Preparing Spatio-Temporal Point Process Objecvt of stpp
+
+The steps for preparation are as follows :
+
+1.  Extracting forest fire coordinates from the fire point events
+2.  Creating a data frame by combining the x- and y-coordinates and temporal event. Note that the temporal event must be in integer.
+3.  Creating stpp spatio-temporal object
+
+```{r}
+# 1. Extracting forest fire coordinates from the fire point events
+coords <- st_coordinates(fire_sf)
+
+#2. Creating a data frame by combining the x- and y-coordinates and temporal event.
+fire_df <- data.frame(
+  x = coords[, 1],  
+  y = coords[, 2],
+  t = fire_sf$`DayofYear`)
+
+#3. Creating stpp spatio-temporal object
+fire_stpp <- as.3dpoints(fire_df)
+
+## This additional code is to ensure the output is in stpp spatio-temporal object class. Should expect to see output as stpp
+class(fire_stpp)
+
+```
+
+Now this plotted out to have a visual sense of our current data.
+
+```{r}
+plot(fire_stpp)
+```
+
+## 2. Computing Spatio-temporal K function
+
+ [`STIKhat()`](https://cran.r-project.org/web/packages/stpp/refman/stpp.html#STIKhat) of stpp package is used to compute space-time inhomogeneous K-function, where output should be plotted to visualise output
+
+```{r}
+kbb_stik <- STIKhat(fire_stpp)
+plotK(kbb_stik)
+```
+
+::: callout-note
+- If the contours show high values for small values of uu and vv, it suggests clustering at short spatial and temporal distances, meaning events occur close to each other in both space and time.
+
+- If the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.
+
+The spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes. In the plot above, we can see clustering at specific distances by observing the spacing and values of the contour lines.
+:::
+
+# Example 1 : Fires being Spatially independent?
+
+One main question of the exercise is to see if the fires in Kepulauan Bangka Belitung spatial and spatio-temporally independent. Hence we will now re-draft up the plot and put up the day of year into a gradient colour scale to look deeper into the question.
+
+```{R}
+tm_shape(kbb) +
+  tm_polygons() +
+  tm_shape(fire_sf) +
+  tm_dots(col = "DayofYear",
+          palette = "viridis",
+          style = "cont",
+          size = 0.3,
+          title = "Day of Year") +
+  tm_layout(legend.outside = TRUE)
+```
+
+## Analysis
+
+### Overview
+
+- The majority of the points are within the green to yellow range of the legend, showing that most fires in the region of Kepulauan Bangka Belitung happeed on the second half of the year (June to December \~Day 200-350). This is likely due to the Dry season of Indonesia, where the general rainfall amount drops due to the monsoon season.
+
+- Early days of the year (days 1-50) or the purple markers seemed to be rare and scattered. These early year fires (Jan and Feb) seem to be possibly be localized dry spells or human-caused ignition events instead due to its distribution of the data.
+
+- The fire season can also be denoted to increase progressively through the year rather than being a single sharp burst due to the gradual shift in gradient of colouring within our data points.
+
+**Spatial pattern**
+
+- The fire points are NOT uniformly distributed!! With the clear clustering in the Northwest area, and the heavier clustering at the South area of the island. It is clear that the density of these areas are higher than that of the Northeast regions.
+
+- Therefore, it is very unlikely for there to be spatially independent! Since the points should be more evenly scattered across the whole landmass should it be spatially independent.
