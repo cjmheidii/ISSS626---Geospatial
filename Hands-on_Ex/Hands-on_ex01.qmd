@@ -1,6 +1,7 @@
 ---
 title: "Hands on Exercise 1A"
-author: "Heidi"
+date: "August 26 2026"
+date-modified: "last-modified"
 ---
 
 # Getting Started

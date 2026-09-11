@@ -1,4 +1,4 @@
-# --- Your original entries ---
+
 .Rproj.user
 .Rhistory
 .RData
@@ -6,10 +6,10 @@
 .DS_Store
 .quarto
 
-/.quarto/
+/.quarto
 **/*.quarto_ipynb
 
-# Large geospatial data 
+
 Hands-on_Ex/data/geospatial/Indo_fire/
 *.shp
 *.dbf
@@ -20,7 +20,6 @@ Hands-on_Ex/data/geospatial/Indo_fire/
 *.sbx
 *.zip
 
-#  Rendered figure output (regenerated on every render) 
-Hands-on_Ex/Hands-on_ex*_files/
+
 _site/
-_freeze/
+/.quarto/

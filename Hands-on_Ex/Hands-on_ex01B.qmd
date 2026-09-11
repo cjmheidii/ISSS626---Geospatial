@@ -1,5 +1,7 @@
 ---
 title: "Hands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R"
+date: "August 27 2026"
+date-modified: "last-modified"
 ---
 
 # Overview
