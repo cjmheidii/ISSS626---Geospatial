@@ -1,29 +1,42 @@
 ---
 title: "ISSS626 - Geospatial"
+listing:
+  - id: recent-exercises
+    contents:
+      - "Hands-on_Ex/*.qmd"
+      - "Hands-on_Ex/Take-home_*.qmd"
+    type: table
+    sort: "date-modified desc"
+    fields: [title, date-modified]
+    field-display-names:
+      date-modified: "Last Modified"
+    page-size: 10
+    sort-ui: false
+    filter-ui: false
 ---
 
 ```{=html}
 <div class="radar-field" aria-hidden="true">
   <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
     <!-- RING system with closer spacing -->
-    <circle class="radar-ring" cx="600" cy="400" r="180"/>  <!-- Reduced from 220 -->
-    <circle class="radar-ring" cx="600" cy="400" r="320"/>  <!-- Reduced from 400 -->
-    <circle class="radar-ring" cx="600" cy="400" r="460"/>  <!-- Reduced from 580 -->
-    <circle class="radar-ring" cx="600" cy="400" r="600"/>  <!-- Reduced from 760 -->
+    <circle class="radar-ring" cx="600" cy="400" r="180"/>
+    <circle class="radar-ring" cx="600" cy="400" r="320"/>
+    <circle class="radar-ring" cx="600" cy="400" r="460"/>
+    <circle class="radar-ring" cx="600" cy="400" r="600"/>
 
-    <!-- 10 markers with BIGGER dots -->
-    <circle class="radar-dot" cx="120" cy="90"  r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="600" cy="60"  r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="1080" cy="100" r="8"/>   <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="90"  cy="400" r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="1110" cy="380" r="8"/>   <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="300" cy="700" r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="600" cy="740" r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="900" cy="710" r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="350" cy="250" r="8"/>    <!-- Increased from 5 -->
-    <circle class="radar-dot" cx="850" cy="550" r="8"/>    <!-- Increased from 5 -->
+    <!-- 10 markers -->
+    <circle class="radar-dot" cx="120" cy="90"  r="8"/>
+    <circle class="radar-dot" cx="600" cy="60"  r="8"/>
+    <circle class="radar-dot" cx="1080" cy="100" r="8"/>
+    <circle class="radar-dot" cx="90"  cy="400" r="8"/>
+    <circle class="radar-dot" cx="1110" cy="380" r="8"/>
+    <circle class="radar-dot" cx="300" cy="700" r="8"/>
+    <circle class="radar-dot" cx="600" cy="740" r="8"/>
+    <circle class="radar-dot" cx="900" cy="710" r="8"/>
+    <circle class="radar-dot" cx="350" cy="250" r="8"/>
+    <circle class="radar-dot" cx="850" cy="550" r="8"/>
 
-    <!-- Pulsing blips with BIGGER dots -->
+    <!-- Pulsing blips -->
     <circle class="radar-blip" cx="120" cy="90"  r="8" style="animation-delay:0s"/>
     <circle class="radar-blip" cx="600" cy="60"  r="8" style="animation-delay:0.6s"/>
     <circle class="radar-blip" cx="1080" cy="100" r="8" style="animation-delay:1.2s"/>
@@ -50,4 +63,9 @@ Click on the Hands-on Exercise dropdown to select and review all lessons learnt 
 
 Click on the Take-Home Exercise dropdown to select and review all assignments that are completed within this course.
 </div>
+:::
+
+## Coursework
+
+::: {#recent-exercises}
 :::

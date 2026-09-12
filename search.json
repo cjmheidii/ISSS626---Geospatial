@@ -432,5 +432,12 @@
     "title": "Hands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis",
     "section": "Analysis",
     "text": "Analysis\n\nOverview\n\nThe majority of the points are within the green to yellow range of the legend, showing that most fires in the region of Kepulauan Bangka Belitung happeed on the second half of the year (June to December ~Day 200-350). This is likely due to the Dry season of Indonesia, where the general rainfall amount drops due to the monsoon season.\nEarly days of the year (days 1-50) or the purple markers seemed to be rare and scattered. These early year fires (Jan and Feb) seem to be possibly be localized dry spells or human-caused ignition events instead due to its distribution of the data.\nThe fire season can also be denoted to increase progressively through the year rather than being a single sharp burst due to the gradual shift in gradient of colouring within our data points.\n\nSpatial pattern\n\nThe fire points are NOT uniformly distributed!! With the clear clustering in the Northwest area, and the heavier clustering at the South area of the island. It is clear that the density of these areas are higher than that of the Northeast regions.\nTherefore, it is very unlikely for there to be spatially independent! Since the points should be more evenly scattered across the whole landmass should it be spatially independent."
+  },
+  {
+    "objectID": "index.html#coursework",
+    "href": "index.html#coursework",
+    "title": "ISSS626 - Geospatial",
+    "section": "Coursework",
+    "text": "Coursework\n\n\n\n\n\n\nTitle\n\n\n\nLast Modified\n\n\n\n\n\n\n\n\nHands on Exercise 1A\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis\n\n\nSep 10, 2026\n\n\n\n\n\n\nNo matching items"
   }
 ]
