@@ -95,7 +95,7 @@ st_drop_geometry(map) %>% summarise(across(everything(), n_distinct))
 
 ```
 
-## Data Inspection & Cleaning. 
+## Data Inspection & Cleaning.
 
 ```{r}
 # To ensure there is no invalid rows (error due to location column issues, we will check for rows with unknown or NA provinces). 
@@ -247,21 +247,10 @@ The datasets we are looking at basically will cover the full country of Thailand
 
 On temporal Coverage, as mentioned the dataset is filtered so that we will only look at the range of year 2022 through the use of incident_datetime since we want to analyse the accidents that occurred in 2022 instead of report_datetime (refers to the date and time when the accident is recorded). This is important because there time is needed after the accident has occurred for it to be recorded, resulting in a reporting lag. Therefore, this distinction is highlighted to show that the correct column is used for the filtering together with the importance of this distinction.
 
-Some main characteristics of the data is as follows :
-- ID (acc code)
-- Time (Incident_datetime,report_Datetime)
-- Location (province_en, latitude, longitude)
-- reporting agency (agency) : will be used to see if the difference in agency reporting has an impact on deaths or extent of severity
-- Vehicle : (vehicle_type): which vehicle type is more prone to get into accidents, deaths
-- Cause : (presumed_cause)
-- Collision type : (accident_type)
-- Severity : factor for measurement
-- Environment : (weather_condition) : does the weather itself have any impact of occurance of accidents or severity of it?
-- Road Geometry
-- Slope
+Some main characteristics of the data is as follows : - ID (acc code) - Time (Incident_datetime,report_Datetime) - Location (province_en, latitude, longitude) - reporting agency (agency) : will be used to see if the difference in agency reporting has an impact on deaths or extent of severity - Vehicle : (vehicle_type): which vehicle type is more prone to get into accidents, deaths - Cause : (presumed_cause) - Collision type : (accident_type) - Severity : factor for measurement - Environment : (weather_condition) : does the weather itself have any impact of occurance of accidents or severity of it? - Road Geometry - Slope
 :::
 
-## Overview plot 
+## Overview plot
 
 This overview plot is made to ensure that the data is loaded properly and there are no errors in data manipulation or cleaning.
 
