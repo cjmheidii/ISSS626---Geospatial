@@ -1,0 +1,306 @@
+---
+title: "Take-Home Exercise 1"
+Date: "September 12 2026"
+date-modified: "last-modified"
+---
+
+# Overview
+
+Public safety refers to the protection of the general public, communities, and critical infrastructure from crimes, disasters, accidents, and other major threats through coordinated government and agency action.
+
+Geospatial analytics, supported by multi-source geospatial data and geospatial data science and analysis methods, provides powerful means to transform location-based data into visual evidence, analytical insights, and decision support. It plays an important role in areas such as law enforcement, emergency management, disaster response, transportation safety, and environmental management.
+
+A spatial point pattern represents a collection of geographic locations at which particular events occur, such as forest-fire detections or road traffic accidents. A spatio-temporal point pattern extends this representation by incorporating the time at which each event occurs, allowing analysts to investigate how the distribution and interaction of events vary across both space and time.
+
+Understanding where and when public-safety events occur can help planners and managers identify areas of concern, understand patterns of event occurrence, allocate resources, and develop evidence-informed strategies for prevention and response.
+
+## Objectives
+
+This take-home exercise investigates the spatial and/or spatio-temporal patterns of public-safety point events using one the case study of **Road traffic accidents** within the Bangkok Greater Metropolitan Area for the selected study year 2022.
+
+The specific objectives from this exercise are :
+
+- To prepare and integrate real-world geospatial and temporal data for spatial and spatio-temporal point-pattern analysis.
+
+- To investigate first-order properties of the point pattern by examining how the intensity or distribution of events varies across space and/or time.
+
+- To investigate second-order properties by examining whether events exhibit evidence of spatial or spatio-temporal interaction, such as clustering, inhibition, or approximate randomness.
+
+- To critically evaluate the analytical assumptions, methodological choices, and limitations associated with the selected point-pattern methods.
+
+- To communicate the analytical findings effectively through appropriate geovisualisation and geocommunication.
+
+- To translate the analytical evidence into meaningful implications for public-safety planning and management.
+
+# Data
+
+These are the datasets used for the exercise
+
+## Thailand Road Accident Dataset
+
+<https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022>
+
+This is a comprehensive dataset on recorded road accidents in Thailand, spanning from approximately 2019 to 2022. For the sake of the exercise only the latest data of 2022 will be used here.
+
+::: callout-note
+The data is from the Office of the Permanent Secretary, Ministry of Transport, where for easier visualisation the [public dashboard](https://trams.mot.go.th/main-dashboard) can be accessed as well.
+:::
+
+## Thailand Boundary Map
+
+<https://www.geoboundaries.org/countryDownloads.html>
+
+This is the Thailand Boundary map published by the Royal Thai Survey Department, OCHA ROAP on the [geoBoundaries](https://www.geoboundaries.org/) website in 2019 (This is also the latest version available for public download).
+
+We will be using the geojson.
+
+# Getting Started - Preparation of Data
+
+## Importing of data
+
+First the required libraries are installed/loaded into file.
+
+```{r}
+pacman::p_load(sf, spatstat, tmap, tidyverse)
+```
+
+Now we load in both datasets.
+
+```{r}
+# Thailand Road Accident Dataset
+acc<- read_csv("data/aspatial/thai_road_accident_2019_2022.csv")
+```
+
+Here we will check the summary of the **Thailand Road Accident** Dataset.
+
+```{r}
+head(acc) 
+```
+
+Now we will load in the second dataset : Thailand Boundary Map
+
+```{r}
+# Thailand Boundary Map
+map <- st_read("data/geospatial/Thai/geoBoundaries-THA-ADM2.shp")
+
+# Column names
+names(map)
+
+# Preview attributes without geometry
+st_drop_geometry(map) %>% head(10)
+st_drop_geometry(map) %>% glimpse()
+
+# How many unique values per column
+st_drop_geometry(map) %>% summarise(across(everything(), n_distinct))
+
+```
+
+## Data Inspection & Cleaning. 
+
+```{r}
+# To ensure there is no invalid rows (error due to location column issues, we will check for rows with unknown or NA provinces). 
+
+# This is important since during analysis when writing out the insights, we will link back to the province column rather than the latitude and longitutde column for readers to understand better. The latitude and longitude gives the specific point of the accident but with just these 2 columns readers dont know which city or province we are going to talk about. 
+
+
+unknown_rows <- acc %>%
+  filter(province_en == "unknown" | is.na(province_en))
+
+# If there are any unknown province locations, check for unknown latitude and longitude. To see how much can be recovered since Lat and Long gives the specific point. If we have latitude and longitude in the missing columns, it is possible to recover province. 
+
+unknown_with_xy <- unknown_rows %>%
+  filter(!is.na(latitude), !is.na(longitude))
+
+unknown_no_xy <- unknown_rows %>%
+  filter(is.na(latitude) | is.na(longitude))
+
+
+tibble(
+  category      = c("Unknown province (total)",
+                    "→ with coordinates (recoverable)",
+                    "→ without coordinates (need manual or drop)"),
+  n             = c(nrow(unknown_rows),
+                    nrow(unknown_with_xy),
+                    nrow(unknown_no_xy)),
+  pct_of_unknown = round(100 * n / nrow(unknown_rows), 1)
+)
+```
+
+So we can see that there are 25 coordinates that can actually be recovered from the 34 with missing province locations. This is good since 73.5% Of missing values are recovered.
+
+```{r}
+# Through analysis of the shapefile, ADM 2 looks into the district and not province. So it will not be possible to use our current ADM 2 shapefile of Thailand to attain the province values to need to link the coordinates. 
+
+# We will use ADM 1 instead. Now the data will be loaded in. 
+provinces <- st_read("data/geospatial/Thai_province/geoBoundaries-THA-ADM1.shp") %>%
+  st_transform(4326)
+
+# Check the province name column to ensure we can use ADM1 
+names(provinces)
+
+
+# Isolate the rows we want to recover, so it dosent affect the main dataset
+unknown_with_xy <- acc %>%
+  filter(
+    (province_en == "unknown" | is.na(province_en)) &
+      !is.na(latitude) & !is.na(longitude)
+  )
+
+pts <- st_as_sf(
+  unknown_with_xy,
+  coords = c("longitude", "latitude"),
+  crs = 4326
+)
+
+# Here is where the join is done to connect the datapoints
+pts_joined <- st_join(pts, provinces, join = st_within)
+pts_joined %>%
+  st_drop_geometry() %>%
+  select(acc_code, shapeName) %>%
+  head()
+missed <- pts_joined %>% filter(is.na(shapeName))
+nrow(missed)
+
+# In case of any misses with the provinces, this is a fallback to link up to nearest province 
+if (nrow(missed) > 0) {
+  idx <- st_nearest_feature(missed, provinces)
+  pts_joined$shapeName[is.na(pts_joined$shapeName)] <- provinces$shapeName[idx]
+}
+
+# Merge accounts back to actual dataset
+acc_fixed <- acc %>%
+  left_join(
+    pts_joined %>%
+      st_drop_geometry() %>%
+      select(acc_code, recovered_province = shapeName),
+    by = "acc_code"
+  ) %>%
+  mutate(
+    province_en = ifelse(
+      province_en == "unknown" | is.na(province_en),
+      recovered_province,
+      province_en
+    )
+  ) %>%
+  select(-recovered_province)
+
+```
+
+```{r}
+# Verification, now there should be 9 missing data points rather than 34!
+acc_fixed %>%
+  filter(is.na(province_en)) %>%
+  nrow()
+```
+
+The current dataset is from 2019-2022, since we are aiming to only look at 2022 data we want to drop the unnecessary rows (year 2019-2021).
+
+```{r}
+# The date and Time will be parsed to Thailand timezone, so hardware (computer) which is in Singapore timezone can accurately filter the data to year 2022. 
+acc <- acc %>%
+  mutate(
+    incident_datetime = ymd_hms(incident_datetime, tz = "Asia/Bangkok"),
+    report_datetime   = ymd_hms(report_datetime,   tz = "Asia/Bangkok")
+  )
+
+
+# Filter so that only year 2022 data exists in current dataset 
+acc<- acc %>%
+  filter(year(incident_datetime) == 2022)
+
+# Verify that the datetime is what we need
+nrow(acc)
+range(acc$incident_datetime)  
+```
+
+Now we look at Removal of columns.
+
+::: callout-note
+:: title: Analysis
+
+Here the first few rows of the data is displayed to have a rough sense of the data. There is a "Duplicated" Column where "province_th" is the same as "province_en" but in the Thai language. Since we cannot understand Thai, we will remove this column instead of province_en.
+
+Furthermore, route column is redundant since the coordinates are given through the latitude and longitude data columns. The inconsistent description of junctions, highway numbers and sectors are also the reason why this column should not be used, since it will only cause more confusion in analysis process.
+:::
+
+```{r}
+# Drop unncessary columns 
+acc<- acc %>% select(-route, -province_th)
+
+# Now to confirm the correct columns are dropped. We will expect to see 16 columns instead. (6x16)
+head(acc) 
+
+```
+
+Now we also want to make sure there is no duplicated rows which is checked using code below. Since FALSE is returned we can proceed on with loading in the second dataset.
+
+```{r}
+# This looks for duplicates across the entire row, where it only records if all values within one row is the same as another
+any(duplicated(acc))
+
+# This ensures that all acccount codes (acc_code) is different and unique, so that we arent looking at multiple accident accounts. 
+sum(duplicated(acc$acc_code))
+```
+
+::: callout-note
+The datasets we are looking at basically will cover the full country of Thailand, where when necessary it is possible to drill down into the province level through province_en. Some provinces will include : Bangkok, Chiang Mai, Phukit and etc.
+
+On temporal Coverage, as mentioned the dataset is filtered so that we will only look at the range of year 2022 through the use of incident_datetime since we want to analyse the accidents that occurred in 2022 instead of report_datetime (refers to the date and time when the accident is recorded). This is important because there time is needed after the accident has occurred for it to be recorded, resulting in a reporting lag. Therefore, this distinction is highlighted to show that the correct column is used for the filtering together with the importance of this distinction.
+
+Some main characteristics of the data is as follows :
+- ID (acc code)
+- Time (Incident_datetime,report_Datetime)
+- Location (province_en, latitude, longitude)
+- reporting agency (agency) : will be used to see if the difference in agency reporting has an impact on deaths or extent of severity
+- Vehicle : (vehicle_type): which vehicle type is more prone to get into accidents, deaths
+- Cause : (presumed_cause)
+- Collision type : (accident_type)
+- Severity : factor for measurement
+- Environment : (weather_condition) : does the weather itself have any impact of occurance of accidents or severity of it?
+- Road Geometry
+- Slope
+:::
+
+## Overview plot 
+
+This overview plot is made to ensure that the data is loaded properly and there are no errors in data manipulation or cleaning.
+
+```{r}
+acc <- acc %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+acc <- st_transform(acc, 32647)
+map <- st_transform(map,    32647)
+```
+
+```{r}
+# Now we plot an overview on the tmap. 
+tm_shape(map) +
+  tm_polygons(col = "grey95", border.col = "grey70", lwd = 0.1) +
+  tm_shape(acc) +
+  tm_dots(col = "red", size = 0.02, alpha = 0.5) +
+  tm_layout(frame = FALSE)
+```
+
+::: callout-note
+The reason why Tmap is being used instead of the usual plot() :
+
+tmap is a package helps to render the ploygons better than plots, preventing overlapping borders like what plot() will do. Basically it is better at rendering and plotting the multi-ploygon background more clearly.
+:::
+
+# First-Order Point Pattern Analysis
+
+Conduct appropriate first-order spatial and/or spatio-temporal point-pattern analyses using the prepared data.
+
+Your analysis should investigate how the intensity or distribution of events varies across space and/or time.
+
+You should:
+
+- select appropriate analytical methods; justify why the selected methods are appropriate;
+
+- explain important analytical parameters and assumptions;
+
+- produce appropriate statistical graphics and geovisualisations; and
+
+- interpret the resulting patterns in the context of your selected public-safety problem.
