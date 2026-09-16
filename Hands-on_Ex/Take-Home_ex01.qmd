@@ -1,6 +1,6 @@
 ---
 title: "Take-Home Exercise 1"
-Date: "September 12 2026"
+date: "September 12 2026"
 date-modified: "last-modified"
 ---
 
@@ -52,8 +52,6 @@ The data is from the Office of the Permanent Secretary, Ministry of Transport, w
 
 This is the Thailand Boundary map published by the Royal Thai Survey Department, OCHA ROAP on the [geoBoundaries](https://www.geoboundaries.org/) website in 2019 (This is also the latest version available for public download).
 
-We will be using the geojson.
-
 # Getting Started - Preparation of Data
 
 ## Importing of data
@@ -97,16 +95,35 @@ st_drop_geometry(map) %>% summarise(across(everything(), n_distinct))
 
 ## Data Inspection & Cleaning.
 
+A Point event is basically defined as a single record within the dataset, or a specific road traffic accident Each event will be geolocated using the `longitude` and `latitude` columns.
+
+So it is important that any duplicated rows of data do not exist and we handle all missing or invalid coordinates, which will be done in this sub-section.
+
+Several things will checked upon within this subsection. These include
+
+- Handling of Invalid/Missing Locations
+
+- Removal of Unnecessary Columns & rows
+
+- Ensuring Unique Rows
+
+**Missing and Invalid Coordinates**\
+Rows with missing or invalid coordinates (NA in `latitude` or `longitude`) were identified and handled. First, we checked for rows with unknown or NA provinces. Because the latitude and longitude columns provide specific point locations but lack the contextual information needed for readable insights (e.g., "which province?"), we prioritized recovering the province attribute. We successfully recovered 25 out of 34 missing provinces (73.5%) by spatially joining the coordinates with the ADM1 shapefile. The remaining 9 rows, which lacked both coordinates and province data, were excluded from the analysis.
+
+### Handling Invalid/Missing Locations 
+
+First, to ensure there is no invalid rows (error due to location column issues, we will check for rows with unknown or NA provinces).
+
+This is important since during analysis when writing out the insights, we will link back to the province column rather than the latitude and longitutde column for readers to understand better. The latitude and longitude gives the specific point of the accident but with just these 2 columns readers dont know which city or province we are going to talk about.
+
+::: callout-note
+If there are any unknown province locations, check for unknown latitude and longitude. To see how much can be recovered since Lat and Long gives the specific point. If we have latitude and longitude in the missing columns, it is possible to recover province.
+:::
+
 ```{r}
-# To ensure there is no invalid rows (error due to location column issues, we will check for rows with unknown or NA provinces). 
-
-# This is important since during analysis when writing out the insights, we will link back to the province column rather than the latitude and longitutde column for readers to understand better. The latitude and longitude gives the specific point of the accident but with just these 2 columns readers dont know which city or province we are going to talk about. 
-
 
 unknown_rows <- acc %>%
   filter(province_en == "unknown" | is.na(province_en))
-
-# If there are any unknown province locations, check for unknown latitude and longitude. To see how much can be recovered since Lat and Long gives the specific point. If we have latitude and longitude in the missing columns, it is possible to recover province. 
 
 unknown_with_xy <- unknown_rows %>%
   filter(!is.na(latitude), !is.na(longitude))
@@ -126,12 +143,12 @@ tibble(
 )
 ```
 
-So we can see that there are 25 coordinates that can actually be recovered from the 34 with missing province locations. This is good since 73.5% Of missing values are recovered.
+So we can see that there are 25 coordinates that can actually be recovered from the 34 with missing province locations. This is good since 73.5% of missing values can be recovered.
+
+Through analysis of the shapefile, ADM 2 looks into the district and not province. So it will not be possible to use our current ADM 2 shapefile of Thailand to attain the province values to need to link the coordinates. We will use ADM 1 instead. Now the data will be loaded in.
 
 ```{r}
-# Through analysis of the shapefile, ADM 2 looks into the district and not province. So it will not be possible to use our current ADM 2 shapefile of Thailand to attain the province values to need to link the coordinates. 
 
-# We will use ADM 1 instead. Now the data will be loaded in. 
 provinces <- st_read("data/geospatial/Thai_province/geoBoundaries-THA-ADM1.shp") %>%
   st_transform(4326)
 
@@ -168,7 +185,7 @@ if (nrow(missed) > 0) {
 }
 
 # Merge accounts back to actual dataset
-acc_fixed <- acc %>%
+acc_joined <- acc %>%
   left_join(
     pts_joined %>%
       st_drop_geometry() %>%
@@ -184,16 +201,37 @@ acc_fixed <- acc %>%
   ) %>%
   select(-recovered_province)
 
+acc <- acc_joined
 ```
 
 ```{r}
 # Verification, now there should be 9 missing data points rather than 34!
-acc_fixed %>%
+acc %>%
   filter(is.na(province_en)) %>%
   nrow()
 ```
 
+Now that we've settled the 24 recoverable records of data, we will now remove the 9 missing data points where it is impossible to recover.
+
+```{r}
+acc<- acc %>%
+  filter(!is.na(province_en))
+
+# Verify that there are now 0 rows with missing province
+acc %>%
+  filter(is.na(province_en)) %>%
+  nrow()
+```
+
+### Removal of Unnecessary Rows 
+
 The current dataset is from 2019-2022, since we are aiming to only look at 2022 data we want to drop the unnecessary rows (year 2019-2021).
+
+::: callout-note
+We will only look at the range of year 2022 through the use of incident_datetime since we want to analyse the accidents that occurred in 2022 instead of report_datetime (refers to the date and time when the accident is recorded)
+
+This is important because there time is needed after the accident has occurred for it to be recorded, resulting in a reporting lag. Therefore, this distinction is highlighted to show that the correct column is used for the filtering together with the importance of this distinction.
+:::
 
 ```{r}
 # The date and Time will be parsed to Thailand timezone, so hardware (computer) which is in Singapore timezone can accurately filter the data to year 2022. 
@@ -211,14 +249,17 @@ acc<- acc %>%
 # Verify that the datetime is what we need
 nrow(acc)
 range(acc$incident_datetime)  
+
 ```
 
-Now we look at Removal of columns.
+### Removal of Columns
+
+Now we look at Removal of columns, where province_th and route columns will be removed.
 
 ::: callout-note
-:: title: Analysis
+From the previous code input, we can see the first few rows of the data is displayed to have a rough sense of the data.
 
-Here the first few rows of the data is displayed to have a rough sense of the data. There is a "Duplicated" Column where "province_th" is the same as "province_en" but in the Thai language. Since we cannot understand Thai, we will remove this column instead of province_en.
+There is a "Duplicated" Column where "province_th" is the same as "province_en" but in the Thai language. Since we cannot understand Thai, we will remove this column instead of province_en.
 
 Furthermore, route column is redundant since the coordinates are given through the latitude and longitude data columns. The inconsistent description of junctions, highway numbers and sectors are also the reason why this column should not be used, since it will only cause more confusion in analysis process.
 :::
@@ -232,7 +273,13 @@ head(acc)
 
 ```
 
-Now we also want to make sure there is no duplicated rows which is checked using code below. Since FALSE is returned we can proceed on with loading in the second dataset.
+### Ensuring Unique rows in data 
+
+Ephasizing again on the importance of having each point to represent an independent event, it is imperative that every accident within the dataset is unique!
+
+Therefore, to make sure there is no duplicated rows `any(duplicated(acc))` is used to ensure that every accident (full row) is unique.
+
+To double check, we also use the `any(duplicated(acc))` to verify that there is no duplicate or repeated observations in the cleaned dataset which looks at the account code itself which is said to be unique. Especially since any(duplicated(acc)) will not be able to detect that there is duplicate record of E.g Accident ABC if any other column within the 2 rows are different.
 
 ```{r}
 # This looks for duplicates across the entire row, where it only records if all values within one row is the same as another
@@ -242,13 +289,29 @@ any(duplicated(acc))
 sum(duplicated(acc$acc_code))
 ```
 
-::: callout-note
-The datasets we are looking at basically will cover the full country of Thailand, where when necessary it is possible to drill down into the province level through province_en. Some provinces will include : Bangkok, Chiang Mai, Phukit and etc.
+Since FALSE and 0 is returned its confirmed all records are unique, and we can proceed on with drawing out the plots.
 
-On temporal Coverage, as mentioned the dataset is filtered so that we will only look at the range of year 2022 through the use of incident_datetime since we want to analyse the accidents that occurred in 2022 instead of report_datetime (refers to the date and time when the accident is recorded). This is important because there time is needed after the accident has occurred for it to be recorded, resulting in a reporting lag. Therefore, this distinction is highlighted to show that the correct column is used for the filtering together with the importance of this distinction.
+## Assumptions & Decisions made 
 
-Some main characteristics of the data is as follows : - ID (acc code) - Time (Incident_datetime,report_Datetime) - Location (province_en, latitude, longitude) - reporting agency (agency) : will be used to see if the difference in agency reporting has an impact on deaths or extent of severity - Vehicle : (vehicle_type): which vehicle type is more prone to get into accidents, deaths - Cause : (presumed_cause) - Collision type : (accident_type) - Severity : factor for measurement - Environment : (weather_condition) : does the weather itself have any impact of occurance of accidents or severity of it? - Road Geometry - Slope
-:::
+### Assumptions made 
+
+Some assumptions made in this exercise for the analysis to be valid. The list is as follows
+
+#### Homogeneity
+
+It is assumed that the risk of every accident occuring across Thailand is uniform, or exactly the same. In reality, there are many variables that can influence this risk level like the volume of traffic or level of maintenance of the roads or etc. This assumption will be put to allow exploratory trend detection.
+
+#### Independence 
+
+We assume that each accident is independent of each other. There can be times in reality where an accident can occur due to the occurrence of another, this is known as multi-vehicle crashes. Hence multiple points in this case will be recorded within these datasets, but we will assume in this exercise that all accidents are recorded as separate events.
+
+#### Isotropy
+
+We assume here that the intensity of the accidents is the same in all directions. In reality, road networks are linear, so accidents are constrained to roads. So with the assumption, the analysis can be a relatively useful form of visualisation on risk.
+
+### Decisions made 
+
+The **Coordinate Reference System (CRS)** was decided to be changed within the Thailand Boundary from WGS 84 (EPSG:4326) to UTM Zone 47N (EPSG:32647). This is essential because UTM coordinates are in meters, which allows distance-based methods (bandwidth selection, Ripley's K, edge correction) to operate on meaningful planar distances rather than degrees.
 
 ## Overview plot
 
@@ -279,6 +342,67 @@ tmap is a package helps to render the ploygons better than plots, preventing ove
 :::
 
 # First-Order Point Pattern Analysis
+
+## Computing STKDE by Month 
+
+Why do I want to compute STKDE by month? What do i expect to be able to analyse by doing this?
+
+```{r}
+
+library(sf)
+library(spatstat)
+
+# 1. Union all 928 district polygons into a SINGLE polygon
+#    st_union() dissolves internal boundaries
+thailand_union <- map %>%
+  st_union() %>%
+  st_sf()   # wrap back into an sf object for as.owin()
+
+# 2. Convert the single-polygon sf to an owin
+thailand_owin <- as.owin(thailand_union)
+
+# 3. Plot to verify the shape looks like Thailand
+plot(thailand_owin, main = "Thailand Study Window (owin)")
+
+
+
+# Create the Month_num column in acc_sf
+acc$Month_num <- as.numeric(format(acc$incident_datetime, "%m"))
+acc_month <- acc %>%
+  select(Month_num)
+
+# Now we convert to ppp
+acc_month_ppp <- as.ppp(acc_month)
+
+# set window to thailand boundary 
+Window(acc_month_ppp) <- thailand_owin
+
+
+# Plot to confirm the window and points look right
+plot(acc_month_ppp, main = "Accidents with Month Marks")
+
+
+```
+
+```{r}
+# Now we print out a summary to ensure the class is correct
+acc_month_ppp
+summary(acc_month_ppp)
+```
+
+It is also recommended to check again here to ensure there are no duplicated units which can
+
+1.  Cause data loading to be a lot slower
+
+2.  Cause inaccuracies when analysing data
+
+If output is FALSE, we are good to go!
+
+```{r}
+any(duplicated(acc_month_ppp))
+```
+
+Now, the following code will combine *acc_am_ppp* and *map_owin* objects into one. To also ensure the correctness/accuracy of the overall output object,we will plot out the result of the combination.
 
 Conduct appropriate first-order spatial and/or spatio-temporal point-pattern analyses using the prepared data.
 
