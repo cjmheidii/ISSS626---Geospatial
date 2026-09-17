@@ -18,6 +18,8 @@ Understanding where and when public-safety events occur can help planners and ma
 
 This take-home exercise investigates the spatial and/or spatio-temporal patterns of public-safety point events using one the case study of **Road traffic accidents** within the Bangkok Greater Metropolitan Area for the selected study year 2022.
 
+In Thailand, it is known that they have recorded one of the [highest road death tolls in the world](https://www.nationthailand.com/in-focus/40010768), which emphasizes the importance of having this analysis within the exercise to gain proper insights to help make better decisions and actionable(s) to reduce the accident rates in the country and in lieu the death toll.
+
 The specific objectives from this exercise are :
 
 - To prepare and integrate real-world geospatial and temporal data for spatial and spatio-temporal point-pattern analysis.
@@ -59,7 +61,7 @@ This is the Thailand Boundary map published by the Royal Thai Survey Department,
 First the required libraries are installed/loaded into file.
 
 ```{r}
-pacman::p_load(sf, spatstat, tmap, tidyverse)
+pacman::p_load(sf, spatstat, sparr, stpp, tmap, tidyverse, lubridate)
 ```
 
 Now we load in both datasets.
@@ -79,17 +81,17 @@ Now we will load in the second dataset : Thailand Boundary Map
 
 ```{r}
 # Thailand Boundary Map
-map <- st_read("data/geospatial/Thai/geoBoundaries-THA-ADM2.shp")
+thai_map <- st_read("data/geospatial/Thai/geoBoundaries-THA-ADM2.shp")
 
 # Column names
-names(map)
+names(thai_map)
 
 # Preview attributes without geometry
-st_drop_geometry(map) %>% head(10)
-st_drop_geometry(map) %>% glimpse()
+st_drop_geometry(thai_map) %>% head(10)
+st_drop_geometry(thai_map) %>% glimpse()
 
 # How many unique values per column
-st_drop_geometry(map) %>% summarise(across(everything(), n_distinct))
+st_drop_geometry(thai_map) %>% summarise(across(everything(), n_distinct))
 
 ```
 
@@ -110,7 +112,7 @@ Several things will checked upon within this subsection. These include
 **Missing and Invalid Coordinates**\
 Rows with missing or invalid coordinates (NA in `latitude` or `longitude`) were identified and handled. First, we checked for rows with unknown or NA provinces. Because the latitude and longitude columns provide specific point locations but lack the contextual information needed for readable insights (e.g., "which province?"), we prioritized recovering the province attribute. We successfully recovered 25 out of 34 missing provinces (73.5%) by spatially joining the coordinates with the ADM1 shapefile. The remaining 9 rows, which lacked both coordinates and province data, were excluded from the analysis.
 
-### Handling Invalid/Missing Locations 
+### Handling Invalid/Missing Locations
 
 First, to ensure there is no invalid rows (error due to location column issues, we will check for rows with unknown or NA provinces).
 
@@ -223,7 +225,7 @@ acc %>%
   nrow()
 ```
 
-### Removal of Unnecessary Rows 
+### Removal of Unnecessary Rows
 
 The current dataset is from 2019-2022, since we are aiming to only look at 2022 data we want to drop the unnecessary rows (year 2019-2021).
 
@@ -273,7 +275,7 @@ head(acc)
 
 ```
 
-### Ensuring Unique rows in data 
+### Ensuring Unique rows in data
 
 Ephasizing again on the importance of having each point to represent an independent event, it is imperative that every accident within the dataset is unique!
 
@@ -291,17 +293,21 @@ sum(duplicated(acc$acc_code))
 
 Since FALSE and 0 is returned its confirmed all records are unique, and we can proceed on with drawing out the plots.
 
-## Assumptions & Decisions made 
+## Assumptions & Decisions made
 
-### Assumptions made 
+### Assumptions made
 
 Some assumptions made in this exercise for the analysis to be valid. The list is as follows
+
+#### Reliability of Data
+
+There is always the possibility of human error, where in this case human error can refer to personnel forgetting to record an accident that has occurred. So we will assume here that the data provided is fully representative of all accidents that occurred in 2022.
 
 #### Homogeneity
 
 It is assumed that the risk of every accident occuring across Thailand is uniform, or exactly the same. In reality, there are many variables that can influence this risk level like the volume of traffic or level of maintenance of the roads or etc. This assumption will be put to allow exploratory trend detection.
 
-#### Independence 
+#### Independence
 
 We assume that each accident is independent of each other. There can be times in reality where an accident can occur due to the occurrence of another, this is known as multi-vehicle crashes. Hence multiple points in this case will be recorded within these datasets, but we will assume in this exercise that all accidents are recorded as separate events.
 
@@ -309,7 +315,7 @@ We assume that each accident is independent of each other. There can be times in
 
 We assume here that the intensity of the accidents is the same in all directions. In reality, road networks are linear, so accidents are constrained to roads. So with the assumption, the analysis can be a relatively useful form of visualisation on risk.
 
-### Decisions made 
+### Decisions made
 
 The **Coordinate Reference System (CRS)** was decided to be changed within the Thailand Boundary from WGS 84 (EPSG:4326) to UTM Zone 47N (EPSG:32647). This is essential because UTM coordinates are in meters, which allows distance-based methods (bandwidth selection, Ripley's K, edge correction) to operate on meaningful planar distances rather than degrees.
 
@@ -323,12 +329,14 @@ acc <- acc %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
 acc <- st_transform(acc, 32647)
-map <- st_transform(map,    32647)
+thai_map <- st_transform(thai_map,    32647)
+
+
 ```
 
 ```{r}
 # Now we plot an overview on the tmap. 
-tm_shape(map) +
+tm_shape(thai_map) +
   tm_polygons(col = "grey95", border.col = "grey70", lwd = 0.1) +
   tm_shape(acc) +
   tm_dots(col = "red", size = 0.02, alpha = 0.5) +
@@ -343,77 +351,192 @@ tmap is a package helps to render the ploygons better than plots, preventing ove
 
 # First-Order Point Pattern Analysis
 
-## Computing STKDE by Month 
+## Computing accident STKDE by Month
 
-Why do I want to compute STKDE by month? What do i expect to be able to analyse by doing this?
+What we currently have is only the overall accident distribution in the entire year of 2022, but we cannot see where and when the accidents would occur together.
+
+With the STKDE by month helping to estimate a 3D intensity surface on 1 plot per month for a total of 12 plots, it gives a smoothed continuous surface to help compare the intensity of accidents. We can see which areas within Thailand have a high accident intensity and in which months the intensity is concentrated.
+
+Therefore STKDE by month is done for the 1st Order Point Analysis because it provides the insights on the where and when the accident happens together, or the analysis of both spatial and temporal dimensions simultaneously.
+
+### Step 1: Converting to OWIN format 
+
+Our current file is in the sf object with 70 polygon regions. However, for the `ppp` and STKDE to be conducted we need to transform it to a single OWIN format to conduct the First-Order Pattern Analysis.
+
+```{r}
+# Union all provinces into a single polygon
+thailand_sf <- provinces %>%
+  st_make_valid() %>%
+  st_union() %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(crs = 32647)
+
+# Convert to OWIN
+thailand_owin <- as.owin(thailand_sf)
+
+# We put in class and summary to ensure that our we have indeed converted this to OWIN format as required. 
+class(thailand_owin)
+summary(thailand_owin)
+```
+
+Since current class here is now OWIN we are good to go to step 2.
+
+### Step 2 : Extracting Data by Month
+
+when we use `ppp` , it only accepts numeric or character marks. However currently we only have the date (incident_datetime) by a date format. Therefore, we will have to extract out the `Month_num` (1 to 12 from January to December) and `Month_fac` to produce readable facet labels without inline conversion.
+
+`DayofYear` is also extracted for now in case of the need for analysis of each specific day of the year.
 
 ```{r}
 
-library(sf)
-library(spatstat)
+acc <- acc %>%
+  mutate(
+    DayofYear = yday(incident_datetime),
+    Month_num = month(incident_datetime),
+    Month_fac = month(incident_datetime, label = TRUE, abbr = FALSE)
+  )
 
-# 1. Union all 928 district polygons into a SINGLE polygon
-#    st_union() dissolves internal boundaries
-thailand_union <- map %>%
-  st_union() %>%
-  st_sf()   # wrap back into an sf object for as.owin()
+```
 
-# 2. Convert the single-polygon sf to an owin
-thailand_owin <- as.owin(thailand_union)
+### Step 3 : Visualising accidents by month
 
-# 3. Plot to verify the shape looks like Thailand
-plot(thailand_owin, main = "Thailand Study Window (owin)")
+Before computing the KDE, it is important to plot a faceted point map (one small map of Thailand per month).
 
+This is a first order visualisation of the data to understand the spatial distribution of accidents across the year and if there is any seasonality before computing the KDE. It also acts as the baseline before the STKDE is done to allow a comparison to be done.
 
+```{r}
+tm_shape(thailand_sf) +
+  tm_polygons() +
+  tm_shape(acc) +
+  tm_dots(size = 0.1) +
+  tm_facets(by = "Month_fac",
+            free.coords = FALSE,
+            drop.units = TRUE)
 
-# Create the Month_num column in acc_sf
-acc$Month_num <- as.numeric(format(acc$incident_datetime, "%m"))
-acc_month <- acc %>%
-  select(Month_num)
+```
 
-# Now we convert to ppp
+::: callout-important
+**Analysis of plot.**
+
+From the plot, it can be seen that April and December have a heavier distribution throughout the months in the year, which ties in the monthly trends in Thailand with higher vehicle numbers on the road from the [Songkran Holiday travelling in April](https://he02.tci-thaijo.org/index.php/agstjournal/article/view/275930) and New Year Holiday travels in December.
+
+However it is to note that in all 12 months, there is a darker concentration around the Bangkok and central provinces proving that Bangkok area is a permanent high-risk accident zone. In contrast, the North-Eastern Region in Thailand is showing fewer dots in the visuals throughout the year reflecting a lower accident volume assuming that the data provided is fully representative of all accidents that occurred in 2022 (as mentioned in assumptions made).
+:::
+
+### Step 4 : coverting to ppp
+
+Since we are looking at the Month specifically we will keep only the Month number column and use it to convert to ppp.
+
+It is also recommended to check again here to see if there are duplicated units. Usually this is done to prevent any inaccuracies when analysing data. However in this case, it is expected for there to be multiple crashes at the same intersection so it's fine for there to be duplicate values. The presence of duplicate values if any violates the strict independence assumption of point pattern analysis, but the events are retained because they represent genuinely distinct accidents. Therefore, the duplicate check is just to note that there are these sort of multi-crash accidents, and highlight the presence of this analytical limitation when conducting the analysis.
+
+```{r}
+
+# Keep only Month_num column
+acc_month <- acc %>% select(Month_num)
+
+# Convert to ppp
 acc_month_ppp <- as.ppp(acc_month)
 
-# set window to thailand boundary 
-Window(acc_month_ppp) <- thailand_owin
-
-
-# Plot to confirm the window and points look right
-plot(acc_month_ppp, main = "Accidents with Month Marks")
-
-
-```
-
-```{r}
-# Now we print out a summary to ensure the class is correct
-acc_month_ppp
-summary(acc_month_ppp)
-```
-
-It is also recommended to check again here to ensure there are no duplicated units which can
-
-1.  Cause data loading to be a lot slower
-
-2.  Cause inaccuracies when analysing data
-
-If output is FALSE, we are good to go!
-
-```{r}
+# Check for duplicates 
 any(duplicated(acc_month_ppp))
+
 ```
 
-Now, the following code will combine *acc_am_ppp* and *map_owin* objects into one. To also ensure the correctness/accuracy of the overall output object,we will plot out the result of the combination.
+### Step 5 : Compute STKDE 
 
-Conduct appropriate first-order spatial and/or spatio-temporal point-pattern analyses using the prepared data.
+Now the STKDE is finally computed.
 
-Your analysis should investigate how the intensity or distribution of events varies across space and/or time.
+```{r}
+acc_month_owin <- acc_month_ppp[thailand_owin]
+summary(acc_month_owin)
+st_kde <- spattemp.density(acc_month_owin)
+summary(st_kde)
 
-You should:
+```
 
-- select appropriate analytical methods; justify why the selected methods are appropriate;
+### Step 6 : Plot out STKDE
 
-- explain important analytical parameters and assumptions;
+After the computation, the STKDE is plotted out.
 
-- produce appropriate statistical graphics and geovisualisations; and
+```{r}
 
-- interpret the resulting patterns in the context of your selected public-safety problem.
+tims <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+par(mfcol=c(2,3))
+for(i in tims){ 
+  plot(st_kde, i, 
+       override.par=FALSE, 
+       fix.range=TRUE, 
+       main=paste("KDE at month",i))
+}
+```
+
+::: callout-important
+**Analysis of plot.**
+
+The STKDE visualizations confirm the initial findings from our raw monthly map. More specifically : 1. April and December peaks in accident numbers 2. Bangkok regions is a hot spot for accident occurrence through the red colour intensity in those months
+
+However it also refines a few points. First, the South peninsula area actually shows a low density per unit area rather than the entire area being a hot spot. The prominence of the entire South Peninsula was rather shown in the initial monthly plots because of the raw accident counts inflating the concentration of accident rates.
+
+Furthermore, elaborating on intensity, other than Bangkok, the entire country shows a uniformly low accident intensity given the blue colour scale across all these areas in all months. This proves that the Bangkok Region is the single main dominant accident hot spot in Thailand for the year 2022.
+:::
+
+## Computing Death Toll using STKDE by Month
+
+There are different levels of severity of vehicle accidents, from a light collision without injuries to heavy injuries in the ICU or even death.
+
+Therefore, we will also look at the death toll within Thailand from accidents using STKDE by month again.
+
+```{r}
+# Filter to fatal accidents only
+acc_fatal <- acc %>%
+  filter(number_of_fatalities > 0) %>%
+  mutate(
+    Month_num = month(incident_datetime),
+    Month_fac = month(incident_datetime, label = TRUE, abbr = FALSE)
+  )
+
+# Convert to ppp
+acc_fatal_month <- acc_fatal %>% select(Month_num)
+acc_fatal_ppp <- as.ppp(acc_fatal_month)
+acc_fatal_owin <- acc_fatal_ppp[thailand_owin]
+
+# Conduct STKDE
+st_kde_fatal <- spattemp.density(acc_fatal_owin)
+summary(st_kde_fatal)
+
+# Plotting visualisation
+
+par(mfcol = c(2, 3))
+for (i in 1:12) {
+  plot(st_kde_fatal, i, override.par = FALSE, fix.range = TRUE,
+       main = paste("Fatal KDE at month", i))
+}
+```
+
+::: callout-important
+**Analysis of plot.**
+
+Now this plot on the death toll reveals major different trends than the overall accident plots, suggesting that accident frequency and severity are following different spatial and temporal patterns.
+
+Here, the death intensity is elevated in Northern, North-Eastern Thailand, and Bangkok in mainly the January and December months, where January has replaced April as the peak month in regards to fatality of accidents.
+
+Since the rural roads are mainly in the North and North-East regions of Thailand, it fits the general fact that rural roads generates fewer but higher severity accidents leading to higher fatal accident rates and urban areas will have more low speed collision which is usually not as severe.
+:::
+
+## Analysis & Recommendations 
+
+From the analysis, it is known that Bangkok is a persistent hotspot for accidents to occur, especially in the holidays of April and December. However, in January and December the accident fatality intensity spikes at the North and Northeast Regions of Thailand.
+
+Therefore, it is recommended for these measures to take place based on the insights :
+
+### Accident Frequency 
+
+**Short term:** It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols especially in the months of April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.
+
+**Long term :** If the accident distribution in the Bangkok area is persistently high within Thailand then it suggests that regardless of the reason whether it is due to high traffic volume, poorly maintained roads or lack of traffic safety enforcement a targeted investigation on the root problem is required. After which interventions like road re-designing or traffic law enforcement are necessary to ensure safety in the future.
+
+### Accident Severity 
+
+**Short term :** There will be a need for the Transport authority within Thailand to go on high alert and prioritize the emergency-response ability within the North and North Eastern provinces/districts during January and December. This will be to allow more efficient and faster emergency responses to the fewer but more severe (with higher risk of death) accidents, instead of focusing on high volume enforcement in Bangkok.
+
+**Long Term :** Suggestion would be to plan, improve and implement better speed-limit enforcement infrastructure, Road-surface maintenance, and roadside safety measures like having more barriers, lighting, signages to help on visibility and safety of the drivers on the road in the rural areas.
