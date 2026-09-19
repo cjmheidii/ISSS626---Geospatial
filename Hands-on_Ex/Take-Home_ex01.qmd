@@ -16,7 +16,7 @@ Understanding where and when public-safety events occur can help planners and ma
 
 ## Objectives
 
-This take-home exercise investigates the spatial and/or spatio-temporal patterns of public-safety point events using one the case study of **Road traffic accidents** within the Bangkok Greater Metropolitan Area for the selected study year 2022.
+This take-home exercise investigates the spatial and/or spatio-temporal patterns of public-safety point events using one the case study of **Road traffic accidents** within the Thailand with emphasis on the Bangkok Metropolitan Region (BMR) for the selected study year 2022.
 
 In Thailand, it is known that they have recorded one of the [highest road death tolls in the world](https://www.nationthailand.com/in-focus/40010768), which emphasizes the importance of having this analysis within the exercise to gain proper insights to help make better decisions and actionable(s) to reduce the accident rates in the country and in lieu the death toll.
 
@@ -54,14 +54,14 @@ The data is from the Office of the Permanent Secretary, Ministry of Transport, w
 
 This is the Thailand Boundary map published by the Royal Thai Survey Department, OCHA ROAP on the [geoBoundaries](https://www.geoboundaries.org/) website in 2019 (This is also the latest version available for public download).
 
-# Getting Started - Preparation of Data
+# Task 1: Getting Started - Preparation of Data
 
 ## Importing of data
 
 First the required libraries are installed/loaded into file.
 
 ```{r}
-pacman::p_load(sf, spatstat, sparr, stpp, tmap, tidyverse, lubridate)
+pacman::p_load(sf, spatstat, sparr, stpp, tmap, tidyverse, lubridate,gt)
 ```
 
 Now we load in both datasets.
@@ -77,7 +77,9 @@ Here we will check the summary of the **Thailand Road Accident** Dataset.
 head(acc) 
 ```
 
-Now we will load in the second dataset : Thailand Boundary Map
+Now we will load in the second dataset : Thailand Boundary Map.
+
+This dataset
 
 ```{r}
 # Thailand Boundary Map
@@ -254,6 +256,25 @@ range(acc$incident_datetime)
 
 ```
 
+Now below is a summary of the rows removed up till now.
+
+```{r}
+
+tibble(
+  Stage = c(
+    "Raw import",
+    "After province recovery + drop unrecoverable",
+    "After temporal filter (year 2022)"
+  ),
+  Rows = c(81735, 81701, 21006),
+  Removed = c(NA, 34, 60695)
+) %>%
+  gt() %>%
+  tab_header(title = "Row Counts at Each Cleaning Stage") %>%
+  cols_label(Stage = "Cleaning Stage", Rows = "Rows Remaining", Removed = "Rows Removed") %>%
+  fmt_number(columns = c(Rows, Removed), decimals = 0)
+```
+
 ### Removal of Columns
 
 Now we look at Removal of columns, where province_th and route columns will be removed.
@@ -349,7 +370,7 @@ The reason why Tmap is being used instead of the usual plot() :
 tmap is a package helps to render the ploygons better than plots, preventing overlapping borders like what plot() will do. Basically it is better at rendering and plotting the multi-ploygon background more clearly.
 :::
 
-# First-Order Point Pattern Analysis
+# Task 2: First-Order Point Pattern Analysis
 
 ## Computing accident STKDE by Month
 
@@ -359,7 +380,7 @@ With the STKDE by month helping to estimate a 3D intensity surface on 1 plot per
 
 Therefore STKDE by month is done for the 1st Order Point Analysis because it provides the insights on the where and when the accident happens together, or the analysis of both spatial and temporal dimensions simultaneously.
 
-### Step 1: Converting to OWIN format 
+### Step 1: Converting to OWIN format
 
 Our current file is in the sf object with 70 polygon regions. However, for the `ppp` and STKDE to be conducted we need to transform it to a single OWIN format to conduct the First-Order Pattern Analysis.
 
@@ -442,7 +463,7 @@ any(duplicated(acc_month_ppp))
 
 ```
 
-### Step 5 : Compute STKDE 
+### Step 5 : Compute STKDE
 
 Now the STKDE is finally computed.
 
@@ -453,6 +474,12 @@ st_kde <- spattemp.density(acc_month_owin)
 summary(st_kde)
 
 ```
+
+The `spattemp.density()` function has estimated a Spatial bandwidth of 38159.91 (\~38.16km). This is with the smoothing distance in UTM Zone 47N metres. It is known that a larger `h` produces a smoother, more generalised surface while a smaller `h` reveals local hot spots. Overall it is decided that the spatial bandwidth should not be further changed it balances detail against noise given the irregular shape of Thailand's boundary.
+
+The temporal bandwidth is estimated to be lambda = 0.0079 (in units of the temporal range). Since time was rescaled to `[1, 12]` months, we have a narrow temporal smoothing window of about 0.1 month, which means that the density surface will change sharply month-to-month which is best to emphasize the high intensity time scope of April and December. Therefore edge correction is applied to reduce the bias near Thailand's border, where points outside the boundary cannot be observed but still contribute to the intensity estimate.
+
+he trivariate density is normalised and conditioned to allow each monthly slice to integrate to 1 and make for direct visual comparison across months.
 
 ### Step 6 : Plot out STKDE
 
@@ -473,7 +500,11 @@ for(i in tims){
 ::: callout-important
 **Analysis of plot.**
 
-The STKDE visualizations confirm the initial findings from our raw monthly map. More specifically : 1. April and December peaks in accident numbers 2. Bangkok regions is a hot spot for accident occurrence through the red colour intensity in those months
+The STKDE visualizations confirm the initial findings from our raw monthly map. More specifically :
+
+1.  April and December peaks in accident numbers with January coming behind as a close third.
+
+2.  Bangkok regions is a hot spot for accident occurrence through the red colour intensity in those months
 
 However it also refines a few points. First, the South peninsula area actually shows a low density per unit area rather than the entire area being a hot spot. The prominence of the entire South Peninsula was rather shown in the initial monthly plots because of the raw accident counts inflating the concentration of accident rates.
 
@@ -518,25 +549,172 @@ for (i in 1:12) {
 
 Now this plot on the death toll reveals major different trends than the overall accident plots, suggesting that accident frequency and severity are following different spatial and temporal patterns.
 
-Here, the death intensity is elevated in Northern, North-Eastern Thailand, and Bangkok in mainly the January and December months, where January has replaced April as the peak month in regards to fatality of accidents.
+Here, the fatal accident intensity is elevated in Northern, North-Eastern Thailand, and Bangkok in mainly the January and December months, where January has replaced April as the peak month in regards to fatality of accidents.
 
 Since the rural roads are mainly in the North and North-East regions of Thailand, it fits the general fact that rural roads generates fewer but higher severity accidents leading to higher fatal accident rates and urban areas will have more low speed collision which is usually not as severe.
 :::
 
-## Analysis & Recommendations 
+## First Order SPAA by Highlighted Regions 
+
+Now that the overview analysis of the entire country of Thailand is done, there are 3 regions that are flagged out to be accident hotspots or have a higher fatality intensity :
+
+- **Bangkok Metropolitan Region (BMR)** — the dominant urban accident hotspot.
+- **Northern Thailand** — rural, mountainous, elevated fatality intensity.
+- **North-Eastern Thailand (Isan)** — rural, elevated fatality intensity.
+
+### Step 1 : Defining the Study Regions 
+
+We have our regions that we want to drill into to study. However the regions are made up of a numerous number of provinces, where our data only has the column of provinces or districts. Therefore, we have to put this additional step to define what our study regions are.
+
+This is a code to confirm on the provinces within our dataset as well as the spelling in each one of them before proceeding with further analysis. If the spelling is wrong, we will have issues in writing out the right code.
+
+```{r}
+#| label: define-regions
+provinces %>%
+  st_drop_geometry() %>%
+  pull(shapeName) %>%
+  sort() %>%
+  print()
+```
+
+Therefore, we will be using the following provinces (decided after research on the definition of the Bangkok Metropolitan Region (BMR), Northern Thailand and North Eastern Thailand). As shown in the code chunk below, the 3 regions that we want to screen in for the analysis are now generated here.
+
+```{r}
+# BMR Region 
+bmr_provinces <- c(
+  "Bangkok",
+  "Nonthaburi Province",
+  "Pathum Thani Province",
+  "Samut Prakan Province",
+  "Samut Sakhon Province",
+  "Nakhon Pathom Province"
+)
+
+# Northern Thailand
+north_provinces <- c(
+  "Chiang Mai Province",
+  "Chiang Rai Province",
+  "Lampang Province",
+  "Lamphun Province",
+  "Mae Hong Son Province",
+  "Nan Province",
+  "Phayao Province",
+  "Phrae Province",
+  "Uttaradit Province"
+)
+
+# North-Eastern Thailand
+northeast_provinces <- c(
+  "Kalasin",
+  "Khon Kaen Province",
+  "Chaiyaphum Province",
+  "Nakhon Phanom Province",
+  "Nakhon Ratchasima Province",
+  "Bueng Kan Province",
+  "Maha Sarakham Province",
+  "Mukdahan Province",
+  "Yasothon Province",
+  "Roi Et Province",
+  "Loei Province",
+  "Sakon Nakhon Province",
+  "Surin Province",
+  "Nong Khai Province",
+  "Nong Bua Lam Phu Province",
+  "Amnat Charoen Province",
+  "Udon Thani Province",
+  "Ubon Ratchathani Province",
+  "Buri Ram Province",
+  "Si Sa Ket Province"
+)
+```
+
+### Step 2 : Building the Region Objects
+
+Now we will build the region objects
+
+```{r}
+make_region <- function(prov_names, region_name) {
+  sf_obj <- provinces %>%
+    filter(shapeName %in% prov_names) %>%
+    st_make_valid() %>%
+    st_transform(32647)
+  owin_obj <- as.owin(sf_obj %>% st_union() %>% st_zm(drop = TRUE, what = "ZM"))
+  cat(region_name, ":", nrow(sf_obj), "provinces\n")
+  list(sf = sf_obj, owin = owin_obj)
+}
+
+bmr   <- make_region(bmr_provinces,       "BMR")
+north <- make_region(north_provinces,     "Northern")
+ne    <- make_region(northeast_provinces, "North-Eastern")
+```
+
+### Step 3 : Generating Clark-Evans and KDE 
+
+```{r}
+# BMR
+acc_bmr <- acc %>% st_filter(bmr$sf, .predicate = st_within)
+bmr_ppp <- as.ppp(acc_bmr); Window(bmr_ppp) <- bmr$owin
+ce_bmr  <- clarkevans.test(bmr_ppp, correction = "none")
+ce_bmr
+
+# Northern
+acc_north <- acc %>% st_filter(north$sf, .predicate = st_within)
+north_ppp <- as.ppp(acc_north); Window(north_ppp) <- north$owin
+ce_north  <- clarkevans.test(north_ppp, correction = "none")
+ce_north
+
+# North-Eastern
+acc_ne <- acc %>% st_filter(ne$sf, .predicate = st_within)
+ne_ppp <- as.ppp(acc_ne); Window(ne_ppp) <- ne$owin
+ce_ne  <- clarkevans.test(ne_ppp, correction = "none")
+ce_ne
+```
+
+```{r}
+par(mfrow = c(1, 3))
+
+plot(
+  st_geometry(bmr$sf),
+  main = "Bangkok Metropolitan Region"
+)
+
+plot(
+  st_geometry(north$sf),
+  main = "Northern Thailand"
+)
+
+plot(
+  st_geometry(ne$sf),
+  main = "North-Eastern Thailand"
+)
+```
+
+### Step 4: Creating OWIN objects 
+
+```{r}
+bmr_owin   <- bmr$owin
+north_owin <- north$owin
+ne_owin    <- ne$owin
+```
+
+## Analysis & Recommendations
 
 From the analysis, it is known that Bangkok is a persistent hotspot for accidents to occur, especially in the holidays of April and December. However, in January and December the accident fatality intensity spikes at the North and Northeast Regions of Thailand.
 
 Therefore, it is recommended for these measures to take place based on the insights :
 
-### Accident Frequency 
+### Accident Frequency
 
-**Short term:** It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols especially in the months of April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.
+**Short term:** It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols especially in the months of January, April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.
 
 **Long term :** If the accident distribution in the Bangkok area is persistently high within Thailand then it suggests that regardless of the reason whether it is due to high traffic volume, poorly maintained roads or lack of traffic safety enforcement a targeted investigation on the root problem is required. After which interventions like road re-designing or traffic law enforcement are necessary to ensure safety in the future.
 
-### Accident Severity 
+### Accident Severity
 
 **Short term :** There will be a need for the Transport authority within Thailand to go on high alert and prioritize the emergency-response ability within the North and North Eastern provinces/districts during January and December. This will be to allow more efficient and faster emergency responses to the fewer but more severe (with higher risk of death) accidents, instead of focusing on high volume enforcement in Bangkok.
 
 **Long Term :** Suggestion would be to plan, improve and implement better speed-limit enforcement infrastructure, Road-surface maintenance, and roadside safety measures like having more barriers, lighting, signages to help on visibility and safety of the drivers on the road in the rural areas.
+
+# Task 3: Second-Order Point Pattern Analysis
+
+Now, since we had identified that the Bangkok Metropolitan Region is a hot-spot for accidents to occur in Thailand, we will screen in to analyse more deeply within this region to get the most impact out of the analysis in preventing future accidents on the road.
