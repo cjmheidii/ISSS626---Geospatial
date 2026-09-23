@@ -248,12 +248,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#step-6-plot-out-stkde" id="toc-step-6-plot-out-stkde" class="nav-link" data-scroll-target="#step-6-plot-out-stkde">Step 6 : Plot out STKDE</a></li>
   </ul></li>
   <li><a href="#computing-death-toll-using-stkde-by-month" id="toc-computing-death-toll-using-stkde-by-month" class="nav-link" data-scroll-target="#computing-death-toll-using-stkde-by-month">Computing Death Toll using STKDE by Month</a></li>
-  <li><a href="#first-order-spaa-by-highlighted-regions" id="toc-first-order-spaa-by-highlighted-regions" class="nav-link" data-scroll-target="#first-order-spaa-by-highlighted-regions">First Order SPAA by Highlighted Regions</a>
+  <li><a href="#first-order-spaa-by-highlighted-regions-clark-evans" id="toc-first-order-spaa-by-highlighted-regions-clark-evans" class="nav-link" data-scroll-target="#first-order-spaa-by-highlighted-regions-clark-evans">First Order SPAA by Highlighted Regions (Clark Evans)</a>
   <ul class="collapse">
   <li><a href="#step-1-defining-the-study-regions" id="toc-step-1-defining-the-study-regions" class="nav-link" data-scroll-target="#step-1-defining-the-study-regions">Step 1 : Defining the Study Regions</a></li>
   <li><a href="#step-2-building-the-region-objects" id="toc-step-2-building-the-region-objects" class="nav-link" data-scroll-target="#step-2-building-the-region-objects">Step 2 : Building the Region Objects</a></li>
   <li><a href="#step-3-generating-clark-evans-and-kde" id="toc-step-3-generating-clark-evans-and-kde" class="nav-link" data-scroll-target="#step-3-generating-clark-evans-and-kde">Step 3 : Generating Clark-Evans and KDE</a></li>
   <li><a href="#step-4-creating-owin-objects" id="toc-step-4-creating-owin-objects" class="nav-link" data-scroll-target="#step-4-creating-owin-objects">Step 4: Creating OWIN objects</a></li>
+  <li><a href="#step-5-combination-of-owin-and-point-events" id="toc-step-5-combination-of-owin-and-point-events" class="nav-link" data-scroll-target="#step-5-combination-of-owin-and-point-events">Step 5: Combination of OWIN and Point events</a></li>
+  <li><a href="#step-6-rescaling-from-m-to-km" id="toc-step-6-rescaling-from-m-to-km" class="nav-link" data-scroll-target="#step-6-rescaling-from-m-to-km">Step 6: Rescaling from m to km</a></li>
+  <li><a href="#step-7-plotting" id="toc-step-7-plotting" class="nav-link" data-scroll-target="#step-7-plotting">Step 7 : Plotting</a></li>
+  <li><a href="#clark-evans-statistical-testing" id="toc-clark-evans-statistical-testing" class="nav-link" data-scroll-target="#clark-evans-statistical-testing">Clark-Evans Statistical Testing</a></li>
   </ul></li>
   <li><a href="#analysis-recommendations" id="toc-analysis-recommendations" class="nav-link" data-scroll-target="#analysis-recommendations">Analysis &amp; Recommendations</a>
   <ul class="collapse">
@@ -261,7 +265,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#accident-severity" id="toc-accident-severity" class="nav-link" data-scroll-target="#accident-severity">Accident Severity</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#task-3-second-order-point-pattern-analysis" id="toc-task-3-second-order-point-pattern-analysis" class="nav-link" data-scroll-target="#task-3-second-order-point-pattern-analysis">Task 3: Second-Order Point Pattern Analysis</a></li>
+  <li><a href="#task-3-second-order-point-pattern-analysis" id="toc-task-3-second-order-point-pattern-analysis" class="nav-link" data-scroll-target="#task-3-second-order-point-pattern-analysis">Task 3: Second-Order Point Pattern Analysis</a>
+  <ul class="collapse">
+  <li><a href="#k---function" id="toc-k---function" class="nav-link" data-scroll-target="#k---function">K - Function</a>
+  <ul class="collapse">
+  <li><a href="#assumptions-made-1" id="toc-assumptions-made-1" class="nav-link" data-scroll-target="#assumptions-made-1">Assumptions made</a></li>
+  <li><a href="#limitationscaveats" id="toc-limitationscaveats" class="nav-link" data-scroll-target="#limitationscaveats">Limitations/Caveats</a></li>
+  <li><a href="#bangkok-metropolitan-region" id="toc-bangkok-metropolitan-region" class="nav-link" data-scroll-target="#bangkok-metropolitan-region">Bangkok Metropolitan Region</a></li>
+  <li><a href="#north-thailand" id="toc-north-thailand" class="nav-link" data-scroll-target="#north-thailand">North Thailand</a></li>
+  <li><a href="#northern-east-thailand" id="toc-northern-east-thailand" class="nav-link" data-scroll-target="#northern-east-thailand">Northern East Thailand</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#task-4-integration-interpretation" id="toc-task-4-integration-interpretation" class="nav-link" data-scroll-target="#task-4-integration-interpretation">Task 4 : Integration &amp; Interpretation</a></li>
+  <li><a href="#task-5-geovisualisation-and-analytical-interpretation" id="toc-task-5-geovisualisation-and-analytical-interpretation" class="nav-link" data-scroll-target="#task-5-geovisualisation-and-analytical-interpretation">Task 5 : Geovisualisation and Analytical Interpretation</a></li>
+  <li><a href="#task-6-public-safety-planning-management" id="toc-task-6-public-safety-planning-management" class="nav-link" data-scroll-target="#task-6-public-safety-planning-management">Task 6 : Public Safety Planning &amp; Management</a></li>
   </ul>
 </nav>
     </div>
@@ -670,23 +687,23 @@ Caused by warning:
 <span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">Stage =</span> <span class="st">"Cleaning Stage"</span>, <span class="at">Rows =</span> <span class="st">"Rows Remaining"</span>, <span class="at">Removed =</span> <span class="st">"Rows Removed"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(Rows, Removed), <span class="at">decimals =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="mfkpvghpdk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mfkpvghpdk table {
+<div id="hymyqqdxlz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hymyqqdxlz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#mfkpvghpdk thead, #mfkpvghpdk tbody, #mfkpvghpdk tfoot, #mfkpvghpdk tr, #mfkpvghpdk td, #mfkpvghpdk th {
+#hymyqqdxlz thead, #hymyqqdxlz tbody, #hymyqqdxlz tfoot, #hymyqqdxlz tr, #hymyqqdxlz td, #hymyqqdxlz th {
   border-style: none;
 }
 
-#mfkpvghpdk p {
+#hymyqqdxlz p {
   margin: 0;
   padding: 0;
 }
 
-#mfkpvghpdk .gt_table {
+#hymyqqdxlz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -712,12 +729,12 @@ Caused by warning:
   border-left-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_caption {
+#hymyqqdxlz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#mfkpvghpdk .gt_title {
+#hymyqqdxlz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -729,7 +746,7 @@ Caused by warning:
   border-bottom-width: 0;
 }
 
-#mfkpvghpdk .gt_subtitle {
+#hymyqqdxlz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -741,7 +758,7 @@ Caused by warning:
   border-top-width: 0;
 }
 
-#mfkpvghpdk .gt_heading {
+#hymyqqdxlz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -753,13 +770,13 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_bottom_border {
+#hymyqqdxlz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_col_headings {
+#hymyqqdxlz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -774,7 +791,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_col_heading {
+#hymyqqdxlz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -794,7 +811,7 @@ Caused by warning:
   overflow-x: hidden;
 }
 
-#mfkpvghpdk .gt_column_spanner_outer {
+#hymyqqdxlz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -806,15 +823,15 @@ Caused by warning:
   padding-right: 4px;
 }
 
-#mfkpvghpdk .gt_column_spanner_outer:first-child {
+#hymyqqdxlz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#mfkpvghpdk .gt_column_spanner_outer:last-child {
+#hymyqqdxlz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#mfkpvghpdk .gt_column_spanner {
+#hymyqqdxlz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -826,11 +843,11 @@ Caused by warning:
   width: 100%;
 }
 
-#mfkpvghpdk .gt_spanner_row {
+#hymyqqdxlz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#mfkpvghpdk .gt_group_heading {
+#hymyqqdxlz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -856,7 +873,7 @@ Caused by warning:
   text-align: left;
 }
 
-#mfkpvghpdk .gt_empty_group_heading {
+#hymyqqdxlz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -871,15 +888,15 @@ Caused by warning:
   vertical-align: middle;
 }
 
-#mfkpvghpdk .gt_from_md > :first-child {
+#hymyqqdxlz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#mfkpvghpdk .gt_from_md > :last-child {
+#hymyqqdxlz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#mfkpvghpdk .gt_row {
+#hymyqqdxlz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -898,7 +915,7 @@ Caused by warning:
   overflow-x: hidden;
 }
 
-#mfkpvghpdk .gt_stub {
+#hymyqqdxlz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -911,7 +928,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#mfkpvghpdk .gt_stub_row_group {
+#hymyqqdxlz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -925,15 +942,15 @@ Caused by warning:
   vertical-align: top;
 }
 
-#mfkpvghpdk .gt_row_group_first td {
+#hymyqqdxlz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#mfkpvghpdk .gt_row_group_first th {
+#hymyqqdxlz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#mfkpvghpdk .gt_summary_row {
+#hymyqqdxlz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -943,16 +960,16 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#mfkpvghpdk .gt_first_summary_row {
+#hymyqqdxlz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_first_summary_row.thick {
+#hymyqqdxlz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#mfkpvghpdk .gt_last_summary_row {
+#hymyqqdxlz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -962,7 +979,7 @@ Caused by warning:
   border-bottom-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_grand_summary_row {
+#hymyqqdxlz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -972,7 +989,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#mfkpvghpdk .gt_first_grand_summary_row {
+#hymyqqdxlz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -982,7 +999,7 @@ Caused by warning:
   border-top-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_last_grand_summary_row_top {
+#hymyqqdxlz .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -992,11 +1009,11 @@ Caused by warning:
   border-bottom-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_striped {
+#hymyqqdxlz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#mfkpvghpdk .gt_table_body {
+#hymyqqdxlz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1005,7 +1022,7 @@ Caused by warning:
   border-bottom-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_footnotes {
+#hymyqqdxlz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1019,7 +1036,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_footnote {
+#hymyqqdxlz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1028,7 +1045,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#mfkpvghpdk .gt_sourcenotes {
+#hymyqqdxlz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1042,7 +1059,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#mfkpvghpdk .gt_sourcenote {
+#hymyqqdxlz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1050,72 +1067,72 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#mfkpvghpdk .gt_left {
+#hymyqqdxlz .gt_left {
   text-align: left;
 }
 
-#mfkpvghpdk .gt_center {
+#hymyqqdxlz .gt_center {
   text-align: center;
 }
 
-#mfkpvghpdk .gt_right {
+#hymyqqdxlz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#mfkpvghpdk .gt_font_normal {
+#hymyqqdxlz .gt_font_normal {
   font-weight: normal;
 }
 
-#mfkpvghpdk .gt_font_bold {
+#hymyqqdxlz .gt_font_bold {
   font-weight: bold;
 }
 
-#mfkpvghpdk .gt_font_italic {
+#hymyqqdxlz .gt_font_italic {
   font-style: italic;
 }
 
-#mfkpvghpdk .gt_super {
+#hymyqqdxlz .gt_super {
   font-size: 65%;
 }
 
-#mfkpvghpdk .gt_footnote_marks {
+#hymyqqdxlz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#mfkpvghpdk .gt_asterisk {
+#hymyqqdxlz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#mfkpvghpdk .gt_indent_1 {
+#hymyqqdxlz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#mfkpvghpdk .gt_indent_2 {
+#hymyqqdxlz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#mfkpvghpdk .gt_indent_3 {
+#hymyqqdxlz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#mfkpvghpdk .gt_indent_4 {
+#hymyqqdxlz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#mfkpvghpdk .gt_indent_5 {
+#hymyqqdxlz .gt_indent_5 {
   text-indent: 25px;
 }
 
-#mfkpvghpdk .katex-display {
+#hymyqqdxlz .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#mfkpvghpdk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#hymyqqdxlz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1738,14 +1755,16 @@ Important
 </div>
 </div>
 </section>
-<section id="first-order-spaa-by-highlighted-regions" class="level2">
-<h2 class="anchored" data-anchor-id="first-order-spaa-by-highlighted-regions">First Order SPAA by Highlighted Regions</h2>
+<section id="first-order-spaa-by-highlighted-regions-clark-evans" class="level2">
+<h2 class="anchored" data-anchor-id="first-order-spaa-by-highlighted-regions-clark-evans">First Order SPAA by Highlighted Regions (Clark Evans)</h2>
 <p>Now that the overview analysis of the entire country of Thailand is done, there are 3 regions that are flagged out to be accident hotspots or have a higher fatality intensity :</p>
 <ul>
 <li><strong>Bangkok Metropolitan Region (BMR)</strong> — the dominant urban accident hotspot.</li>
 <li><strong>Northern Thailand</strong> — rural, mountainous, elevated fatality intensity.</li>
 <li><strong>North-Eastern Thailand (Isan)</strong> — rural, elevated fatality intensity.</li>
 </ul>
+<p>We want to study these regions in more detail. Especially since the SPKDE only helps to say where in Thailand are the accidents more intense, and not if the specific accidents are clustered or dispersed. The Clark-Evans Test however, provides statistical evidence that the visual hot spot you saw in the STKDE is real, not a coincidence of plotting, which is also why we are looking at the highlighed Regions throuh the Clark Evans Testing for our First order SPAA.</p>
+<p>The Clark-Evans Test assumes there is no duplicated points. So it is required to ensure that we check there is no duplicated points since any duplicated points will inflate the clustering signal.</p>
 <section id="step-1-defining-the-study-regions" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-defining-the-study-regions">Step 1 : Defining the Study Regions</h3>
 <p>We have our regions that we want to drill into to study. However the regions are made up of a numerous number of provinces, where our data only has the column of provinces or districts. Therefore, we have to put this additional step to define what our study regions are.</p>
@@ -1959,26 +1978,405 @@ alternative hypothesis: two-sided</code></pre>
 <span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>ne_owin    <span class="ot">&lt;-</span> ne<span class="sc">$</span>owin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
+<section id="step-5-combination-of-owin-and-point-events" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-combination-of-owin-and-point-events">Step 5: Combination of OWIN and Point events</h3>
+<p>We have to put the acc</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>acc_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acc)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(acc_ppp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ppp"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>acc_bmr_ppp   <span class="ot">&lt;-</span> acc_ppp[bmr_owin]</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>acc_north_ppp <span class="ot">&lt;-</span> acc_ppp[north_owin]</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>acc_ne_ppp    <span class="ot">&lt;-</span> acc_ppp[ne_owin]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="step-6-rescaling-from-m-to-km" class="level3">
+<h3 class="anchored" data-anchor-id="step-6-rescaling-from-m-to-km">Step 6: Rescaling from m to km</h3>
+<p>Currently the dataset is set to be in metres (UTM coordinates). So all the bandwidths and distances will be in enormous numbers within all the plots and calculations will be tough to read and interpret if the rescaling not be done.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>acc_bmr_ppp.km   <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(acc_bmr_ppp,   <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>acc_north_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(acc_north_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>acc_ne_ppp.km    <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(acc_ne_ppp,    <span class="dv">1000</span>, <span class="st">"km"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="step-7-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="step-7-plotting">Step 7 : Plotting</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">unmark</span>(acc_bmr_ppp.km), <span class="at">main =</span> <span class="st">"BMR"</span>,<span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">unmark</span>(acc_north_ppp.km), <span class="at">main =</span> <span class="st">"Northern Thailand"</span>,<span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">unmark</span>(acc_ne_ppp.km), <span class="at">main =</span> <span class="st">"North-Eastern Thailand"</span>, <span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_ex01_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>note : The analysis of the plots are included within the Clark Evans statistical testing.</p>
+</section>
+<section id="clark-evans-statistical-testing" class="level3">
+<h3 class="anchored" data-anchor-id="clark-evans-statistical-testing">Clark-Evans Statistical Testing</h3>
+<p>Now that the plots are out and we can see where in the 3 regions are the accidents are clustered or spread out at, we conduct the Clark Evans statisitical testing to see if the results are significant.</p>
+<section id="bmr" class="level4">
+<h4 class="anchored" data-anchor-id="bmr">BMR</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(acc_bmr_ppp,</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction=</span><span class="st">"none"</span>,</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion=</span><span class="cn">NULL</span>,</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative=</span><span class="fu">c</span>(<span class="st">"two.sided"</span>),</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Z-test
+
+data:  acc_bmr_ppp
+R = 0.26515, p-value &lt; 2.2e-16
+alternative hypothesis: two-sided</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(acc_bmr_ppp))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Since p &lt; 2.2 × 10⁻¹⁶ &lt;0.05 it proves that the results are highly significant and the accidents in the Bangkok Metropolitan Region has a highly significant spatial clustering. With the R =0.265, it shows the observed average nearest neighbour distance is at 73.5% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans where there are very distinct lines on the highways of the Bangkok Metropolitan Region, these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.</p>
+</section>
+<section id="north-eastern-thailand" class="level4">
+<h4 class="anchored" data-anchor-id="north-eastern-thailand">North-Eastern Thailand</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(acc_ne_ppp,</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction=</span><span class="st">"none"</span>,</span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion=</span><span class="cn">NULL</span>,</span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative=</span><span class="fu">c</span>(<span class="st">"two.sided"</span>),</span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Z-test
+
+data:  acc_ne_ppp
+R = 0.41935, p-value &lt; 2.2e-16
+alternative hypothesis: two-sided</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(acc_ne_ppp))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Since p &lt; 2.2 × 10⁻¹⁶ &lt;0.05, it proves that the results are highly significant and the accidents in the Thailand Northern East Region has a highly significant spatial clustering. With the R =0.41935, it shows the observed average nearest neighbour distance is at 59.1% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans plot where there are darker intensity points plotted across several different areas in Northern East Thailand (where accident occurence area is more spread out across the region) , these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.</p>
+</section>
+<section id="northern-thailand" class="level4">
+<h4 class="anchored" data-anchor-id="northern-thailand">Northern Thailand</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(acc_north_ppp,</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction=</span><span class="st">"none"</span>,</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion=</span><span class="cn">NULL</span>,</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative=</span><span class="fu">c</span>(<span class="st">"two.sided"</span>),</span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Z-test
+
+data:  acc_north_ppp
+R = 0.3014, p-value &lt; 2.2e-16
+alternative hypothesis: two-sided</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(acc_north_ppp))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Since p &lt; 2.2 × 10⁻¹⁶ &lt;0.05, it proves that the results are highly significant and the accidents in the Bangkok Metropolitan Region has a highly significant spatial clustering. With the R =0.3014, it shows the observed average nearest neighbour distance is at 70.9% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans plot where there are darker intensity points plotted in the bottom area of Northern Thailand, these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.</p>
+</section>
+</section>
 </section>
 <section id="analysis-recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="analysis-recommendations">Analysis &amp; Recommendations</h2>
 <p>From the analysis, it is known that Bangkok is a persistent hotspot for accidents to occur, especially in the holidays of April and December. However, in January and December the accident fatality intensity spikes at the North and Northeast Regions of Thailand.</p>
+<p>It is proven that these observations are strongly significant given the p &lt; 2.2 × 10⁻¹⁶ &lt;0.05 in the Clark Evans test in all tested regions where accident intensity are shown to be stronger. And that all highlighted regions (BMR, Northern East, North Thailand) does have a highly significant spatial clustering.</p>
 <p>Therefore, it is recommended for these measures to take place based on the insights :</p>
 <section id="accident-frequency" class="level3">
 <h3 class="anchored" data-anchor-id="accident-frequency">Accident Frequency</h3>
-<p><strong>Short term:</strong> It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols especially in the months of January, April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.</p>
+<p><strong>Short term:</strong> It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols at the densely plotted out points within the 3 regions at the Clarks Evans plots especially in the months of January, April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.</p>
 <p><strong>Long term :</strong> If the accident distribution in the Bangkok area is persistently high within Thailand then it suggests that regardless of the reason whether it is due to high traffic volume, poorly maintained roads or lack of traffic safety enforcement a targeted investigation on the root problem is required. After which interventions like road re-designing or traffic law enforcement are necessary to ensure safety in the future.</p>
 </section>
 <section id="accident-severity" class="level3">
 <h3 class="anchored" data-anchor-id="accident-severity">Accident Severity</h3>
-<p><strong>Short term :</strong> There will be a need for the Transport authority within Thailand to go on high alert and prioritize the emergency-response ability within the North and North Eastern provinces/districts during January and December. This will be to allow more efficient and faster emergency responses to the fewer but more severe (with higher risk of death) accidents, instead of focusing on high volume enforcement in Bangkok.</p>
+<p><strong>Short term :</strong> There will be a need for the Transport authority within Thailand to go on high alert and prioritize the emergency-response ability within the North and North Eastern provinces/districts during January and December, with more emphasis in the Northern Eastern Thailand due to the fact that the accident areas within NE Thailand is less clustered and more spread out thus increasing the risks. This will be to allow more efficient and faster emergency responses to the fewer but more severe (with higher risk of death) accidents, instead of focusing on high volume enforcement in Bangkok.</p>
 <p><strong>Long Term :</strong> Suggestion would be to plan, improve and implement better speed-limit enforcement infrastructure, Road-surface maintenance, and roadside safety measures like having more barriers, lighting, signages to help on visibility and safety of the drivers on the road in the rural areas.</p>
 </section>
 </section>
 </section>
 <section id="task-3-second-order-point-pattern-analysis" class="level1">
 <h1>Task 3: Second-Order Point Pattern Analysis</h1>
-<p>Now, since we had identified that the Bangkok Metropolitan Region is a hot-spot for accidents to occur in Thailand, we will screen in to analyse more deeply within this region to get the most impact out of the analysis in preventing future accidents on the road.</p>
+<p>Now, since we had identified that the Bangkok Metropolitan Region, North Eastern Region and North Thailand as the hot-spots for accidents to occur in Thailand, we will screen in to analyse more deeply within this region to get the most impact out of the analysis in preventing future accidents on the road.</p>
+<p>For this Second Order Point Pattern Analysis, we will be utilising the K and L Functions. The reason is as stated below.</p>
+<p>Clark Evans only looks at a one distance to the nearest point, which computes R and returns a p value for significance at a very short range scale (nearest neighbour distance). However, the K Function and L Function helps to provide a better idea on how clustering varies with distance which the previous Clark-Evans test does not provide.</p>
+<p>Previously we learnt in Thailand Is there clustering at all? Now as a research question we want to understand at which distance does this clustering occur now that we had proven the existance of the clustering at these 3 main regions : Bangkok Metropolitan Region, North Eastern Region and North Thailand.</p>
+<section id="k---function" class="level2">
+<h2 class="anchored" data-anchor-id="k---function">K - Function</h2>
+<p>The K-Function specifically measures the number of events found up to a given distance of any particular event.</p>
+<section id="assumptions-made-1" class="level3">
+<h3 class="anchored" data-anchor-id="assumptions-made-1">Assumptions made</h3>
+</section>
+<section id="limitationscaveats" class="level3">
+<h3 class="anchored" data-anchor-id="limitationscaveats">Limitations/Caveats</h3>
+</section>
+<section id="bangkok-metropolitan-region" class="level3">
+<h3 class="anchored" data-anchor-id="bangkok-metropolitan-region">Bangkok Metropolitan Region</h3>
+<p>First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Bangkok Metropolitan Region.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="co">#acc_bmr_small &lt;- acc_bmr_ppp.km[sample(npoints(acc_bmr_ppp.km), 1000)]</span></span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a><span class="co">#K_bmr &lt;- Kest(acc_bmr_small, correction = "Ripley")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(K_bmr, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>tbw</p>
+</div>
+</div>
+<p>Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:</p>
+<p>Ho = The distribution of accidents at the Bangkok Metropolitan Region are randomly distributed.</p>
+<p>H1= The distribution of accidents at the Bangkok Metropolitan Region are not randomly distributed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="co">#K_bmr.csr &lt;- envelope(acc_bmr_ppp.km, Kest, </span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                     nsim = 99, rank = 1,</span></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                     global=FALSE)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>tbw</p>
+</div>
+</div>
+<p>Now we conduct the final plotting</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(K_bmr.csr, . - r ~ r, xlab="d", ylab="K(d)-r")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>tbw</p>
+</div>
+</div>
+</section>
+<section id="north-thailand" class="level3">
+<h3 class="anchored" data-anchor-id="north-thailand">North Thailand</h3>
+<p>First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Bangkok Metropolitan Region.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="co">#acc_north_small &lt;- acc_north_ppp.km[sample(npoints(acc_north_ppp.km), 1000)]</span></span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a><span class="co">#K_north &lt;- Kest(acc_north_small, correction = "Ripley")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(K_north, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>TBW</p>
+</div>
+</div>
+<p>Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:</p>
+<p>Ho = The distribution of accidents at the Northern Thailand Region are randomly distributed.</p>
+<p>H1= The distribution of accidents at the Northern Thailand Region are not randomly distributed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co">#K_north.csr &lt;- envelope(acc_north_ppp.km, Kest, </span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                      nsim = 99, rank = 1,</span></span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                      global=FALSE)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>TBW</p>
+</div>
+</div>
+<p>Now we conduct the final plotting</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(K_north.csr, . - r ~ r, xlab="d", ylab="K(d)-r")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>TBW</p>
+</div>
+</div>
+</section>
+<section id="northern-east-thailand" class="level3">
+<h3 class="anchored" data-anchor-id="northern-east-thailand">Northern East Thailand</h3>
+<p>First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Northern East Region.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co">#set.seed(1234)</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="co">#acc_ne_small &lt;- acc_ne_ppp.km[sample(npoints(acc_ne_ppp.km), 1000)]</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="co">#K_ne &lt;- Kest(acc_ne_small, correction = "Ripley")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(K_ne, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>TBW</p>
+</div>
+</div>
+<p>Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:</p>
+<p>Ho = The distribution of accidents at the Northern East Region are randomly distributed.</p>
+<p>H1= The distribution of accidents at the Northern East Region are not randomly distributed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co">#K_ne.csr &lt;- envelope(acc_ne_ppp.km, Kest, </span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                        nsim = 99, rank = 1,</span></span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                        global=FALSE)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis:</p>
+<p>TBW</p>
+</div>
+</div>
+<p>Now we conduct the final plotting</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(K_ne.csr, . - r ~ r, xlab="d", ylab="K(d)-r")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Analysis :</p>
+<p>TBW</p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="task-4-integration-interpretation" class="level1">
+<h1>Task 4 : Integration &amp; Interpretation</h1>
+<p>Your discussion should address:</p>
+<ul>
+<li><p>What does the first-order analysis reveal about event intensity or distribution?</p></li>
+<li><p>What does the second-order analysis reveal about interaction among events?</p></li>
+<li><p>How do the first-order and second-order findings complement each other?</p></li>
+<li><p>Are the findings consistent across different analytical views?</p></li>
+<li><p>What assumptions or limitations should be considered when interpreting the results?</p></li>
+<li><p>Are there alternative explanations for the observed patterns?</p></li>
+</ul>
+<p>Where appropriate, conduct a sensitivity or robustness analysis to determine whether important conclusions are sensitive to analytical choices such as bandwidth, distance range, temporal aggregation, or other parameters.</p>
+</section>
+<section id="task-5-geovisualisation-and-analytical-interpretation" class="level1">
+<h1>Task 5 : Geovisualisation and Analytical Interpretation</h1>
+<p>Prepare appropriate geovisualisations and statistical graphics to communicate the findings.</p>
+<p>For each major geovisualisation, provide a concise analytical interpretation of no more than 150 words.</p>
+<p>The interpretation should explain:</p>
+<ul>
+<li><p>what the visualisation reveals;</p></li>
+<li><p>what evidence supports the interpretation; and</p></li>
+<li><p>any important limitations or caveats.</p></li>
+</ul>
+<p>The emphasis should be on analytical clarity and effective communication, rather than decorative or aesthetic complexity.</p>
+</section>
+<section id="task-6-public-safety-planning-management" class="level1">
+<h1>Task 6 : Public Safety Planning &amp; Management</h1>
+<p>With reference to the analytical findings, discuss how the results could support public-safety planning and management.</p>
+<p>Your discussion should be no more than 500 words.</p>
+<p>Depending on the selected case study, relevant implications may include:</p>
+<ul>
+<li><p>land-use planning;</p></li>
+<li><p>transportation and road-safety planning;</p></li>
+<li><p>emergency response;</p></li>
+<li><p>infrastructure planning;</p></li>
+<li><p>environmental management;</p></li>
+<li><p>resource allocation;</p></li>
+<li><p>risk mitigation; and</p></li>
+<li><p>public-safety policy</p></li>
+</ul>
+<p>Your discussion should distinguish between evidence supported directly by the analysis and interpretations or recommendations that require additional information.</p>
+<p>Avoid making causal claims unless they are supported by appropriate evidence.</p>
 
 
 </section>

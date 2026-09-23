@@ -554,13 +554,17 @@ Here, the fatal accident intensity is elevated in Northern, North-Eastern Thaila
 Since the rural roads are mainly in the North and North-East regions of Thailand, it fits the general fact that rural roads generates fewer but higher severity accidents leading to higher fatal accident rates and urban areas will have more low speed collision which is usually not as severe.
 :::
 
-## First Order SPAA by Highlighted Regions
+## First Order SPAA by Highlighted Regions (Clark Evans) 
 
 Now that the overview analysis of the entire country of Thailand is done, there are 3 regions that are flagged out to be accident hotspots or have a higher fatality intensity :
 
 - **Bangkok Metropolitan Region (BMR)** — the dominant urban accident hotspot.
 - **Northern Thailand** — rural, mountainous, elevated fatality intensity.
 - **North-Eastern Thailand (Isan)** — rural, elevated fatality intensity.
+
+We want to study these regions in more detail. Especially since the SPKDE only helps to say where in Thailand are the accidents more intense, and not if the specific accidents are clustered or dispersed. The Clark-Evans Test however, provides statistical evidence that the visual hot spot you saw in the STKDE is real, not a coincidence of plotting, which is also why we are looking at the highlighed Regions throuh the Clark Evans Testing for our First order SPAA.
+
+The Clark-Evans Test assumes there is no duplicated points. So it is required to ensure that we check there is no duplicated points since any duplicated points will inflate the clustering signal.
 
 ### Step 1 : Defining the Study Regions
 
@@ -695,26 +699,342 @@ plot(
 bmr_owin   <- bmr$owin
 north_owin <- north$owin
 ne_owin    <- ne$owin
+
 ```
+
+### Step 5: Combination of OWIN and Point events 
+
+We have to put the acc
+
+```{r}
+acc_ppp <- as.ppp(acc)
+class(acc_ppp)
+
+```
+
+```{r}
+
+acc_bmr_ppp   <- acc_ppp[bmr_owin]
+acc_north_ppp <- acc_ppp[north_owin]
+acc_ne_ppp    <- acc_ppp[ne_owin]
+```
+
+### Step 6: Rescaling from m to km 
+
+Currently the dataset is set to be in metres (UTM coordinates). So all the bandwidths and distances will be in enormous numbers within all the plots and calculations will be tough to read and interpret if the rescaling not be done.
+
+```{r}
+acc_bmr_ppp.km   <- rescale.ppp(acc_bmr_ppp,   1000, "km")
+acc_north_ppp.km <- rescale.ppp(acc_north_ppp, 1000, "km")
+acc_ne_ppp.km    <- rescale.ppp(acc_ne_ppp,    1000, "km")
+```
+
+### Step 7 : Plotting 
+
+```{R}
+par(mfrow = c(2, 2))
+
+plot(unmark(acc_bmr_ppp.km), main = "BMR",cex = 0.5)
+plot(unmark(acc_north_ppp.km), main = "Northern Thailand",cex = 0.5)
+plot(unmark(acc_ne_ppp.km), main = "North-Eastern Thailand", cex = 0.5)
+
+par(mfrow = c(1, 1))
+```
+
+note : The analysis of the plots are included within the Clark Evans statistical testing.
+
+### Clark-Evans Statistical Testing 
+
+Now that the plots are out and we can see where in the 3 regions are the accidents are clustered or spread out at, we conduct the Clark Evans statisitical testing to see if the results are significant.
+
+#### BMR 
+
+```{r}
+clarkevans.test(acc_bmr_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=999)
+
+sum(duplicated(acc_bmr_ppp))
+```
+
+Since p \< 2.2 × 10⁻¹⁶ \<0.05 it proves that the results are highly significant and the accidents in the Bangkok Metropolitan Region has a highly significant spatial clustering. With the R =0.265, it shows the observed average nearest neighbour distance is at 73.5% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans where there are very distinct lines on the highways of the Bangkok Metropolitan Region, these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.
+
+#### North-Eastern Thailand 
+
+```{r}
+clarkevans.test(acc_ne_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=999)
+
+sum(duplicated(acc_ne_ppp))
+```
+
+Since p \< 2.2 × 10⁻¹⁶ \<0.05, it proves that the results are highly significant and the accidents in the Thailand Northern East Region has a highly significant spatial clustering. With the R =0.41935, it shows the observed average nearest neighbour distance is at 59.1% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans plot where there are darker intensity points plotted across several different areas in Northern East Thailand (where accident occurence area is more spread out across the region) , these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.
+
+#### Northern Thailand 
+
+```{r}
+clarkevans.test(acc_north_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=999)
+
+sum(duplicated(acc_north_ppp))
+```
+
+Since p \< 2.2 × 10⁻¹⁶ \<0.05, it proves that the results are highly significant and the accidents in the Bangkok Metropolitan Region has a highly significant spatial clustering. With the R =0.3014, it shows the observed average nearest neighbour distance is at 70.9% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans plot where there are darker intensity points plotted in the bottom area of Northern Thailand, these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.
 
 ## Analysis & Recommendations
 
 From the analysis, it is known that Bangkok is a persistent hotspot for accidents to occur, especially in the holidays of April and December. However, in January and December the accident fatality intensity spikes at the North and Northeast Regions of Thailand.
 
+It is proven that these observations are strongly significant given the p \< 2.2 × 10⁻¹⁶ \<0.05 in the Clark Evans test in all tested regions where accident intensity are shown to be stronger. And that all highlighted regions (BMR, Northern East, North Thailand) does have a highly significant spatial clustering.
+
 Therefore, it is recommended for these measures to take place based on the insights :
 
 ### Accident Frequency
 
-**Short term:** It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols especially in the months of January, April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.
+**Short term:** It would be imperative to implement more speed checks, DUI checkpoints and traffic patrols at the densely plotted out points within the 3 regions at the Clarks Evans plots especially in the months of January, April and December. This is to counter the spike in accident numbers due to the increased vehicle numbers on the road due to their main holiday periods. It will be a temporary measure to allow time to plan and deploy the long term solutions.
 
 **Long term :** If the accident distribution in the Bangkok area is persistently high within Thailand then it suggests that regardless of the reason whether it is due to high traffic volume, poorly maintained roads or lack of traffic safety enforcement a targeted investigation on the root problem is required. After which interventions like road re-designing or traffic law enforcement are necessary to ensure safety in the future.
 
 ### Accident Severity
 
-**Short term :** There will be a need for the Transport authority within Thailand to go on high alert and prioritize the emergency-response ability within the North and North Eastern provinces/districts during January and December. This will be to allow more efficient and faster emergency responses to the fewer but more severe (with higher risk of death) accidents, instead of focusing on high volume enforcement in Bangkok.
+**Short term :** There will be a need for the Transport authority within Thailand to go on high alert and prioritize the emergency-response ability within the North and North Eastern provinces/districts during January and December, with more emphasis in the Northern Eastern Thailand due to the fact that the accident areas within NE Thailand is less clustered and more spread out thus increasing the risks. This will be to allow more efficient and faster emergency responses to the fewer but more severe (with higher risk of death) accidents, instead of focusing on high volume enforcement in Bangkok.
 
 **Long Term :** Suggestion would be to plan, improve and implement better speed-limit enforcement infrastructure, Road-surface maintenance, and roadside safety measures like having more barriers, lighting, signages to help on visibility and safety of the drivers on the road in the rural areas.
 
 # Task 3: Second-Order Point Pattern Analysis
 
-Now, since we had identified that the Bangkok Metropolitan Region is a hot-spot for accidents to occur in Thailand, we will screen in to analyse more deeply within this region to get the most impact out of the analysis in preventing future accidents on the road.
+Now, since we had identified that the Bangkok Metropolitan Region, North Eastern Region and North Thailand as the hot-spots for accidents to occur in Thailand, we will screen in to analyse more deeply within this region to get the most impact out of the analysis in preventing future accidents on the road.
+
+For this Second Order Point Pattern Analysis, we will be utilising the K and L Functions. The reason is as stated below.
+
+Clark Evans only looks at a one distance to the nearest point, which computes R and returns a p value for significance at a very short range scale (nearest neighbour distance). However, the K Function and L Function helps to provide a better idea on how clustering varies with distance which the previous Clark-Evans test does not provide.
+
+Previously we learnt in Thailand Is there clustering at all? Now as a research question we want to understand at which distance does this clustering occur now that we had proven the existance of the clustering at these 3 main regions : Bangkok Metropolitan Region, North Eastern Region and North Thailand.
+
+## K - Function 
+
+The K-Function specifically measures the number of events found up to a given distance of any particular event.
+
+### Assumptions made 
+
+### Limitations/Caveats 
+
+### Bangkok Metropolitan Region
+
+First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Bangkok Metropolitan Region.
+
+```{r}
+set.seed(1234)
+#acc_bmr_small <- acc_bmr_ppp.km[sample(npoints(acc_bmr_ppp.km), 1000)]
+#K_bmr <- Kest(acc_bmr_small, correction = "Ripley")
+```
+
+```{r}
+#plot(K_bmr, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+::: callout-note
+Analysis :
+
+tbw
+:::
+
+Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:
+
+Ho = The distribution of accidents at the Bangkok Metropolitan Region are randomly distributed.
+
+H1= The distribution of accidents at the Bangkok Metropolitan Region are not randomly distributed.
+
+```{r}
+#K_bmr.csr <- envelope(acc_bmr_ppp.km, Kest, 
+#                     nsim = 99, rank = 1,
+#                     global=FALSE)
+```
+
+::: callout-note
+Analysis :
+
+tbw
+:::
+
+Now we conduct the final plotting
+
+```{r}
+#plot(K_bmr.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+::: callout-note
+Analysis :
+
+tbw
+:::
+
+### North Thailand 
+
+First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Bangkok Metropolitan Region.
+
+```{r}
+set.seed(1234)
+#acc_north_small <- acc_north_ppp.km[sample(npoints(acc_north_ppp.km), 1000)]
+#K_north <- Kest(acc_north_small, correction = "Ripley")
+```
+
+```{r}
+#plot(K_north, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+::: callout-note
+Analysis :
+
+TBW
+:::
+
+Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:
+
+Ho = The distribution of accidents at the Northern Thailand Region are randomly distributed.
+
+H1= The distribution of accidents at the Northern Thailand Region are not randomly distributed.
+
+```{r}
+#K_north.csr <- envelope(acc_north_ppp.km, Kest, 
+#                      nsim = 99, rank = 1,
+#                      global=FALSE)
+```
+
+::: callout-note
+Analysis :
+
+TBW
+:::
+
+Now we conduct the final plotting
+
+```{r}
+#plot(K_north.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+::: callout-note
+Analysis :
+
+TBW
+:::
+
+### Northern East Thailand 
+
+First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Northern East Region.
+
+```{r}
+#set.seed(1234)
+#acc_ne_small <- acc_ne_ppp.km[sample(npoints(acc_ne_ppp.km), 1000)]
+#K_ne <- Kest(acc_ne_small, correction = "Ripley")
+```
+
+```{r}
+#plot(K_ne, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+::: callout-note
+Analysis :
+
+TBW
+:::
+
+Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:
+
+Ho = The distribution of accidents at the Northern East Region are randomly distributed.
+
+H1= The distribution of accidents at the Northern East Region are not randomly distributed.
+
+```{r}
+#K_ne.csr <- envelope(acc_ne_ppp.km, Kest, 
+#                        nsim = 99, rank = 1,
+#                        global=FALSE)
+```
+
+::: callout-note
+Analysis:
+
+TBW
+:::
+
+Now we conduct the final plotting
+
+```{r}
+#plot(K_ne.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+::: callout-note
+Analysis :
+
+TBW
+:::
+
+# Task 4 : Integration & Interpretation 
+
+Your discussion should address:
+
+- What does the first-order analysis reveal about event intensity or distribution?
+
+- What does the second-order analysis reveal about interaction among events?
+
+- How do the first-order and second-order findings complement each other?
+
+- Are the findings consistent across different analytical views?
+
+- What assumptions or limitations should be considered when interpreting the results?
+
+- Are there alternative explanations for the observed patterns?
+
+Where appropriate, conduct a sensitivity or robustness analysis to determine whether important conclusions are sensitive to analytical choices such as bandwidth, distance range, temporal aggregation, or other parameters.
+
+# Task 5 : Geovisualisation and Analytical Interpretation
+
+Prepare appropriate geovisualisations and statistical graphics to communicate the findings.
+
+For each major geovisualisation, provide a concise analytical interpretation of no more than 150 words.
+
+The interpretation should explain:
+
+- what the visualisation reveals;
+
+- what evidence supports the interpretation; and
+
+- any important limitations or caveats.
+
+The emphasis should be on analytical clarity and effective communication, rather than decorative or aesthetic complexity.
+
+# Task 6 : Public Safety Planning & Management 
+
+With reference to the analytical findings, discuss how the results could support public-safety planning and management.
+
+Your discussion should be no more than 500 words.
+
+Depending on the selected case study, relevant implications may include:
+
+- land-use planning;
+
+- transportation and road-safety planning;
+
+- emergency response;
+
+- infrastructure planning;
+
+- environmental management;
+
+- resource allocation;
+
+- risk mitigation; and
+
+- public-safety policy
+
+Your discussion should distinguish between evidence supported directly by the analysis and interpretations or recommendations that require additional information.
+
+Avoid making causal claims unless they are supported by appropriate evidence.

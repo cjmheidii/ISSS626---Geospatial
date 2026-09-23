@@ -107,7 +107,7 @@ Both plots also indicate spatial clustering in the High GDP clusters East-Centra
 
 Local Indicators of Spatial Association or LISA are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. For instance if we are studying distribution of GDP per capita of Hunan Provice, People Republic of China, local clusters in GDP per capita mean that there are counties that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
 
-## Computing Contiguity Spatial Weights 
+## Computing Contiguity Spatial Weights
 
 Before we can compute the local spatial autocorrelation statistics, we need to construct a spatial weights of the study area. The spatial weights is used to define the neighbourhood relationships between the geographical units (i.e. county) in the study area.
 
@@ -148,7 +148,7 @@ lisa <- wm_q %>%
 glimpse(lisa)
 ```
 
-## Mapping Local Moran's I values 
+## Mapping Local Moran's I values
 
 ```{r}
 tm_shape(lisa) +
@@ -164,7 +164,7 @@ tm_shape(lisa) +
   tm_title("Loal Morans'I of GDPPC (Queen's method)")
 ```
 
-### Mapping Local Moran I's P values 
+### Mapping Local Moran I's P values
 
 The choropleth shows there is evidence for both positive and negative Ii values. However, it is useful to consider the p-values for each of these values, as consider above.
 
@@ -183,7 +183,7 @@ tm_shape(lisa) +
   tm_title("p-values of Loal Moran's I of GDPPC (Queen's method)")
 ```
 
-### Combination of both plots 
+### Combination of both plots
 
 For effective interpretation, it is better to plot both the local Moran’s I values map and its corresponding p-values map next to each other.
 
@@ -224,7 +224,7 @@ Visualizing LISA involves creating maps that highlight significant spatial patte
 
 The LISA Cluster Map shows the significant locations color coded by type of spatial autocorrelation. The first step before we can generate the LISA cluster map is to plot the Moran scatterplot.
 
-#### Scatter plot 
+#### Scatter plot
 
 A Moran Scatterplot is a graphical tool in spatial analysis that visualizes the relationship between a variable’s values and the average values of its neighboring locations (its spatial lag) to identify spatial autocorrelation. By plotting standardized values of the variable on the x-axis and its spatial lag on the y-axis, the plot’s slope represents Moran’s I, revealing patterns of high-high or low-low value clusters and high-low or low-high value outliers.
 
@@ -313,7 +313,7 @@ ggplot(data = lisa,
   theme_minimal()
 ```
 
-### Preparing LISA Map Classes 
+### Preparing LISA Map Classes
 
 The code chunks below show the steps to prepare a LISA cluster map.
 
@@ -454,7 +454,7 @@ hunan_fdw <- hunan %>%
     .before = 1) 
 ```
 
-### Computing Adaptive Distance weights 
+### Computing Adaptive Distance weights
 
 One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have lesser neighbours. Having many neighbours smooth the neighbour relationship across more neighbours.
 
@@ -501,7 +501,7 @@ tm_shape(HCSA_fdw) +
   tm_title("Gi* of GDPPC (Fixed Bandwidth d = 60799.91m)")
 ```
 
-### Map local Gi Values 
+### Map local Gi Values
 
 The choropleth shows there is evidence for both positive and negative Ii values. However, it is useful to consider the p-values for each of these values, as consider above.
 
@@ -520,7 +520,7 @@ tm_shape(HCSA_fdw) +
   tm_title("p-values of local Gi* of GDPPC (Fixed distance)")
 ```
 
-### Plotting both visualisations together 
+### Plotting both visualisations together
 
 ```{r}
 Gi_star_map <- tm_shape(HCSA_fdw) +
@@ -551,7 +551,7 @@ p_values_map <- tm_shape(HCSA_fdw) +
 tmap_arrange(Gi_star_map, p_values_map, asp=1, ncol=2)
 ```
 
-### plot HCSA map 
+### plot HCSA map
 
 By default, the HCSA classes are stored in *cluster* field of *HCSA_fdw* sf data frame. To prepare the HSCA map, we will derive a new field called *HCSA_cluster* from *cluster* field by using the code chunk below.
 
