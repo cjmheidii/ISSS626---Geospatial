@@ -23,6 +23,10 @@ website:
             text: "Hands-on Exercise 3"
           - href: Hands-on_Ex/Hands-on_ex04.html
             text: "Hands-on Exercise 4"
+          - href: Hands-on_Ex/Hands-on_ex05A.html
+            text: "Hands-on Exercise 5A"
+          - href: Hands-on_Ex/Hands-on_ex05B.html
+            text: "Hands-on Exercise 5B"            
       - text: "Take-Home Exercise"
         menu:
           - href: Hands-on_Ex/Take-Home_ex01.html 
