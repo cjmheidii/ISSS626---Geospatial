@@ -61,7 +61,7 @@ hunan_sf <- left_join(hunan,hunan_2012) %>%
 3.  Add the select line with the columns we want.
 :::
 
-# Mapping GDPPC 
+# Mapping GDPPC
 
 ```{r}
 # To edit the entire plot size, can experiment around with it :D
@@ -83,11 +83,11 @@ hunan_sp <- hunan_sf %>%
   as_Spatial()
 ```
 
-# Geographically Weighted Summary Statistics (GSWW) with adaptive bandwidth 
+# Geographically Weighted Summary Statistics (GSWW) with adaptive bandwidth
 
-## Determine adaptive Bandwidth 
+## Determine adaptive Bandwidth
 
-### cross validation 
+### cross validation
 
 ```{r}
 
@@ -111,7 +111,7 @@ bw_AIC <- bw.gwr(GDPPC ~ 1,
 
 ```
 
-### Computing geographically weighted summary statistics 
+### Computing geographically weighted summary statistics
 
 The code chunk below computes geographically weighted summary statistics by using gwss() of GWmodel package. The analysis is performed using adaptive distance weighted. The distance is derived using AICc method and the kernel method is bi-square.
 
@@ -129,7 +129,7 @@ gwstat<-gwss(data=hunan_sp,
 gwss support 5 kernel methods , namely Gaussian, exponential, bi-square, Tricube and boxcar. Repeat the code chunk above with different kernel methods and compare their results visually.
 :::
 
-## Preparing Output data 
+## Preparing Output data
 
 ::: callout-important
 gwss() with quantile argument computes eight local summary statistics, namely: local means,local standard deviations, local variance, local skew, local coefficients of variation, local medians, local interquartile ranges, and local quantile imbalances. they are output in SDF data frame.
@@ -148,7 +148,7 @@ Next the cbind() is used to append the newly derived data.frame onto *hunan_sf* 
 hunan_gstat <-cbind(hunan_sf,gwstat_df)
 ```
 
-# Visualising Geographially Weighted summary Statistics 
+# Visualising Geographially Weighted summary Statistics
 
 ```{r}
 #| fig-width: 14

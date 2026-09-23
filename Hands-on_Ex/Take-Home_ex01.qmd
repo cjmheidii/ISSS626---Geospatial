@@ -554,7 +554,7 @@ Here, the fatal accident intensity is elevated in Northern, North-Eastern Thaila
 Since the rural roads are mainly in the North and North-East regions of Thailand, it fits the general fact that rural roads generates fewer but higher severity accidents leading to higher fatal accident rates and urban areas will have more low speed collision which is usually not as severe.
 :::
 
-## First Order SPAA by Highlighted Regions 
+## First Order SPAA by Highlighted Regions
 
 Now that the overview analysis of the entire country of Thailand is done, there are 3 regions that are flagged out to be accident hotspots or have a higher fatality intensity :
 
@@ -562,7 +562,7 @@ Now that the overview analysis of the entire country of Thailand is done, there 
 - **Northern Thailand** — rural, mountainous, elevated fatality intensity.
 - **North-Eastern Thailand (Isan)** — rural, elevated fatality intensity.
 
-### Step 1 : Defining the Study Regions 
+### Step 1 : Defining the Study Regions
 
 We have our regions that we want to drill into to study. However the regions are made up of a numerous number of provinces, where our data only has the column of provinces or districts. Therefore, we have to put this additional step to define what our study regions are.
 
@@ -648,7 +648,7 @@ north <- make_region(north_provinces,     "Northern")
 ne    <- make_region(northeast_provinces, "North-Eastern")
 ```
 
-### Step 3 : Generating Clark-Evans and KDE 
+### Step 3 : Generating Clark-Evans and KDE
 
 ```{r}
 # BMR
@@ -689,7 +689,7 @@ plot(
 )
 ```
 
-### Step 4: Creating OWIN objects 
+### Step 4: Creating OWIN objects
 
 ```{r}
 bmr_owin   <- bmr$owin
