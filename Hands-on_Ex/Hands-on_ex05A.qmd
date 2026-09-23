@@ -467,5 +467,5 @@ plot(GC_corr)
 ```
 
 ```{r}
-print(GC_corr)
+print(GC_corr) 
 ```
