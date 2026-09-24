@@ -554,7 +554,7 @@ Here, the fatal accident intensity is elevated in Northern, North-Eastern Thaila
 Since the rural roads are mainly in the North and North-East regions of Thailand, it fits the general fact that rural roads generates fewer but higher severity accidents leading to higher fatal accident rates and urban areas will have more low speed collision which is usually not as severe.
 :::
 
-## First Order SPAA by Highlighted Regions (Clark Evans) 
+## First Order SPAA by Highlighted Regions (Clark Evans)
 
 Now that the overview analysis of the entire country of Thailand is done, there are 3 regions that are flagged out to be accident hotspots or have a higher fatality intensity :
 
@@ -702,7 +702,7 @@ ne_owin    <- ne$owin
 
 ```
 
-### Step 5: Combination of OWIN and Point events 
+### Step 5: Combination of OWIN and Point events
 
 We have to put the acc
 
@@ -712,14 +712,29 @@ class(acc_ppp)
 
 ```
 
+In usual circumstances, it is possible to directly convert the OWIN objects to ppp using ppp\[owin\]. However the current Thailand boundaries are defined using very detailed polygons with many vertices in the bounary rings. Thus it is required to simplify the OWIN to ensure that the computation is properly reduced. The analytical results below will not be changed.
+
 ```{r}
+
+make_simple_owin <- function(sf_obj, tol_m) {
+  sf_obj %>%
+    st_make_valid() %>%
+    st_simplify(dTolerance = tol_m, preserveTopology = TRUE) %>%
+    st_union() %>%
+    st_zm(drop = TRUE, what = "ZM") %>%
+    as.owin()
+}
+
+bmr_owin   <- make_simple_owin(bmr$sf,   tol_m = 2000)
+north_owin <- make_simple_owin(north$sf, tol_m = 3000)
+ne_owin    <- make_simple_owin(ne$sf,    tol_m = 3000)
 
 acc_bmr_ppp   <- acc_ppp[bmr_owin]
 acc_north_ppp <- acc_ppp[north_owin]
 acc_ne_ppp    <- acc_ppp[ne_owin]
 ```
 
-### Step 6: Rescaling from m to km 
+### Step 6: Rescaling from m to km
 
 Currently the dataset is set to be in metres (UTM coordinates). So all the bandwidths and distances will be in enormous numbers within all the plots and calculations will be tough to read and interpret if the rescaling not be done.
 
@@ -729,7 +744,7 @@ acc_north_ppp.km <- rescale.ppp(acc_north_ppp, 1000, "km")
 acc_ne_ppp.km    <- rescale.ppp(acc_ne_ppp,    1000, "km")
 ```
 
-### Step 7 : Plotting 
+### Step 7 : Plotting
 
 ```{R}
 par(mfrow = c(2, 2))
@@ -743,11 +758,11 @@ par(mfrow = c(1, 1))
 
 note : The analysis of the plots are included within the Clark Evans statistical testing.
 
-### Clark-Evans Statistical Testing 
+### Clark-Evans Statistical Testing
 
 Now that the plots are out and we can see where in the 3 regions are the accidents are clustered or spread out at, we conduct the Clark Evans statisitical testing to see if the results are significant.
 
-#### BMR 
+#### BMR
 
 ```{r}
 clarkevans.test(acc_bmr_ppp,
@@ -761,7 +776,7 @@ sum(duplicated(acc_bmr_ppp))
 
 Since p \< 2.2 × 10⁻¹⁶ \<0.05 it proves that the results are highly significant and the accidents in the Bangkok Metropolitan Region has a highly significant spatial clustering. With the R =0.265, it shows the observed average nearest neighbour distance is at 73.5% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans where there are very distinct lines on the highways of the Bangkok Metropolitan Region, these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.
 
-#### North-Eastern Thailand 
+#### North-Eastern Thailand
 
 ```{r}
 clarkevans.test(acc_ne_ppp,
@@ -775,7 +790,7 @@ sum(duplicated(acc_ne_ppp))
 
 Since p \< 2.2 × 10⁻¹⁶ \<0.05, it proves that the results are highly significant and the accidents in the Thailand Northern East Region has a highly significant spatial clustering. With the R =0.41935, it shows the observed average nearest neighbour distance is at 59.1% closer than normal to consider it as spatial randomness. Therefore with reference from the Clark Evans plot where there are darker intensity points plotted across several different areas in Northern East Thailand (where accident occurence area is more spread out across the region) , these spots are where the concentrated accidents are which are the areas proven where the government needs to intervene to have the most impact in regards to the accident occurrences.
 
-#### Northern Thailand 
+#### Northern Thailand
 
 ```{r}
 clarkevans.test(acc_north_ppp,
@@ -819,13 +834,47 @@ Clark Evans only looks at a one distance to the nearest point, which computes R 
 
 Previously we learnt in Thailand Is there clustering at all? Now as a research question we want to understand at which distance does this clustering occur now that we had proven the existance of the clustering at these 3 main regions : Bangkok Metropolitan Region, North Eastern Region and North Thailand.
 
-## K - Function 
+## K - Function
 
 The K-Function specifically measures the number of events found up to a given distance of any particular event.
 
-### Assumptions made 
+### Considerations & Assumptions made 
 
-### Limitations/Caveats 
+#### Rmax Consideration for K function calculation
+
+Before the K function is calculated, we look at the rmax parameter. This is the parameter that sets the maximum inter-point distance at which Ripley's K is evaluated, and is important to evaluate because Ripley's edge correction would be unstable as the evaluation distance grows which is the case for our study where we are looking at large regions within Thailand.
+
+Usually, the default rmax is already derived from the bounding rectangle of the window so the code chunk below is not necessary. However for our scenario, it is necessary to compute the estimated rmax parameters since our dataset has a multipolygon which does overstate the region effective extent. This is for more accurate results and faster computation within R studio.
+The computed distances below represent the upper bound where K can be reliably interpreted for each of the regions.
+
+```{r}
+# For each region, look at the window's extent in km
+rmax_rule <- function(ppp) {
+  W <- Window(ppp)
+  x_extent <- diff(W$xrange)   # in km
+  y_extent <- diff(W$yrange)   # in km
+  rmax <- min(x_extent, y_extent) / 4
+  c(x_extent = x_extent, y_extent = y_extent, rmax = rmax)
+}
+
+rmax_rule(acc_bmr_ppp.km)
+rmax_rule(acc_north_ppp.km)
+rmax_rule(acc_ne_ppp.km)
+```
+
+Therefore the rmax values for bmr, North Thailand and Northern East Thailand is rounded to be 23.58km, 91.37km and 121.33km respectively.
+
+#### Simplification of ppp 
+
+As mentioned in the previous step when creating the ppp in Task 2, the current Thailand boundaries are defined using very detailed polygons with many vertices in the boundary rings. So the OWIN is simplified to ensure that the computation is properly reduced. The analytical results below will not be changed.
+
+### Limitations/Caveats
+
+#### Reduction of nrval and subsampling in specified regions
+
+The Bangkok Metropolitian region analysis will uses the standard `nrval` (100) and subsampling (1000) values , which is well-suited to the renrvallatively compact BMR window of `rmax` =23.58km. However, the Northern and North-Eastern regions with larger, more elongated boundary windows that are bounded by more complex administrative boundaries, the isotropised correction would be computationally complex to run within R studio with the standard `nrval` and subsampling definitions. Therefore as a counter the the `nrval` for the Northern and North Eastern regions are reduced to 50 and subsampling is reduced to 500.
+
+\<To research and add the caveat details later\>
 
 ### Bangkok Metropolitan Region
 
@@ -833,68 +882,70 @@ First, the set seed is added in to ensure that the points stay the same in every
 
 ```{r}
 set.seed(1234)
-#acc_bmr_small <- acc_bmr_ppp.km[sample(npoints(acc_bmr_ppp.km), 1000)]
-#K_bmr <- Kest(acc_bmr_small, correction = "Ripley")
+acc_bmr_small <- acc_bmr_ppp.km[sample(npoints(acc_bmr_ppp.km), 1000)]
+K_bmr <- Kest(acc_bmr_small, correction = "Ripley")
 ```
 
 ```{r}
-#plot(K_bmr, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+plot(K_bmr, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
 ::: callout-note
 Analysis :
 
-tbw
+The edge-corrected `K̂_iso(r) − r` for the Bangkok Metropolitan Region accidents are plotted against the theoretical CSR expectation (red dashed line). The observed edge corrected curve lies consistently above the CSR line with a widening gap up to `rmax = 23.58 km`, which shows a clustering of accidents rather than spatial randomness that is consistent with the Clark-Evans result (R = 0.265, p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering.
+
+Formal significance of the deviation across all distances is assessed in the next section using a global envelope test.
 :::
 
-Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:
+Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis test will be put under a 5% envelope where p\<0.05 for the results to be statistically significant (nsim =39 with this setting).
 
 Ho = The distribution of accidents at the Bangkok Metropolitan Region are randomly distributed.
 
 H1= The distribution of accidents at the Bangkok Metropolitan Region are not randomly distributed.
 
 ```{r}
-#K_bmr.csr <- envelope(acc_bmr_ppp.km, Kest, 
-#                     nsim = 99, rank = 1,
-#                     global=FALSE)
+K_bmr.csr <- envelope(acc_bmr_small, Kest,
+                      nsim = 39, rank = 1, global = FALSE,
+                      rmax = 23.5, nrval = 100)
 ```
-
-::: callout-note
-Analysis :
-
-tbw
-:::
 
 Now we conduct the final plotting
 
 ```{r}
-#plot(K_bmr.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+plot(K_bmr.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
 ::: callout-note
 Analysis :
 
-tbw
+The observed curve `K̂_obs(r) − r` lies above the upper envelope (grey area) of the 39 simulated CSR patterns at all distances up to `rmax = 23.58 km`, and the gap widens with increasing `d`.
+
+This confirms that the accidents in the Bangkok Metropolitan Region does exhibit statistically significant spatial clustering beyond what complete spatial randomness would produce which again is consistent with the Clark-Evans test (R = 0.265, p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering.
+
+Together, the two tests have proven that the accidents in the Bangkok Metropolitan Region are not uniformly distributed but concentrate along a spatial structure which most plausibly the urban road network from the Bangkok subregion plot where there are highly intensive highlighted regions on the highways of Bangkok.
 :::
 
-### North Thailand 
+### North Thailand
 
 First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Bangkok Metropolitan Region.
 
 ```{r}
 set.seed(1234)
-#acc_north_small <- acc_north_ppp.km[sample(npoints(acc_north_ppp.km), 1000)]
-#K_north <- Kest(acc_north_small, correction = "Ripley")
+acc_north_small <- acc_north_ppp.km[sample(npoints(acc_north_ppp.km), 500)]
+K_north <- Kest(acc_north_small, correction = "Ripley")
 ```
 
 ```{r}
-#plot(K_north, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+plot(K_north, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
 ::: callout-note
 Analysis :
 
-TBW
+The edge-corrected `K̂_iso(r) − r` for the North Thailand Region accidents are plotted against the theoretical CSR expectation (red dashed line). The observed edge corrected curve lies consistently above the CSR line with a widening gap up to `rmax = 91.37 km`, which shows a clustering of accidents rather than spatial randomness that is consistent with the Clark-Evans result (R = 0.3014, p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering.
+
+Formal significance of the deviation across all distances is assessed in the next section using a global envelope test.
 :::
 
 Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:
@@ -904,47 +955,47 @@ Ho = The distribution of accidents at the Northern Thailand Region are randomly 
 H1= The distribution of accidents at the Northern Thailand Region are not randomly distributed.
 
 ```{r}
-#K_north.csr <- envelope(acc_north_ppp.km, Kest, 
-#                      nsim = 99, rank = 1,
-#                      global=FALSE)
+K_north.csr <- envelope(acc_north_small, Kest,
+                      nsim = 39, rank = 1, global = FALSE,
+                      rmax = 91.37, nrval = 50)
 ```
-
-::: callout-note
-Analysis :
-
-TBW
-:::
 
 Now we conduct the final plotting
 
 ```{r}
-#plot(K_north.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+plot(K_north.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
 ::: callout-note
 Analysis :
 
-TBW
+Similar to the Bangkok Metropolitan region, the observed curve `K̂_obs(r) − r` lies above the upper envelope (grey area) of the 39 simulated CSR patterns at all distances up to `rmax = 91.37 km`, and the gap widens with increasing `d`.
+
+This again confirms that the accidents in the Northern Thailand Region does exhibit statistically significant spatial clustering beyond what complete spatial randomness would produce which again is consistent with the Clark-Evans test (R = 0.3014 , p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering.
+
+Together, the two tests have proven that the accidents in the North Thailand Region are not uniformly distributed but concentrate along the spatial structure which is clustered more towards the bottom area of North Thailand.
 :::
 
-### Northern East Thailand 
+### Northern East Thailand
 
 First, the set seed is added in to ensure that the points stay the same in every calculation for easier analysis. Then we use the rescaled ppp variables to be put into the Ripley correction to get the best values before we do out the K Function plot for the Northern East Region.
 
 ```{r}
-#set.seed(1234)
-#acc_ne_small <- acc_ne_ppp.km[sample(npoints(acc_ne_ppp.km), 1000)]
-#K_ne <- Kest(acc_ne_small, correction = "Ripley")
+set.seed(1234)
+acc_ne_small <- acc_ne_ppp.km[sample(npoints(acc_ne_ppp.km), 500)]
+K_ne <- Kest(acc_ne_small, correction = "Ripley")
 ```
 
 ```{r}
-#plot(K_ne, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+plot(K_ne, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
 ::: callout-note
 Analysis :
 
-TBW
+The edge-corrected `K̂_iso(r) − r` for the North Eastern Thailand Region accidents are plotted against the theoretical CSR expectation (red dashed line). The observed edge corrected curve lies consistently above the CSR line with a widening gap up to `rmax = 121.33 km`, which shows a clustering of accidents rather than spatial randomness that is consistent with the Clark-Evans result (R = 0.3014, p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering. However it is to note that as compared to the other 2 regions, the distance between the edge Corrected line is close to the CSR expectation which suggest that the clustering here in North East Thailand is not as strong as that of the other 2 regions.
+
+Formal significance of the deviation across all distances is assessed in the next section using a global envelope test.
 :::
 
 Now we will have to conduct the Complete Spatial Randomness Test to confirm the observed spatial patterns above. To do this, a hypothesis test will be conducted, The hypothesis and test are as follows:
@@ -954,30 +1005,26 @@ Ho = The distribution of accidents at the Northern East Region are randomly dist
 H1= The distribution of accidents at the Northern East Region are not randomly distributed.
 
 ```{r}
-#K_ne.csr <- envelope(acc_ne_ppp.km, Kest, 
-#                        nsim = 99, rank = 1,
-#                        global=FALSE)
+K_ne.csr <- envelope(acc_ne_small, Kest,
+                        nsim = 39, rank = 1, global = FALSE,
+                        rmax = 121.33, nrval = 50)
 ```
-
-::: callout-note
-Analysis:
-
-TBW
-:::
 
 Now we conduct the final plotting
 
 ```{r}
-#plot(K_ne.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+plot(K_ne.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
 ::: callout-note
 Analysis :
 
-TBW
+The observed K-curve lies above the upper 5% CSR envelope at all distances above approximately 5km and the gap again widens progressively up to `rmax = 121.33 km`.
+
+This confirms statistically significant spatial clustering of accidents in North-Eastern Thailand, consistent with the Clark-Evans result (R = 0.419, p \< 2.2 × 10⁻¹⁶). However as mentioned before, the magnitude of the deviation is proven again to be smaller than for the Bangkok Metropolitan region and Northern Thailand. The pattern is however qualitatively the same, where the accidents are more spread out across the North Eastern region, but is concentrated along the region's road network rather than randomly distributed. The narrow grey envelope reflects the high statistical power of the test at n = 1000, so even modest deviations from CSR are detectable.
 :::
 
-# Task 4 : Integration & Interpretation 
+# Task 4 : Integration & Interpretation
 
 Your discussion should address:
 
@@ -1011,7 +1058,7 @@ The interpretation should explain:
 
 The emphasis should be on analytical clarity and effective communication, rather than decorative or aesthetic complexity.
 
-# Task 6 : Public Safety Planning & Management 
+# Task 6 : Public Safety Planning & Management
 
 With reference to the analytical findings, discuss how the results could support public-safety planning and management.
 
