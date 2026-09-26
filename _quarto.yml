@@ -36,6 +36,8 @@ website:
         menu: 
           - href: Hands-on_Ex/In-class_ex04.html
             text: "In-Class Exercise 4"
+          - href: Hands-on_Ex/In-class_ex05.html
+            text: "In-Class Exercise 5"            
     right:
       - href: index.qmd
         text: Home

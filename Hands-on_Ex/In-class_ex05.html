@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ISSS626 - Geospatial</title>
+<title>In class exercise 5 – ISSS626 - Geospatial</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,28 +26,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,68 +108,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-recent-exercises .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-date-modified',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      page: 10,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-recent-exercises'] = new List('listing-recent-exercises', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -146,7 +120,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ISSS626 - Geospatial</span>
     </a>
   </div>
@@ -162,35 +136,35 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex01.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex01.html">
  <span class="dropdown-text">Hands-on Exercise 1A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex01B.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex01B.html">
  <span class="dropdown-text">Hands-on Exercise 1B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex02A.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex02A.html">
  <span class="dropdown-text">Hands-on Exercise 2A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex02B.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex02B.html">
  <span class="dropdown-text">Hands-on Exercise 2B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex03.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex03.html">
  <span class="dropdown-text">Hands-on Exercise 3</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex04.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex04.html">
  <span class="dropdown-text">Hands-on Exercise 4</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex05A.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex05A.html">
  <span class="dropdown-text">Hands-on Exercise 5A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex05B.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex05B.html">
  <span class="dropdown-text">Hands-on Exercise 5B</span></a>
   </li>  
     </ul>
@@ -201,7 +175,7 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Take-Home_ex01.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Take-Home_ex01.html">
  <span class="dropdown-text">Take-Home Exercise 1</span></a>
   </li>  
     </ul>
@@ -212,7 +186,7 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/In-class_ex04.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/In-class_ex04.html">
  <span class="dropdown-text">In-Class Exercise 4</span></a>
   </li>  
     </ul>
@@ -220,11 +194,11 @@ window.Quarto = {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -243,7 +217,23 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#coursework" id="toc-coursework" class="nav-link active" data-scroll-target="#coursework">Coursework</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">Getting started</a>
+  <ul class="collapse">
+  <li><a href="#loading-in-packages" id="toc-loading-in-packages" class="nav-link" data-scroll-target="#loading-in-packages">loading in packages</a></li>
+  <li><a href="#joining" id="toc-joining" class="nav-link" data-scroll-target="#joining">Joining</a></li>
+  </ul></li>
+  <li><a href="#global-measures-of-spatial-association" id="toc-global-measures-of-spatial-association" class="nav-link" data-scroll-target="#global-measures-of-spatial-association">Global measures of spatial Association</a>
+  <ul class="collapse">
+  <li><a href="#deriving-queen-contiguity-weights-sfdep-methods" id="toc-deriving-queen-contiguity-weights-sfdep-methods" class="nav-link" data-scroll-target="#deriving-queen-contiguity-weights-sfdep-methods">1. Deriving Queen Contiguity weights: sfdep methods</a></li>
+  <li><a href="#computing-global-morani" id="toc-computing-global-morani" class="nav-link" data-scroll-target="#computing-global-morani">2. Computing Global Moran’I</a>
+  <ul class="collapse">
+  <li><a href="#performing-global-moran-permutation-test" id="toc-performing-global-moran-permutation-test" class="nav-link" data-scroll-target="#performing-global-moran-permutation-test">performing global Moran permutation test</a></li>
+  </ul></li>
+  <li><a href="#computing-local-morans-i" id="toc-computing-local-morans-i" class="nav-link" data-scroll-target="#computing-local-morans-i">3. Computing Local Morans I</a>
+  <ul class="collapse">
+  <li><a href="#plotting-lisa-map" id="toc-plotting-lisa-map" class="nav-link" data-scroll-target="#plotting-lisa-map">plotting LISA map</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -252,7 +242,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">ISSS626 - Geospatial</h1>
+<h1 class="title">In class exercise 5</h1>
 </div>
 
 
@@ -269,187 +259,159 @@ window.Quarto = {
 </header>
 
 
-<div class="radar-field" aria-hidden="true">
-  <svg viewbox="0 0 1200 800" preserveaspectratio="xMidYMid slice">
-    <!-- RING system with closer spacing -->
-    <circle class="radar-ring" cx="600" cy="400" r="180"></circle>
-    <circle class="radar-ring" cx="600" cy="400" r="320"></circle>
-    <circle class="radar-ring" cx="600" cy="400" r="460"></circle>
-    <circle class="radar-ring" cx="600" cy="400" r="600"></circle>
-
-    <!-- 10 markers -->
-    <circle class="radar-dot" cx="120" cy="90" r="8"></circle>
-    <circle class="radar-dot" cx="600" cy="60" r="8"></circle>
-    <circle class="radar-dot" cx="1080" cy="100" r="8"></circle>
-    <circle class="radar-dot" cx="90" cy="400" r="8"></circle>
-    <circle class="radar-dot" cx="1110" cy="380" r="8"></circle>
-    <circle class="radar-dot" cx="300" cy="700" r="8"></circle>
-    <circle class="radar-dot" cx="600" cy="740" r="8"></circle>
-    <circle class="radar-dot" cx="900" cy="710" r="8"></circle>
-    <circle class="radar-dot" cx="350" cy="250" r="8"></circle>
-    <circle class="radar-dot" cx="850" cy="550" r="8"></circle>
-
-    <!-- Pulsing blips -->
-    <circle class="radar-blip" cx="120" cy="90" r="8" style="animation-delay:0s"></circle>
-    <circle class="radar-blip" cx="600" cy="60" r="8" style="animation-delay:0.6s"></circle>
-    <circle class="radar-blip" cx="1080" cy="100" r="8" style="animation-delay:1.2s"></circle>
-    <circle class="radar-blip" cx="90" cy="400" r="8" style="animation-delay:1.8s"></circle>
-    <circle class="radar-blip" cx="1110" cy="380" r="8" style="animation-delay:2.4s"></circle>
-    <circle class="radar-blip" cx="300" cy="700" r="8" style="animation-delay:3.0s"></circle>
-    <circle class="radar-blip" cx="600" cy="740" r="8" style="animation-delay:3.6s"></circle>
-    <circle class="radar-blip" cx="900" cy="710" r="8" style="animation-delay:4.2s"></circle>
-    <circle class="radar-blip" cx="350" cy="250" r="8" style="animation-delay:4.8s"></circle>
-    <circle class="radar-blip" cx="850" cy="550" r="8" style="animation-delay:5.4s"></circle>
-  </svg>
+<section id="getting-started" class="level1">
+<h1>Getting started</h1>
+<section id="loading-in-packages" class="level2">
+<h2 class="anchored" data-anchor-id="loading-in-packages">loading in packages</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf,sfdep,tmap,tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="hero-banner">
-<div class="hero-content">
-<p>Welcome to <strong>ISSS626 Geo-spatial Analytics</strong> Home Page.</p>
-<p>In this website, you will find my coursework prepared for this course.</p>
-<p>Within it will have my Hands-on exercises as well as take home exercise submissions.</p>
-<p>Click on the Hands-on Exercise dropdown to select and review all lessons learnt at home before class.</p>
-<p>Click on the Take-Home Exercise dropdown to select and review all assignments that are completed within this course.</p>
+</section>
+<section id="joining" class="level2">
+<h2 class="anchored" data-anchor-id="joining">Joining</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hunan county boundary layer</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/hunan/Hunan.shp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Hunan' from data source 
+  `C:\cjmheidii\ISSS626 - Geospatial\Hands-on_Ex\data\geospatial\hunan\Hunan.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 88 features and 7 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#This is the csv Hunan local development indicators </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#This will be in the  R dataframe class</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>hunan_2012<span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 88 Columns: 29
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): County, City
+dbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hunan_GDPPC <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan,hunan_2012) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">15</span>,<span class="dv">16</span>,<span class="dv">31</span>,<span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(County)`</code></pre>
 </div>
 </div>
-<section id="coursework" class="level2">
-<h2 class="anchored" data-anchor-id="coursework">Coursework</h2>
-<div id="listing-recent-exercises" class="quarto-listing quarto-listing-container-table">
-<table class="quarto-listing-table table">
-<thead>
-<tr>
+</section>
+</section>
+<section id="global-measures-of-spatial-association" class="level1">
+<h1>Global measures of spatial Association</h1>
+<section id="deriving-queen-contiguity-weights-sfdep-methods" class="level2">
+<h2 class="anchored" data-anchor-id="deriving-queen-contiguity-weights-sfdep-methods">1. Deriving Queen Contiguity weights: sfdep methods</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">&lt;-</span> hunan_GDPPC <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb=</span><span class="fu">st_contiguity</span>(geometry),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">wt=</span><span class="fu">st_weights</span>(nb,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">style =</span> <span class="st">"W"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="computing-global-morani" class="level2">
+<h2 class="anchored" data-anchor-id="computing-global-morani">2. Computing Global Moran’I</h2>
+<p>in the code chunk below, global_moran() function is used to compute the moran’s I value. Different from spdep package, the output is a tibble data.frame.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>moranI<span class="ot">&lt;-</span><span class="fu">global_moran</span>(wm_q<span class="sc">$</span>GDPPC,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                     wm_q<span class="sc">$</span>nb,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                     wm_q<span class="sc">$</span>wt)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(moranI)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 2
+ $ I: num 0.301
+ $ K: num 7.64</code></pre>
+</div>
+</div>
+<section id="performing-global-moran-permutation-test" class="level3">
+<h3 class="anchored" data-anchor-id="performing-global-moran-permutation-test">performing global Moran permutation test</h3>
+<p>In practice, Monte carlo simulation should be used to perform statistical test. For sfdep its supposed by global_moran_perm() function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">global_moran_perm</span>(wm_q<span class="sc">$</span>GDPPC,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                  wm_q<span class="sc">$</span>nb,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                  wm_q<span class="sc">$</span>wt,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">nsim=</span><span class="dv">99</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
 
-<th>
-Title
-</th>
+data:  x 
+weights: listw  
+number of simulations + 1: 100 
 
-<th>
-Last Modified
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-listing-file-modified-sort="1790408165280" data-listing-reading-time-sort="3" data-listing-word-count-sort="463" data-listing-title-sort="In class exercise 5" data-listing-filename-sort="In-class_ex05.qmd">
-<td>
-<a href="./Hands-on_Ex/In-class_ex05.html" class="title listing-title">In class exercise 5</a>
-</td>
-<td>
-<span class="listing-date-modified">&nbsp;</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-listing-date-sort="1789142400000" data-listing-file-modified-sort="1790403601898" data-listing-date-modified-sort="1790403601000" data-listing-reading-time-sort="46" data-listing-word-count-sort="9152" data-listing-title-sort="Take-Home Exercise 1" data-listing-filename-sort="Take-Home_ex01.qmd">
-<td>
-<a href="./Hands-on_Ex/Take-Home_ex01.html" class="title listing-title">Take-Home Exercise 1</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 26, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-listing-date-sort="1790092800000" data-listing-file-modified-sort="1790176025989" data-listing-date-modified-sort="1790176025000" data-listing-reading-time-sort="25" data-listing-word-count-sort="4984" data-listing-title-sort="Hands-on Exercise 5B" data-listing-filename-sort="Hands-on_ex05B.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex05B.html" class="title listing-title">Hands-on Exercise 5B</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 23, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-listing-date-sort="1790092800000" data-listing-file-modified-sort="1790176023969" data-listing-date-modified-sort="1790176023000" data-listing-reading-time-sort="16" data-listing-word-count-sort="3124" data-listing-title-sort="Hands-on Exercise 5A" data-listing-filename-sort="Hands-on_ex05A.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex05A.html" class="title listing-title">Hands-on Exercise 5A</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 23, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-listing-date-sort="1789747200000" data-listing-file-modified-sort="1790148171964" data-listing-date-modified-sort="1790148171000" data-listing-reading-time-sort="4" data-listing-word-count-sort="793" data-listing-title-sort="In-Class Exercise 4" data-listing-filename-sort="In-class_ex04.qmd">
-<td>
-<a href="./Hands-on_Ex/In-class_ex04.html" class="title listing-title">In-Class Exercise 4</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 23, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-listing-date-sort="1789401600000" data-listing-file-modified-sort="1789561492233" data-listing-date-modified-sort="1789561492000" data-listing-reading-time-sort="16" data-listing-word-count-sort="3193" data-listing-title-sort="Hands-on Exercise 4" data-listing-filename-sort="Hands-on_ex04.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex04.html" class="title listing-title">Hands-on Exercise 4</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 16, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="6" data-listing-date-sort="1787673600000" data-listing-file-modified-sort="1789124755447" data-listing-date-modified-sort="1789124755000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1101" data-listing-title-sort="Hands on Exercise 1A" data-listing-filename-sort="Hands-on_ex01.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex01.html" class="title listing-title">Hands on Exercise 1A</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="7" data-listing-date-sort="1788278400000" data-listing-file-modified-sort="1789124319509" data-listing-date-modified-sort="1789124319000" data-listing-reading-time-sort="19" data-listing-word-count-sort="3797" data-listing-title-sort="Hands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods" data-listing-filename-sort="Hands-on_ex02A.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex02A.html" class="title listing-title">Hands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="8" data-listing-date-sort="1787760000000" data-listing-file-modified-sort="1789124317940" data-listing-date-modified-sort="1789124317000" data-listing-reading-time-sort="24" data-listing-word-count-sort="4609" data-listing-title-sort="Hands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R" data-listing-filename-sort="Hands-on_ex01B.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex01B.html" class="title listing-title">Hands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="9" data-listing-date-sort="1788364800000" data-listing-file-modified-sort="1789124316131" data-listing-date-modified-sort="1789124316000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1871" data-listing-title-sort="Hands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods" data-listing-filename-sort="Hands-on_ex02B.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex02B.html" class="title listing-title">Hands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="10" data-listing-date-sort="1788710400000" data-listing-file-modified-sort="1789046873969" data-listing-date-modified-sort="1789046873000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1812" data-listing-title-sort="Hands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis" data-listing-filename-sort="Hands-on_ex03.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex03.html" class="title listing-title">Hands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 10, 2026</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-<nav id="recent-exercises-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
+statistic = 0.30075, observed rank = 100, p-value &lt; 2.2e-16
+alternative hypothesis: two.sided</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>The statistical report shows the p value is smaller than alpha value of 0.05. Hence we have enough statistical evidence to reject the null hypothesis that the spatial distribution of GDP per capita resembles a random distribution.</p></li>
+<li><p>Because Moran’s I statistic is greater than 0 (positive spatial autocorrelation) it confirms a clustered pattern. This means similar values are near each other (High GDP per Capita countries are next to each other high GDP counties and low next to low.</p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="computing-local-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="computing-local-morans-i">3. Computing Local Morans I</h2>
+<p>In this section you will learn how to compute local moran I of GDPPC at county level by using Local_moran() of sfdep package</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>lisa<span class="ot">&lt;-</span>wm_q <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">local_moran=</span><span class="fu">local_moran</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    GDPPC,nb,wt,<span class="at">nsim=</span><span class="dv">99</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.before=</span><span class="dv">1</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(local_moran)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="plotting-lisa-map" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-lisa-map">plotting LISA map</h3>
+<p>in the lisa sf data.frame we can find 3 fields containig the LISA categories : mean, median, pysal. Calssification in mean will be used as shown in code chunk below.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>lisa_sig<span class="ot">&lt;-</span>lisa<span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii_sim<span class="sc">&lt;</span><span class="fl">0.05</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ tmap modes "plot" - "view"
+ℹ toggle with `tmap::ttm()`</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa)<span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>()<span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha =</span><span class="fl">0.05</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa_sig)<span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill=</span><span class="st">"mean"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">text.size=</span><span class="fl">1.15</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">width=</span><span class="dv">6</span>))<span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha=</span><span class="fl">0.4</span>)<span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.title.size=</span><span class="fl">1.25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="In-class_ex05_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 
 
-
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
