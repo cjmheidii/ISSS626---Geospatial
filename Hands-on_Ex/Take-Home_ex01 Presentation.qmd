@@ -1,0 +1,273 @@
+---
+title: "Take Home Exercise 1"
+subtitle: "Thailand Accidents & How to Help Public Safety"
+author: "Chong Jia Min Heidi"
+date: "September 26 2026"
+date-modified: "last-modified"
+format:
+  revealjs:
+    theme: simple
+    smaller: true
+    slide-number: true
+    progress: true
+    controls: true
+    transition: fade
+    background-transition: fade
+    footer: "Thailand Road Accidents 2022 — Public Safety Analysis"
+    center: false
+    width: 1280
+    height: 800
+    margin: 0.02
+    include-in-header:
+      text: |
+        <style>
+        /* ===== Asphalt background ===== */
+        .reveal {
+          background-color: #2b2b2b;
+        }
+        .reveal .slide-background {
+          background-color: #2b2b2b;
+        }
+
+        /* ===== Text colours ===== */
+        .reveal h1 {
+          font-size: 1.6em;
+          color: #f5c518;
+          margin-bottom: 0.3em;
+        }
+        .reveal h2 {
+          font-size: 1.15em;
+          color: #f5c518;
+          margin-top: 0;
+          margin-bottom: 0.25em;
+          border-bottom: 2px solid #f5c518;
+          padding-bottom: 0.15em;
+        }
+        .reveal h3 {
+          font-size: 0.95em;
+          color: #ffffff;
+          margin-top: 0.15em;
+          margin-bottom: 0.15em;
+        }
+        .reveal p,
+        .reveal li {
+          font-size: 0.72em;
+          line-height: 1.25;
+          color: #e8e8e8;
+          margin-top: 0.15em;
+          margin-bottom: 0.15em;
+        }
+        .reveal strong {
+          color: #f5c518;
+        }
+        .reveal a {
+          color: #f5c518;
+        }
+
+        /* ===== Lists ===== */
+        .reveal ul,
+        .reveal ol {
+          margin-top: 0.2em;
+          margin-bottom: 0.2em;
+          padding-left: 1.2em;
+        }
+
+        /* ===== Images ===== */
+        .reveal img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          border-radius: 4px;
+        }
+
+        /* ===== Columns ===== */
+        .reveal .columns {
+          display: flex;
+          gap: 1em;
+          align-items: flex-start;
+        }
+        .reveal .column {
+          overflow: hidden;
+        }
+
+        /* ===== Footer ===== */
+        .reveal .footer {
+          font-size: 0.5em;
+          color: #f5c518;
+          opacity: 0.85;
+        }
+
+        /* ===== Slide number ===== */
+        .reveal .slide-number {
+          color: #f5c518;
+          background-color: rgba(43,43,43,0.7);
+        }
+
+        /* ===== Hide stray empty headings ===== */
+        .reveal section h2:empty,
+        .reveal section h3:empty {
+          display: none;
+        }
+        </style>
+execute:
+  echo: true
+  eval: true
+  warning: false
+  freeze: true
+  message: false
+---
+
+## Contents
+
+| Section                             | Slide |
+|:------------------------------------|:-----:|
+| Overview                            |   3   |
+| Data Preparations                   |   4   |
+| First Order Point Pattern Analysis  |  5–7  |
+| Second Order Point Pattern Analysis |   8   |
+| Vehicle Distribution                |   9   |
+| Accident Causes                     |  10   |
+| Recommendations & Conclusion        |  11   |
+
+## Overview
+
+### Context
+
+Public safety refers to the protection of the general public, communities, and critical infrastructure from crimes, disasters, accidents, and other major threats through coordinated government and agency action. Public safety can be supported via geospatial analysis by transforming location-based data into visual evidence. In this case, Thailand has one of the highest road death tolls in the world and is a major point of concern for public safety.
+
+### Objectives
+
+Gain proper insights on accidents occurring in Thailand in 2022 for better decisions and actionable(s) to reduce the accident rates in the country and in lieu the death toll.
+
+## Data Preparations
+
+**Data CSV columns:** acc_code, incident_datetime, report_datetime, province_th, province_en, agency, route, vehicle_type, presumed_cause, accident_type, number_of_vehicles_involved, number_of_fatalities, number_of_injuries, weather_condition, latitude, longitude, road_description, and slope_description
+
+### Data preparations done:
+
+- Handle Invalid/Missing Locations
+- Removal of Unnecessary Columns & Rows
+- Ensuring Unique Rows
+- Coordinate Reference System (CRS) changed for Thailand coordinates
+
+### Assumptions to note:
+
+Reliability of original Dataset, Homogeneity, Independence, Isotropy.
+
+## First Order Point Pattern Analysis
+
+### Accident Frequency
+
+::::: columns
+::: {.column width="55%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-17-1.png)
+:::
+
+::: {.column width="45%"}
+**Insights:**
+
+- April and December peaks in accident numbers with January coming behind as a close third.
+- Bangkok regions is a hot spot for accident occurrence through the red colour intensity in those months.
+:::
+:::::
+
+## First Order Point Pattern Analysis {.smaller}
+
+### Accident Fatalities
+
+::::: columns
+::: {.column width="55%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-21-1.png){height="230px"}
+
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-21-2.png){height="230px"}
+:::
+
+::: {.column width="45%"}
+**Insights:**
+
+- Accident frequency and severity are following different spatial and temporal patterns.
+- More fatal accidents in Northern, North-Eastern Thailand, and Bangkok at January and December.
+- With higher fatalities in the 3 regions, all 3 regions will be expanded on for further analysis.
+:::
+:::::
+
+## First Order Point Pattern Analysis
+
+### Clark-Evans Test
+
+::::: columns
+::: {.column width="45%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-30-1.png){height="80%"}
+:::
+
+::: {.column width="55%"}
+**Analysis:**
+
+- **BMR:** R = 0.26425, p-value \< 2.2e-16. Statistically significant, most concentrated accident area.
+- **Northern Thailand:** R = 0.29995, p-value \< 2.2e-16. Statistically significant, still a concentrated accident area.
+- **North-Eastern Thailand:** R = 0.41683, p-value \< 2.2e-16. Statistically significant, concentrated, but least concentrated of the 3 regions.
+:::
+:::::
+
+## Second Order Point Pattern Analysis
+
+### K Function Test
+
+- **BMR:** Clark-Evans test (R = 0.265, p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering.
+- **North Thailand:** Clark-Evans test (R = 0.3014, p \< 2.2 × 10⁻¹⁶), which identified strong nearest-neighbour clustering.
+- **North-Eastern Thailand:** Clark-Evans result (R = 0.419, p \< 2.2 × 10⁻¹⁶), more deviation than Bangkok Metropolitan region and Northern Thailand.
+
+## Vehicle Distribution
+
+::::: columns
+::: {.column width="50%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-51-1.png){width="1009"}
+:::
+
+::: {.column width="50%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-52-1.png){width="1008"}
+:::
+:::::
+
+**Insights:**
+
+- Passenger cars dominate in the Bangkok region (34.0%) while pickup only accounts for 28.7%.
+
+- Motorcycles dominate being the cause of fatal accidents in all three regions, with 50.3% in the BMR, 50.8% in the North, and 45.3% in North-Eastern Thailand.
+
+- Motorcyclists are at greatest risk of dying overall when in an accident
+
+## Accident Causes
+
+::::: columns
+::: {.column width="50%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-56-1.png){width="1065"}
+:::
+
+::: {.column width="50%"}
+![](Take-Home_ex01_files/figure-html/unnamed-chunk-57-1.png){width="1065"}
+:::
+:::::
+
+**Insights:**
+
+- Speeding dominates all three regions (71.3%–78.5%), though variation can be seen in smaller causes.
+- Reckless driving is disproportionately recorded for motorcycle accidents (21.8%), compared to 7%–8.8% for all other vehicles.
+- Vehicle failure concentrates in trucks (7.4%), while alcohol/drug involvement is highest for motorcycles (5.8%).
+
+**Caveat :** Cause of the accident is likely to be deemed through field judgment/recording practice rather than a forensic finding
+
+## Recommendations & Conclusion
+
+#### Recap of Analysis Findings
+
+The spatio-temporal kernel density estimates and Clark-Evans tests provide strong evidence that road traffic accidents in Thailand are not randomly distributed, and all three highlighted regions — the Bangkok Metropolitan Region (BMR), Northern Thailand, and North-Eastern Thailand — show statistically significant clustering (p \< 2.2 × 10⁻¹⁶).
+
+BMR has the strongest clustering (R = 0.265) and functions as a constant accident hotspot. But the Northern and North-Eastern regions have an elevated fatality intensity despite showing dispersed patterns (R = 0.301 and R = 0.419, respectively), especially in January and December.
+
+#### Recommendations & Way Ahead
+
+- **BMR:** Targeted infrastructure investment into road redesigning, improved signages, and speed-calibration measures at specific highway segments identified in the K-function plots.
+- **Northern & North-Eastern Thailand:** Enhanced emergency medical services and faster response times, given the association between rurality, delayed treatment, and higher death rates.
+- **Seasonal peaks (January, April, December):** Schedule enforcement campaigns — speed checks, DUI checkpoints, and patrols — with more focus on automated police cameras to stop speeding.
+- **Motorcycles:** Mandatory helmet use, rider training, and infrastructure separation.
