@@ -564,7 +564,7 @@ Here, the fatal accident intensity is elevated in Northern, North-Eastern Thaila
 Since the rural roads are mainly in the North and North-East regions of Thailand, it fits the general fact that rural roads generates fewer but higher severity accidents leading to higher fatal accident rates and urban areas will have more low speed collision which is usually not as severe.
 :::
 
-## First Order SPAA by Highlighted Regions (Clark Evans)
+## Preliminary Clark Evans Test (Highlighted Regions)
 
 Now that the overview analysis of the entire country of Thailand is done, there are 3 regions that are flagged out to be accident hotspots or have a higher fatality intensity :
 
@@ -848,14 +848,13 @@ Previously we learnt in Thailand Is there clustering at all? Now as a research q
 
 In the previous task 2, the Clark-Evans test has established that the accidents does cluster significantly in all 3 highlighted regions, but this is only proven at the nearest neighbour scale. Therefore, for the second order analysis the Ripley's K Function is conducted to get an understanding on the clustering across the full range of spatial scales. Specifically (even though there is also the F and G Function), the K function allows every distance of clustering to be captured to the rmax so every event (denoted as accident in this scenario) up to the rmax can be measured, which helps to identify the spatial scales where the accident is concentrating which is what is required for the objective of the exercise which is to better plan for road safety.
 
-### Considerations & Assumptions made 
+### Considerations & Assumptions made
 
 #### Rmax Consideration for K function calculation
 
 Before the K function is calculated, we look at the rmax parameter. This is the parameter that sets the maximum inter-point distance at which Ripley's K is evaluated, and is important to evaluate because Ripley's edge correction would be unstable as the evaluation distance grows which is the case for our study where we are looking at large regions within Thailand.
 
-Usually, the default rmax is already derived from the bounding rectangle of the window so the code chunk below is not necessary. However for our scenario, it is necessary to compute the estimated rmax parameters since our dataset has a multipolygon which does overstate the region effective extent. This is for more accurate results and faster computation within R studio.
-The computed distances below represent the upper bound where K can be reliably interpreted for each of the regions.
+Usually, the default rmax is already derived from the bounding rectangle of the window so the code chunk below is not necessary. However for our scenario, it is necessary to compute the estimated rmax parameters since our dataset has a multipolygon which does overstate the region effective extent. This is for more accurate results and faster computation within R studio. The computed distances below represent the upper bound where K can be reliably interpreted for each of the regions.
 
 ```{r}
 # For each region, look at the window's extent in km
@@ -874,7 +873,7 @@ rmax_rule(acc_ne_ppp.km)
 
 Therefore the rmax values for bmr, North Thailand and Northern East Thailand is rounded to be 23.58km, 91.37km and 121.33km respectively.
 
-#### Simplification of ppp 
+#### Simplification of ppp
 
 As mentioned in the previous step when creating the ppp in Task 2, the current Thailand boundaries are defined using very detailed polygons with many vertices in the boundary rings. So the OWIN is simplified to ensure that the computation is properly reduced. The analytical results below will not be changed.
 
@@ -884,15 +883,13 @@ As mentioned in the previous step when creating the ppp in Task 2, the current T
 
 The Bangkok Metropolitian region analysis will uses the standard `nrval` (100) and subsampling (1000) values , which is well-suited to the renrvallatively compact BMR window of `rmax` =23.58km. However, the Northern and North-Eastern regions with larger, more elongated boundary windows that are bounded by more complex administrative boundaries, the isotropised correction would be computationally complex to run within R studio with the standard `nrval` and subsampling definitions. Therefore as a counter the the `nrval` for the Northern and North Eastern regions are reduced to 50 and subsampling is reduced to 500.
 
-#### Duplicated Coordinates 
+#### Duplicated Coordinates
 
 As mentioned in Task 1, there are multiple accidents that has occurred at the same location. However, Ripley's K assumes events are independent, so the multiple accidents ;exact duplicates violate this assumption by artificially inflating short-range clustering. The duplicates were retained because each record represents a genuinely distinct accident, but the resulting K-curve at very short distances (below \~1 km) should be interpreted with this limitation in mind.
 
-#### Biasedness in Ripley Correction 
+#### Biasedness in Ripley Correction
 
 Ripley's isotropised edge correction is used throughout. For irregular windows in this context, the isotropised correction has known bias at larger distances as the search circle extends further beyond the boundary. The `rmax` bound limits this, but some residual bias may persist near the upper end of the evaluation range.
-
-\<To research and add the caveat details later\>
 
 ### Bangkok Metropolitan Region
 
@@ -1049,7 +1046,7 @@ K-Function plots can be paired together with L-function plots for analysis. Howe
 
 # Task 4 : Integration & Interpretation
 
-## Overview 
+## Overview
 
 The first-order and second-order analyses conducted in Tasks 2 and 3 examine the same accident datasets with two fundamentally different perspectives.
 
@@ -1059,9 +1056,9 @@ The second-order analysis instead looks if events interact with one another and 
 
 Neither view alone is sufficient to characterise the accident pattern in Thailand; together, however, they provide a coherent and mutually validating picture, which will be integrated and interpreted in this section where the first order analysis will localise the pattern and the second order will characterise it.
 
-## Combined Insights 
+## Combined Insights
 
-### Location 
+### Location
 
 From the first order STKDE, the Bangkok Metropolitan region is a dominant hotspot for accidents where the North and North east regions of Thailand have higher fatality accident rates. This is complemented with the K Function which confirms all accidents within the highlighted regions are clustered at every distance scale with the Bangkok region having the highest magnitude of clustering amongst the 3 regions from the Clark-Evans analysis. This therefore does confirm that the Bangkok Metropolitan region is a genuine multi-scale cluster which cannot be a fact confirmed alone. It also proves that both orders of analysis are highly consistent with each other where strength of clustering and direction are agreed upon across the highlighted regions.
 
@@ -1071,7 +1068,7 @@ It is to note however, that there is the possibility that some rural accidents a
 
 It is known that April and December are the peak timings when the accidents frequency is the highest in Thailand which is likely due these months being the [primary holiday periods](https://blogs.worldbank.org/en/eastasiapacific/thailand-road-safety-will-never-happen-accident) (Chanin,2014) in the country. January and December instead shows a shocking high fatality as compared to the other months. To note, from here it is shown that the fatality STKDE does diverge from the overall STKDE, which shows that the frequency and severity of accidents have to be considered as different spatial processes. From the K function, the spatial clusters are identified within the 3 regions of Thailand, on which highways are more at risk for accidents to occur. With these information combined, it helps the government to identify the holiday period risk zones, at and when to focus efforts to reduce the accident fatalities with greatest impacts.
 
-### Severity 
+### Severity
 
 The first order STKDE shows that the rural North Thailand and North Eastern region has greater fatality numbers, though the K function is weaker amongst the 3 regions though still being significant. Therefore, when combining the information, it shows that the rural fatal accidents are actually more dispersed but are still non-random from the still present clustering proven. This suggests that the government can still rely on the clustering trends to concentrate efforts on to reduce accident rates but more resources are required.
 
@@ -1079,15 +1076,15 @@ The Severity or fatality rates in the rural North Thailand and North Eastern reg
 
 Furthermore, the North Eastern region accidents may be more dispersed due to the lower population density within the region, since North Eastern contains the most provinces within Thailand. Hence clustering may look more dispersed.
 
-## Assumptions and limitations 
+## Assumptions and limitations
 
 As mentioned in task 1, there are assumptions made for the exercise due since there are many layers of factors in reality that is difficult to apply in any type of analysis. It is now explained in detail below.
 
-### Independence of events 
+### Independence of events
 
 We do have to note that it is assumed in this exercise that the accidents are independent. However due to the [chaotic road conditions and lack of road safety enforcement](https://asirt-member-rsrs.s3.amazonaws.com/ASIRT-Thailand-RSR.pdf) (ASIRT,2023) , reality shows that there is the presence of multi vehicle crashes and therefore duplicate coordinates. So it has to be noted of the inflation of clustering signals in both the Clark-Evans and K Function calculations and therefore an upper bound on the clustering strength.
 
-### Homogeneity 
+### Homogeneity
 
 It is assumed on the uniformed risk of accident frequency and fatality across Thailand, but as mentioned the traffic volume and quality can vary in different parts of the country with notably differences between urban and rural roads. Therefore we have to note that the clustering shown in the analysis may have the possibility of reflecting population density variation rather than pure interactions.
 
@@ -1099,9 +1096,29 @@ The road Networks are linear, but we are assuming that the KDE and K function ha
 
 In task 3, due to the computation being too high for the code to run proper, sampling is applied to the Bangkok region (1000 subsamples) and the North with North Eastern region (500 subsamples each) which may have the impact of losing a little fine-scale clustering signals. The Ripley correction would also help but the indentity of the multi-polygon windows within the dataset itself would have some imperfections in the edge correction. The Simplification of the OWIN in task 2 also may introduce a little minor boundary distortions though it is still possible to gain major insights.
 
+```{r}
+# Recompute STKDE with different spatial bandwidths
+h_values <- c(20000, 30000, 38160, 50000, 70000)  # 20, 30, 38 (default), 50, 70 km
+
+st_kde_list <- lapply(h_values, function(h) {
+  spattemp.density(acc_month_owin, h = h)
+})
+
+# ---- Plot April (month 4, the peak month) at each bandwidth ----
+par(mfrow = c(1, 5))
+for (i in seq_along(h_values)) {
+  plot(st_kde_list[[i]], 4,
+       override.par = FALSE,
+       fix.range = TRUE,
+       main = paste0("h = ", h_values[i] / 1000, " km"))
+}
+```
+
+With the different STKDEs computed, it shows that the Bangkok Metropolitan Region remains the dominant hotspot at every bandwidth and confirms that the primary conclusion is robust to bandwidth selection. However the colour intensity differs across the plots since the larger bandwidths will smooth the density over a wider area so in overall the identification of secondary clusters is bandwidth-sensitive but the primary hotspot is not which suggests that within our analysis the peak locations and primary region analysis are reliable.
+
 # Task 5 : Geovisualisation and Analytical Interpretation
 
-## Vehicle Profile by Region 
+## Vehicle Profile by Region
 
 Since we have the geospatial analysis insights, it is imperative to support it by looking into detail what type of accident has occurred in Thailand in the chosen 3 regions to allow the government to provide better solutions to mitigate accident frequency and severity.
 
@@ -1172,7 +1189,7 @@ acc %>% st_drop_geometry() %>% count(region, sort = TRUE)
 
 Now with the groupings done we look into creating the actual visuals
 
-### Accident Frequency 
+### Accident Frequency
 
 ```{r}
 head(acc)
@@ -1218,14 +1235,14 @@ ggplot(veh_region,
 ::: callout-note
 **Analysis : vehicle-type composition of all recorded accidents in the BMR, Northern, and North-Eastern regions.**
 
-It can be seen that the passenger cars dominate in the Bangkok region (34.0%) while pickup only accounts for 28.7%. However in Northern and North-Eastern Thailand, the pattern reverses where pickups are the leading vehicle type (38.9% and 41.1% respectively), with cars falling to approximately 26%. Motorcycles amongst all vehicle types show the greatest relative divergence where the North having 22% of accidents with motorcycles as compared to the other 2 regions (11.3% & 13.4%).
+Passenger cars dominate in the Bangkok region (34.0%) while pickup only accounts for 28.7%. However in Northern and North-Eastern Thailand, the pattern reverses where pickups are the leading vehicle type (38.9% and 41.1% respectively), with cars falling to approximately 26%. Motorcycles amongst all vehicle types show the greatest relative divergence where the North having 22% of accidents with motorcycles as compared to the other 2 regions (11.3% & 13.4%).
 
 This suggests that the vehicle mix in rural accidents is skewed towards vehicles associated with higher fatality risk (pickups carrying passengers in open beds, and motorcycles), which may contributes to the elevated rural fatality burden identified in Task 2. This will be confirmed again in the next subsection : accident fatalities.
 
-**Caveat:** independence assumption : The vehicle type is recorded per accident, not per casualty, so multi-vehicle crashes may under-represent secondary vehicles. Differences in reporting rates between urban and rural areas may also affect the comparison.
+**Caveat:** The vehicle type is recorded per accident, not per casualty, so multi-vehicle crashes may under-represent secondary vehicles. Differences in reporting rates between urban and rural areas may also affect the comparison.
 :::
 
-### Accident Fatalities 
+### Accident Fatalities
 
 ```{r}
 # Aggregation of original dataset to create visualisation 
@@ -1271,7 +1288,7 @@ It is clear that the motorcycles dominate being the cause of fatal accidents in 
 **Caveat:** The fatal subsample is smaller (Total of = 2,273 fatalities), so regional percentages carry wider confidence intervals.
 :::
 
-## Accident Causes 
+## Accident Causes
 
 To be able to solve a problem the root cause must be identified. Therefore it is necessary to approach this exercise with the same concept : The main causes for the accidents to occur in Thailand is essential to be known if public safety can be achieved.
 
@@ -1458,7 +1475,7 @@ Alcohol/drug involvement is highest for motorcycles (5.8%), which is consistent 
 
 # Task 6 : Public Safety Planning & Management
 
-## Recap of Analysis findings 
+## Recap of Analysis findings
 
 The spatio-temporal kernel density estimates and Clark-Evans tests provide strong evidence that road traffic accidents in Thailand are not randomly distributed, and all three highlighted regions: the Bangkok Metropolitan Region (BMR), Northern Thailand, and North-Eastern Thailand show statistically significant clustering (p \< 2.2 × 10⁻¹⁶).
 
@@ -1480,7 +1497,7 @@ Seasonal peaks (January, April, and December) should be flagged to schedule enfo
 
 Motorcycles being the most common vehicle in fatal accidents, more policies should be enforced for mandatory helmet use, rider training, and infrastructure separation.
 
-## Interpretations requiring additional analysis 
+## Interpretations requiring additional analysis
 
 It is determined that fatality intensity is higher in rural areas may likely be due to longer emergency response times. But more analysis is required where hospital locations are needed to look at hospital access, or current road design to have a better understanding on how exactly should the roads be improved for public safety.
 
