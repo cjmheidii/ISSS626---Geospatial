@@ -1007,3 +1007,254 @@ shan_sf_ngeo_cluster %>%
             mean_MPHONE_PR = mean(MPHONE_PR),
             mean_COMPUTER_PR = mean(COMPUTER_PR))
 ```
+
+# Examples 
+
+## importing of data 
+
+```{r}
+
+hunan <- st_read("data/geospatial/hunan/Hunan.shp") %>%
+  st_transform(crs = 32650)
+
+# Hunan_2012.csv has City = "Changsha" twice, once with a trailing space. So str_trim is done to ensure the issue is fixed. 
+hunan_2012 <- read_csv("data/aspatial/Hunan_2012.csv") %>%
+  mutate(City = str_trim(City)) 
+```
+
+Now we need to join the data, in which we need to figure out which columns to utilise for the join. And from looking in the environment tab "county" is determined as the best column to use. However at times, there may be rows with issues with joining (Without the County value in the row) in which the code chunk below will check for.
+
+```{r}
+hunan_2012 %>%
+  anti_join(st_drop_geometry(hunan), by = "County")
+```
+
+Since result is 0, we can move on with joining the files.
+
+```{R}
+hunan <- left_join(hunan, hunan_2012, by = "County")
+```
+
+## Data engineering & EDA of data. 
+
+As in the Shan exercise, raw totals mostly reflect **county size**, so we will convert them to per-capita measures. Counties with larger populations will naturally have larger deposits, investment, etc..
+
+```{r}
+hunan_derived <- hunan %>%
+  mutate(DEPOSIT_PC = deposite / Pop_T,
+         LOAN_PC    = Loan     / Pop_T,
+         FAI_PC     = FAI      / Pop_T,
+         GIO_PC     = GIO      / Pop_T,
+         RSCG_PC    = RSCG     / Pop_T,
+         GOVREV_PC  = Gov_Rev  / Pop_T,
+         BED_PC     = Bed      / Pop_T)
+
+hunan_derived %>%
+  st_drop_geometry() %>%
+  select(GDPPC, avg_wage, NIPCR, ends_with("_PC")) %>%
+  summary()
+```
+
+## EXAMPLE 1 : EDA using Hunan's dataset 
+
+Now we will compare the raw total for the GDP as compared to the per-capita version
+
+```{r}
+p1 <- ggplot(hunan_derived, aes(x = GIO)) +
+  geom_histogram(bins = 20, color = "black", fill = "light blue") +
+  ggtitle("Gross industrial output (raw)")
+
+p2 <- ggplot(hunan_derived, aes(x = GIO_PC)) +
+  geom_histogram(bins = 20, color = "black", fill = "light blue") +
+  ggtitle("Gross industrial output per capita")
+
+ggarrange(p1, p2, ncol = 2)
+```
+
+::: callout-note
+Analysis :
+
+Similar to the Myanmar example, both histograms are strongly right-skewed.
+
+In this case most counties lies in the lowest bins at under \~15,000 for \`GIO\`, and under \~25 for \`GIO_PC\`, with a long tail from a handful of industrial counties with three above 100,000 in \`GIO\`, and one near 280 in \`GIO_PC\`.
+
+However unlike \`RADIO\` vs \`RADIO_PR\` in the Shan exercise, where dividing by households gave an almost symmetric distribution, the per-capita version here is only slightly better.
+
+So overall this suggests the skew reflects genuine concentration of industry in a few counties, and not just county size.
+
+***This is the reason why these EDA plots and data engineering has to be done even though it seems simple to do to ensure accuracy in the analysis. We will never know if the data is truly skewed unless these steps are done***
+:::
+
+```{r}
+b1 <- ggplot(hunan_derived, aes(x = GIO)) +
+  geom_boxplot(color = "black", fill = "light blue")
+
+b2 <- ggplot(hunan_derived, aes(x = GIO_PC)) +
+  geom_boxplot(color = "black", fill = "light blue")
+
+ggarrange(b1, b2, ncol = 1)
+```
+
+::: callout-note
+Analysis :
+
+Other than the usual :
+
+- GIO_PC\`
+
+  - median : \~20,
+
+  - IQR : \~10–36
+
+  - seven outliers, with one extreme county near 280.
+
+<!-- -->
+
+-  GIO
+
+  - median : \~11,000
+
+  -  IQR : \~5,000–22,000
+
+  - eight outliers stretching to \~150,000.
+
+***In the initial exercise, normalising cut the outliers from three to one, because they were just the most populous townships. However the outlier count barely changes (about 8 to 7), so these counties are truly industry-intensive, not merely large (as again supporting the histogram visual thats just made).***
+:::
+
+## EXAMPLE 2 : Correlation Analysis 
+
+So again before the correlation analysis is done we have to create the heatmap to check for highly correlated variables. These should be removed since not doing so would cause the curse of multicollinearity which will affect the overall accuracy of the data.
+
+```{r}
+cand <- hunan_derived %>%
+  st_drop_geometry() %>%
+  select(GDPPC, avg_wage, NIPCR, DEPOSIT_PC, LOAN_PC,
+         FAI_PC, GIO_PC, RSCG_PC, GOVREV_PC, BED_PC)
+
+corrplot.mixed(cor(cand),
+               lower = "ellipse",
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+
+::: callout-note
+From here, we can see that the several pairs exceed r = 0.8 (for example `FAI_PC` and `GIO_PC` at about 0.90, and `GDPPC` with `GOVREV_PC`, `RSCG_PC` and `NIPCR`).
+
+So the code below will drop the highly correlated variables then run the analysis.
+:::
+
+```{r}
+pacman::p_load(caret)
+cor_full <- cor(cand)
+
+# Flag variables to drop at |r| > 0.8
+high_cor_idx <- findCorrelation(cor_full, cutoff = 0.8)
+drop_vars    <- colnames(cand)[high_cor_idx]
+drop_vars
+
+# Drop the flagged variables 
+cand_reduced <- cand %>% select(-all_of(drop_vars))
+names(cand_reduced)
+
+
+# Run correlation analysis on the reduced set
+cor_reduced <- cor(cand_reduced)
+
+corrplot.mixed(cor_reduced,
+               lower = "ellipse",
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+
+max(abs(cor_reduced[upper.tri(cor_reduced)]))
+
+```
+
+::: callout-note
+**Analysis:**
+
+After removing highly correlated variables (\|r\| \> 0.8), the strongest remaining pairwise correlation is 0.79, so no pair exceeds the cutoff. This is still a strong relationship, so the remaining variables are not fully independent, but the overlap is small enough to keep them together in the clustering.
+:::
+
+## EXAMPLE 3 : Hierarchical Cluster Analysis
+
+### preparing Clustering Data 
+
+```{r}
+cluster_vars <- hunan_derived %>%
+  st_drop_geometry() %>%
+  select(County, avg_wage, NIPCR, DEPOSIT_PC, FAI_PC, BED_PC) %>%
+  column_to_rownames("County")
+
+head(cluster_vars)
+```
+
+### Standardisation 
+
+```{r}
+hunan_z <- scale(cluster_vars)
+describe(hunan_z)
+```
+
+### Proximity matrix & Clustering 
+
+```{r}
+proxmat <- dist(hunan_z, method = "euclidean")
+hclust_ward <- hclust(proxmat, method = "ward.D2")
+plot(hclust_ward, cex = 0.5)
+```
+
+## Selecting the clustering algorithm
+
+Now we need to select the best clustering algorithm to use for our new example. For each different type of data will have a different optimal clustering algorithm!
+
+```{r}
+m <- c("average", "single", "complete", "ward")
+names(m) <- m
+
+ac <- function(x) {
+  agnes(hunan_z, method = x)$ac
+}
+
+map_dbl(m, ac)
+```
+
+::: callout-note
+For this case, similar to the initial Myanmar case, the Ward method is the best to use.
+:::
+
+### Number of clusters (optimal) 
+
+Now with the best clustering method we will look at how many clusters is the best for the analysis.
+
+```{r}
+set.seed(12345)
+gap_stat <- clusGap(hunan_z, FUN = hcut, nstart = 25, K.max = 10, B = 50)
+print(gap_stat, method = "firstmax")
+fviz_gap_stat(gap_stat)
+```
+
+```{r}
+
+p_sil <- fviz_nbclust(hunan_z, hcut, method = "silhouette")
+p_wss <- fviz_nbclust(hunan_z, hcut, method = "wss")
+ggarrange(p_sil, p_wss, ncol = 2)
+```
+
+::: callout-note
+The statistical criteria favour a very small k (silhouette peaks at k = 2 and drops sharply from k = 3 to k = 4).
+
+it would be best to choose **k = 4** because k = 3 already isolates a single county (Jishou, which has an extreme `BED_PC`), while k = 4 additionally splits the remaining counties into interpretable development tiers.
+:::
+
+So now with the WARD clustering method used and k=4, we will do the final clustering!
+
+```{r}
+k <- 4
+
+plot(hclust_ward, cex = 0.5)
+rect.hclust(hclust_ward, k = k, border = 2:5)
+```
