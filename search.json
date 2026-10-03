@@ -438,7 +438,7 @@
     "href": "index.html#coursework",
     "title": "ISSS626 - Geospatial",
     "section": "Coursework",
-    "text": "Coursework\n\n\n\n\n\n\nTitle\n\n\n\nLast Modified\n\n\n\n\n\n\n\n\nIn class exercise 5\n\n\nOct 3, 2026\n\n\n\n\n\n\nTake Home Exercise 2\n\n\nOct 3, 2026\n\n\n\n\n\n\nHands on Exercise 6\n\n\nSep 30, 2026\n\n\n\n\n\n\nTake-Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nTake Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nHands-on Exercise 5B\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 5A\n\n\nSep 23, 2026\n\n\n\n\n\n\nIn-Class Exercise 4\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 4\n\n\nSep 16, 2026\n\n\n\n\n\n\nHands on Exercise 1A\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis\n\n\nSep 10, 2026\n\n\n\n\n\n\nNo matching items"
+    "text": "Coursework\n\n\n\n\n\n\nTitle\n\n\n\nLast Modified\n\n\n\n\n\n\n\n\nIn class Exercise 6\n\n\nOct 3, 2026\n\n\n\n\n\n\nIn class exercise 5\n\n\nOct 3, 2026\n\n\n\n\n\n\nTake Home Exercise 2\n\n\nOct 3, 2026\n\n\n\n\n\n\nHands on Exercise 6\n\n\nSep 30, 2026\n\n\n\n\n\n\nTake-Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nTake Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nHands-on Exercise 5B\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 5A\n\n\nSep 23, 2026\n\n\n\n\n\n\nIn-Class Exercise 4\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 4\n\n\nSep 16, 2026\n\n\n\n\n\n\nHands on Exercise 1A\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis\n\n\nSep 10, 2026\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "Hands-on_Ex/Take-Home_ex01.html",
@@ -1321,5 +1321,89 @@
     "title": "Take Home Exercise 2",
     "section": "Geovisualisation (choropleth, hot-spot prelim, cube viz)",
     "text": "Geovisualisation (choropleth, hot-spot prelim, cube viz)"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html",
+    "href": "Hands-on_Ex/In-class_ex06.html",
+    "title": "In class Exercise 6",
+    "section": "",
+    "text": "Emerging Hot Spots Analysis (EHSA) is a spatio-temporal statistical technique that identifies and categorizes areas where clusters of high or low values of a phenomenon are developing, intensifying, or diminishing over time. It combines the Getis-Ord Gi* statistic, which measures spatial clustering, with the Mann-Kendall trend test, a non-parametric trend analysis, to detect trends in these clusters within a “space-time cube” of data. This process allows for the detection of patterns such as new hot spots, persistent trends, or diminishing cold spots across different confidence levels.\nThe analysis consist of four main steps:\n\nBuilding a space-time cube,\nCalculating Getis-Ord local Gi* statistic for each bin by using an FDR correction,\nEvaluating these hot and cold spot trends by using Mann-Kendall trend test,\nCategorising each study area location by referring to the resultant trend z-score and p-value for each location with data, and with the hot spot z-score and p-value for each bin."
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#importing-geospatial-data",
+    "href": "Hands-on_Ex/In-class_ex06.html#importing-geospatial-data",
+    "title": "In class Exercise 6",
+    "section": "Importing Geospatial Data",
+    "text": "Importing Geospatial Data\n\npacman::p_load(sf, sfdep, tmap, \n               plotly, tidyverse, \n               Kendall)\n\nIn the code chunk below st_read() of sf package is used to import hunan shapefile into R\n\n# Hunan county boundary layer\nhunan &lt;- st_read(\"data/geospatial/hunan/Hunan.shp\")\n\nReading layer `Hunan' from data source \n  `C:\\cjmheidii\\ISSS626 - Geospatial\\Hands-on_Ex\\data\\geospatial\\hunan\\Hunan.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\n\nGDPPC &lt;-read_csv(\"data/aspatial/Hunan_GDPPC.csv\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#creating-time-series-cube",
+    "href": "Hands-on_Ex/In-class_ex06.html#creating-time-series-cube",
+    "title": "In class Exercise 6",
+    "section": "creating Time series cube",
+    "text": "creating Time series cube\nBefore getting started, we need to create a time series cube, where spacetime() is used to create an spatio-temporal cube .\n\nGDPPC_st &lt;- spacetime(GDPPC, hunan,\n                      .loc_col = \"County\",\n                      .time_col = \"Year\")\n\nNext, is_spacetime_cube() of sfdep package will be used to verify if GDPPC_st is indeed an space-time cube object.\n\nis_spacetime_cube(GDPPC_st)\n\n[1] TRUE\n\n\nTRUE here confirms that the GDPPC_st is a spacetime cube"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#computing-gi-1",
+    "href": "Hands-on_Ex/In-class_ex06.html#computing-gi-1",
+    "title": "In class Exercise 6",
+    "section": "Computing GI*",
+    "text": "Computing GI*\nWe can use these new columns to manually calculate the local Gi* for each location. We can do this by grouping by Year and using local_gstar_perm() of sfdep package. After which, we use unnest() to unnest gi_star column of the newly created gi_starts data.frame.\n\ngi_stars &lt;- GDPPC_nb %&gt;% \n  group_by(Year) %&gt;% \n  mutate(gi_star = local_gstar_perm(\n    GDPPC, nb, wt)) %&gt;% \n  tidyr::unnest(gi_star)"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#mann-kendall-test-on-gi",
+    "href": "Hands-on_Ex/In-class_ex06.html#mann-kendall-test-on-gi",
+    "title": "In class Exercise 6",
+    "section": "Mann-Kendall test on Gi",
+    "text": "Mann-Kendall test on Gi\nWith these Gi* measures we can then evaluate each location for a trend using the Mann-Kendall test. The code chunk below uses Changsha county.\n\ncbg &lt;- gi_stars %&gt;% \n  ungroup() %&gt;% \n  filter(County == \"Changsha\") |&gt; \n  select(County, Year, gi_star)\n\nNow the results will be plotted with the ggplot2 functions\n\nggplot(data = cbg, \n       aes(x = Year, \n           y = gi_star)) +\n  geom_line() +\n  theme_light()"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#interactive-mann-kendall-plot",
+    "href": "Hands-on_Ex/In-class_ex06.html#interactive-mann-kendall-plot",
+    "title": "In class Exercise 6",
+    "section": "Interactive Mann-Kendall Plot",
+    "text": "Interactive Mann-Kendall Plot\nWe can also create an interactive plot by using ggplotly() of plotly package.\n\np &lt;- ggplot(data = cbg, \n            aes(x = Year, \n                y = gi_star)) +\n  geom_line() +\n  theme_light()\n\nggplotly(p)"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#printing-mann-kendall-test-report",
+    "href": "Hands-on_Ex/In-class_ex06.html#printing-mann-kendall-test-report",
+    "title": "In class Exercise 6",
+    "section": "Printing Mann-Kendall test report",
+    "text": "Printing Mann-Kendall test report\n\ncbg %&gt;%\n  summarise(mk = list(\n    unclass(\n      Kendall::MannKendall(gi_star)))) %&gt;% \n  tidyr::unnest_wider(mk)\n\n# A tibble: 1 × 5\n    tau      sl     S     D  varS\n  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 0.485 0.00742    66  136.  589.\n\n\nIn the above result, sl is the p-value. With reference to the results, we will reject the hypothesis null and infer that a slight upward trend."
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#mann-kendall-test-data.frame",
+    "href": "Hands-on_Ex/In-class_ex06.html#mann-kendall-test-data.frame",
+    "title": "In class Exercise 6",
+    "section": "Mann-Kendall test data.frame",
+    "text": "Mann-Kendall test data.frame\nWe can replicate this for each location by using group_by() of dplyr package.\n\nehsa &lt;- gi_stars %&gt;%\n  group_by(County) %&gt;%\n  summarise(mk = list(\n    unclass(\n      Kendall::MannKendall(gi_star)))) %&gt;%\n  tidyr::unnest_wider(mk)\nhead(ehsa)\n\n# A tibble: 6 × 6\n  County        tau        sl     S     D  varS\n  &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 Anhua      0.191  0.303        26  136.  589.\n2 Anren     -0.294  0.108       -40  136.  589.\n3 Anxiang    0      1             0  136.  589.\n4 Baojing   -0.691  0.000128    -94  136.  589.\n5 Chaling   -0.0882 0.650       -12  136.  589.\n6 Changning -0.750  0.0000318  -102  136.  589."
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#mann-kendall-test-data.frame-1",
+    "href": "Hands-on_Ex/In-class_ex06.html#mann-kendall-test-data.frame-1",
+    "title": "In class Exercise 6",
+    "section": "Mann-Kendall test data.frame",
+    "text": "Mann-Kendall test data.frame\nWe can also sort to show significant emerging hot/cold spots\n\nemerging &lt;- ehsa %&gt;% \n  arrange(sl, abs(tau)) %&gt;% \n  slice(1:10)\nhead(emerging)\n\n# A tibble: 6 × 6\n  County        tau         sl     S     D  varS\n  &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 Shuangfeng  0.868 0.00000143   118  136.  589.\n2 Xiangtan    0.868 0.00000143   118  136.  589.\n3 Xiangxiang  0.868 0.00000143   118  136.  589.\n4 Chengbu    -0.824 0.00000482  -112  136.  589.\n5 Dongan     -0.824 0.00000482  -112  136.  589.\n6 Wugang     -0.809 0.00000712  -110  136.  589."
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#visualising-the-distribution-of-ehsa-classes",
+    "href": "Hands-on_Ex/In-class_ex06.html#visualising-the-distribution-of-ehsa-classes",
+    "title": "In class Exercise 6",
+    "section": "Visualising the distribution of EHSA classes",
+    "text": "Visualising the distribution of EHSA classes\nIn the code chunk below, ggplot2 functions is used to reveal the distribution of EHSA classes as a bar chart.\n\nggplot(data = ehsa,\n       aes(x = classification)) +\n  geom_bar()\n\n\n\n\n\n\n\n\nFigure above shows that sporadic cold spots class has the high numbers of county."
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#visualising-ehsa",
+    "href": "Hands-on_Ex/In-class_ex06.html#visualising-ehsa",
+    "title": "In class Exercise 6",
+    "section": "Visualising EHSA",
+    "text": "Visualising EHSA\nIn this section, you will learn how to visualise the geographic distribution EHSA classes. However, before we can do so, we need to join both hunan and ehsa together by using the code chunk below.\n\nhunan_ehsa &lt;- hunan %&gt;%\n  left_join(ehsa,\n            by = join_by(County == location))\n\nNext, tmap functions will be used to plot a categorical choropleth map by using the code chunk below.\n\nehsa_sig &lt;- hunan_ehsa  %&gt;%\n  filter(p_value &lt; 0.05)\ntmap_mode(\"plot\")\ntm_shape(hunan_ehsa) +\n  tm_polygons() +\n  tm_borders(fill_alpha = 0.5) +\n  tm_shape(ehsa_sig) +\n  tm_fill(\"classification\") + \n  tm_borders(fill_alpha = 0.4)"
+  },
+  {
+    "objectID": "Hands-on_Ex/In-class_ex06.html#interpretation-of-ehsa-classes",
+    "href": "Hands-on_Ex/In-class_ex06.html#interpretation-of-ehsa-classes",
+    "title": "In class Exercise 6",
+    "section": "Interpretation of EHSA classes",
+    "text": "Interpretation of EHSA classes"
   }
 ]
