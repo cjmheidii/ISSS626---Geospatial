@@ -40,13 +40,13 @@ website:
           - href: Hands-on_Ex/Take-Home_ex02 Presentation.html 
             text: "Take-Home Exercise 2 Presentation"            
                         
-      - text: "In-Class Exercise"
+      - text: "In-Class Exercise" 
         menu: 
           - href: Hands-on_Ex/In-class_ex04.html
             text: "In-Class Exercise 4"
           - href: Hands-on_Ex/In-class_ex05.html
             text: "In-Class Exercise 5"   
-          - href: Hands-on_Ex/In-class_ex06.html
+          - href: Hands-on_Ex/In-class_ex06.html"
             text: "In-Class Exercise 6"               
     right:
       - href: index.qmd
