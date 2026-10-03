@@ -1,5 +1,5 @@
 ---
-title: "In class Exercise 6"
+title: "In-Class Exercise 6"
 subtitle: "Emerging Hotspot Analysis"
 author: "Chong Jia Min Heidi"
 format: html
