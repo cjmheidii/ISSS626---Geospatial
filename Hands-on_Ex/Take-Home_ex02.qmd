@@ -1,0 +1,55 @@
+---
+title: "Take Home Exercise 2"
+author: "Chong Jia Min Heidi"
+format: html
+date: "October 3 2026"
+date-modified: "last-modified"
+execute:
+  echo: true 
+  eval: true 
+  warning: false 
+  freeze: true
+  message: false
+---
+
+# Overview
+
+::: callout-warning
+STILL A WORK IN PROGRESS (WIP)
+
+NOT DONE YET ONLY DRAFTING OF OUTLINE!
+:::
+
+Myanmar has been in armed conflict since 1948, when the country, then known as Burma, gained independence from the United Kingdom. The conflict has largely been ethnic-based, with ethnic armed organisations fighting Myanmar’s armed forces, the Tatmadaw, for self-determination. Despite numerous ceasefires and the creation of autonomous self-administered zones in 2008, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar. It is the world’s longest ongoing civil war, spanning almost eight decades.
+
+In February 2021, Myanmar’s military seized control of the country, overthrowing the government elected in 2020 and led by the National League for Democracy. Initially, some believed that the newly established military government would quickly suppress protests and restore order. Instead, the junta’s repression – marked by arbitrary arrests and indiscriminate violence – intensified the conflict. Since then, Myanmar has descended into civil war, causing thousands of deaths and displacing over three million people. Many civilians fled to forests and mountainous areas or joined the armed groups opposing the military, abandoning peaceful protests in favor of armed resistance. The country soon became fragmented into multiple zones controlled by different groups, with large areas slipping almost entirely out of the junta’s grasp.
+
+## Objectives 
+
+# Literature Review 
+
+# Data 
+
+# Getting Started 
+
+## Importing of Data 
+
+## Data Wrangling
+
+## Assumptions & Limitations in data 
+
+# Task 1 : Geospatial Data Science
+
+## Data aggregation & conflict variable construction (township level) 
+
+## Space-time cube construction
+
+## Geovisualisation (choropleth, hot-spot prelim, cube viz)
+
+# Task 2 : Local Measures of Spatial Association (LMSA) Analysis
+
+# Task 3: Emerging Hot Spot Analysis(EHSA)
+
+# Analysis Summary & Conclusions
+
+# Limitations & Future Research

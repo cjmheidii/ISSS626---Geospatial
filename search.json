@@ -438,7 +438,7 @@
     "href": "index.html#coursework",
     "title": "ISSS626 - Geospatial",
     "section": "Coursework",
-    "text": "Coursework\n\n\n\n\n\n\nTitle\n\n\n\nLast Modified\n\n\n\n\n\n\n\n\nIn class exercise 5\n\n\n \n\n\n\n\n\n\nHands on Exercise 6\n\n\nSep 30, 2026\n\n\n\n\n\n\nTake-Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nTake Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nHands-on Exercise 5B\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 5A\n\n\nSep 23, 2026\n\n\n\n\n\n\nIn-Class Exercise 4\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 4\n\n\nSep 16, 2026\n\n\n\n\n\n\nHands on Exercise 1A\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis\n\n\nSep 10, 2026\n\n\n\n\n\n\nNo matching items"
+    "text": "Coursework\n\n\n\n\n\n\nTitle\n\n\n\nLast Modified\n\n\n\n\n\n\n\n\nIn class exercise 5\n\n\n \n\n\n\n\n\n\nTake Home Exercise 2\n\n\nOct 3, 2026\n\n\n\n\n\n\nHands on Exercise 6\n\n\nSep 30, 2026\n\n\n\n\n\n\nTake-Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nTake Home Exercise 1\n\n\nSep 27, 2026\n\n\n\n\n\n\nHands-on Exercise 5B\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 5A\n\n\nSep 23, 2026\n\n\n\n\n\n\nIn-Class Exercise 4\n\n\nSep 23, 2026\n\n\n\n\n\n\nHands-on Exercise 4\n\n\nSep 16, 2026\n\n\n\n\n\n\nHands on Exercise 1A\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods\n\n\nSep 11, 2026\n\n\n\n\n\n\nHands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis\n\n\nSep 10, 2026\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "Hands-on_Ex/Take-Home_ex01.html",
@@ -1272,5 +1272,54 @@
     "title": "Hands on Exercise 6",
     "section": "Selecting the clustering algorithm",
     "text": "Selecting the clustering algorithm\nNow we need to select the best clustering algorithm to use for our new example. For each different type of data will have a different optimal clustering algorithm!\n\nm &lt;- c(\"average\", \"single\", \"complete\", \"ward\")\nnames(m) &lt;- m\n\nac &lt;- function(x) {\n  agnes(hunan_z, method = x)$ac\n}\n\nmap_dbl(m, ac)\n\n  average    single  complete      ward \n0.8843526 0.8754522 0.8986732 0.9409297 \n\n\n\n\n\n\n\n\nNote\n\n\n\nFor this case, similar to the initial Myanmar case, the Ward method is the best to use.\n\n\n\nNumber of clusters (optimal)\nNow with the best clustering method we will look at how many clusters is the best for the analysis.\n\nset.seed(12345)\ngap_stat &lt;- clusGap(hunan_z, FUN = hcut, nstart = 25, K.max = 10, B = 50)\nprint(gap_stat, method = \"firstmax\")\n\nClustering Gap statistic [\"clusGap\"] from call:\nclusGap(x = hunan_z, FUNcluster = hcut, K.max = 10, B = 50, nstart = 25)\nB=50 simulated reference sets, k = 1..10; spaceH0=\"scaledPCA\"\n --&gt; Number of clusters (method 'firstmax'): 2\n          logW   E.logW       gap     SE.sim\n [1,] 4.040574 4.821503 0.7809288 0.02951822\n [2,] 3.846263 4.635473 0.7892100 0.02937352\n [3,] 3.779748 4.499884 0.7201365 0.02832189\n [4,] 3.627489 4.399910 0.7724210 0.02648293\n [5,] 3.563192 4.332130 0.7689386 0.02655156\n [6,] 3.487817 4.274174 0.7863569 0.02458495\n [7,] 3.380377 4.222320 0.8419431 0.02506834\n [8,] 3.325787 4.174157 0.8483701 0.02524225\n [9,] 3.276167 4.128518 0.8523510 0.02571272\n[10,] 3.220678 4.086097 0.8654186 0.02590550\n\nfviz_gap_stat(gap_stat)\n\n\n\n\n\n\n\n\n\np_sil &lt;- fviz_nbclust(hunan_z, hcut, method = \"silhouette\")\np_wss &lt;- fviz_nbclust(hunan_z, hcut, method = \"wss\")\nggarrange(p_sil, p_wss, ncol = 2)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe statistical criteria favour a very small k (silhouette peaks at k = 2 and drops sharply from k = 3 to k = 4).\nit would be best to choose k = 4 because k = 3 already isolates a single county (Jishou, which has an extreme BED_PC), while k = 4 additionally splits the remaining counties into interpretable development tiers.\n\n\nSo now with the WARD clustering method used and k=4, we will do the final clustering!\n\nk &lt;- 4\n\nplot(hclust_ward, cex = 0.5)\nrect.hclust(hclust_ward, k = k, border = 2:5)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html",
+    "href": "Hands-on_Ex/Take-Home_ex02.html",
+    "title": "Take Home Exercise 2",
+    "section": "",
+    "text": "Warning\n\n\n\nSTILL A WORK IN PROGRESS (WIP)\nNOT DONE YET ONLY DRAFTING OF OUTLINE!\n\n\nMyanmar has been in armed conflict since 1948, when the country, then known as Burma, gained independence from the United Kingdom. The conflict has largely been ethnic-based, with ethnic armed organisations fighting Myanmar’s armed forces, the Tatmadaw, for self-determination. Despite numerous ceasefires and the creation of autonomous self-administered zones in 2008, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar. It is the world’s longest ongoing civil war, spanning almost eight decades.\nIn February 2021, Myanmar’s military seized control of the country, overthrowing the government elected in 2020 and led by the National League for Democracy. Initially, some believed that the newly established military government would quickly suppress protests and restore order. Instead, the junta’s repression – marked by arbitrary arrests and indiscriminate violence – intensified the conflict. Since then, Myanmar has descended into civil war, causing thousands of deaths and displacing over three million people. Many civilians fled to forests and mountainous areas or joined the armed groups opposing the military, abandoning peaceful protests in favor of armed resistance. The country soon became fragmented into multiple zones controlled by different groups, with large areas slipping almost entirely out of the junta’s grasp."
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html#importing-of-data",
+    "href": "Hands-on_Ex/Take-Home_ex02.html#importing-of-data",
+    "title": "Take Home Exercise 2",
+    "section": "Importing of Data",
+    "text": "Importing of Data"
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html#data-wrangling",
+    "href": "Hands-on_Ex/Take-Home_ex02.html#data-wrangling",
+    "title": "Take Home Exercise 2",
+    "section": "Data Wrangling",
+    "text": "Data Wrangling"
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html#assumptions-limitations-in-data",
+    "href": "Hands-on_Ex/Take-Home_ex02.html#assumptions-limitations-in-data",
+    "title": "Take Home Exercise 2",
+    "section": "Assumptions & Limitations in data",
+    "text": "Assumptions & Limitations in data"
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html#data-aggregation-conflict-variable-construction-township-level",
+    "href": "Hands-on_Ex/Take-Home_ex02.html#data-aggregation-conflict-variable-construction-township-level",
+    "title": "Take Home Exercise 2",
+    "section": "Data aggregation & conflict variable construction (township level)",
+    "text": "Data aggregation & conflict variable construction (township level)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html#space-time-cube-construction",
+    "href": "Hands-on_Ex/Take-Home_ex02.html#space-time-cube-construction",
+    "title": "Take Home Exercise 2",
+    "section": "Space-time cube construction",
+    "text": "Space-time cube construction"
+  },
+  {
+    "objectID": "Hands-on_Ex/Take-Home_ex02.html#geovisualisation-choropleth-hot-spot-prelim-cube-viz",
+    "href": "Hands-on_Ex/Take-Home_ex02.html#geovisualisation-choropleth-hot-spot-prelim-cube-viz",
+    "title": "Take Home Exercise 2",
+    "section": "Geovisualisation (choropleth, hot-spot prelim, cube viz)",
+    "text": "Geovisualisation (choropleth, hot-spot prelim, cube viz)"
   }
 ]

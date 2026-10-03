@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Chong Jia Min Heidi">
+<meta name="dcterms.date" content="2026-10-03">
 
-<title>ISSS626 - Geospatial</title>
+<title>Take Home Exercise 2 – ISSS626 - Geospatial</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -29,25 +31,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,68 +75,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-recent-exercises .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-date-modified',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      page: 10,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-recent-exercises'] = new List('listing-recent-exercises', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -146,7 +87,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ISSS626 - Geospatial</span>
     </a>
   </div>
@@ -162,39 +103,39 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex01.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex01.html">
  <span class="dropdown-text">Hands-on Exercise 1A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex01B.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex01B.html">
  <span class="dropdown-text">Hands-on Exercise 1B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex02A.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex02A.html">
  <span class="dropdown-text">Hands-on Exercise 2A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex02B.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex02B.html">
  <span class="dropdown-text">Hands-on Exercise 2B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex03.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex03.html">
  <span class="dropdown-text">Hands-on Exercise 3</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex04.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex04.html">
  <span class="dropdown-text">Hands-on Exercise 4</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex05A.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex05A.html">
  <span class="dropdown-text">Hands-on Exercise 5A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex05B.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex05B.html">
  <span class="dropdown-text">Hands-on Exercise 5B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_ex06.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex06.html">
  <span class="dropdown-text">Hands-on Exercise 6</span></a>
   </li>  
     </ul>
@@ -205,19 +146,19 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Take-Home_ex01.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Take-Home_ex01.html">
  <span class="dropdown-text">Take-Home Exercise 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Take-Home_ex01 Presentation.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Take-Home_ex01 Presentation.html">
  <span class="dropdown-text">Take-Home Exercise 1 Presentation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Take-Home_ex02.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Take-Home_ex02.html">
  <span class="dropdown-text">Take-Home Exercise 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Take-Home_ex02 Presentation.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/Take-Home_ex02 Presentation.html">
  <span class="dropdown-text">Take-Home Exercise 2 Presentation</span></a>
   </li>  
     </ul>
@@ -228,11 +169,11 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/In-class_ex04.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/In-class_ex04.html">
  <span class="dropdown-text">In-Class Exercise 4</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/In-class_ex05.html">
+    <a class="dropdown-item" href="../Hands-on_Ex/In-class_ex05.html">
  <span class="dropdown-text">In-Class Exercise 5</span></a>
   </li>  
     </ul>
@@ -240,11 +181,11 @@ window.Quarto = {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -263,7 +204,28 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#coursework" id="toc-coursework" class="nav-link active" data-scroll-target="#coursework">Coursework</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a>
+  <ul class="collapse">
+  <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives">Objectives</a></li>
+  </ul></li>
+  <li><a href="#literature-review" id="toc-literature-review" class="nav-link" data-scroll-target="#literature-review">Literature Review</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#importing-of-data" id="toc-importing-of-data" class="nav-link" data-scroll-target="#importing-of-data">Importing of Data</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
+  <li><a href="#assumptions-limitations-in-data" id="toc-assumptions-limitations-in-data" class="nav-link" data-scroll-target="#assumptions-limitations-in-data">Assumptions &amp; Limitations in data</a></li>
+  </ul></li>
+  <li><a href="#task-1-geospatial-data-science" id="toc-task-1-geospatial-data-science" class="nav-link" data-scroll-target="#task-1-geospatial-data-science">Task 1 : Geospatial Data Science</a>
+  <ul class="collapse">
+  <li><a href="#data-aggregation-conflict-variable-construction-township-level" id="toc-data-aggregation-conflict-variable-construction-township-level" class="nav-link" data-scroll-target="#data-aggregation-conflict-variable-construction-township-level">Data aggregation &amp; conflict variable construction (township level)</a></li>
+  <li><a href="#space-time-cube-construction" id="toc-space-time-cube-construction" class="nav-link" data-scroll-target="#space-time-cube-construction">Space-time cube construction</a></li>
+  <li><a href="#geovisualisation-choropleth-hot-spot-prelim-cube-viz" id="toc-geovisualisation-choropleth-hot-spot-prelim-cube-viz" class="nav-link" data-scroll-target="#geovisualisation-choropleth-hot-spot-prelim-cube-viz">Geovisualisation (choropleth, hot-spot prelim, cube viz)</a></li>
+  </ul></li>
+  <li><a href="#task-2-local-measures-of-spatial-association-lmsa-analysis" id="toc-task-2-local-measures-of-spatial-association-lmsa-analysis" class="nav-link" data-scroll-target="#task-2-local-measures-of-spatial-association-lmsa-analysis">Task 2 : Local Measures of Spatial Association (LMSA) Analysis</a></li>
+  <li><a href="#task-3-emerging-hot-spot-analysisehsa" id="toc-task-3-emerging-hot-spot-analysisehsa" class="nav-link" data-scroll-target="#task-3-emerging-hot-spot-analysisehsa">Task 3: Emerging Hot Spot Analysis(EHSA)</a></li>
+  <li><a href="#analysis-summary-conclusions" id="toc-analysis-summary-conclusions" class="nav-link" data-scroll-target="#analysis-summary-conclusions">Analysis Summary &amp; Conclusions</a></li>
+  <li><a href="#limitations-future-research" id="toc-limitations-future-research" class="nav-link" data-scroll-target="#limitations-future-research">Limitations &amp; Future Research</a></li>
   </ul>
 </nav>
     </div>
@@ -272,15 +234,33 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">ISSS626 - Geospatial</h1>
+<h1 class="title">Take Home Exercise 2</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Chong Jia Min Heidi </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 3, 2026</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">October 3, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -289,215 +269,69 @@ window.Quarto = {
 </header>
 
 
-<div class="radar-field" aria-hidden="true">
-  <svg viewbox="0 0 1200 800" preserveaspectratio="xMidYMid slice">
-    <!-- RING system with closer spacing -->
-    <circle class="radar-ring" cx="600" cy="400" r="180"></circle>
-    <circle class="radar-ring" cx="600" cy="400" r="320"></circle>
-    <circle class="radar-ring" cx="600" cy="400" r="460"></circle>
-    <circle class="radar-ring" cx="600" cy="400" r="600"></circle>
-
-    <!-- 10 markers -->
-    <circle class="radar-dot" cx="120" cy="90" r="8"></circle>
-    <circle class="radar-dot" cx="600" cy="60" r="8"></circle>
-    <circle class="radar-dot" cx="1080" cy="100" r="8"></circle>
-    <circle class="radar-dot" cx="90" cy="400" r="8"></circle>
-    <circle class="radar-dot" cx="1110" cy="380" r="8"></circle>
-    <circle class="radar-dot" cx="300" cy="700" r="8"></circle>
-    <circle class="radar-dot" cx="600" cy="740" r="8"></circle>
-    <circle class="radar-dot" cx="900" cy="710" r="8"></circle>
-    <circle class="radar-dot" cx="350" cy="250" r="8"></circle>
-    <circle class="radar-dot" cx="850" cy="550" r="8"></circle>
-
-    <!-- Pulsing blips -->
-    <circle class="radar-blip" cx="120" cy="90" r="8" style="animation-delay:0s"></circle>
-    <circle class="radar-blip" cx="600" cy="60" r="8" style="animation-delay:0.6s"></circle>
-    <circle class="radar-blip" cx="1080" cy="100" r="8" style="animation-delay:1.2s"></circle>
-    <circle class="radar-blip" cx="90" cy="400" r="8" style="animation-delay:1.8s"></circle>
-    <circle class="radar-blip" cx="1110" cy="380" r="8" style="animation-delay:2.4s"></circle>
-    <circle class="radar-blip" cx="300" cy="700" r="8" style="animation-delay:3.0s"></circle>
-    <circle class="radar-blip" cx="600" cy="740" r="8" style="animation-delay:3.6s"></circle>
-    <circle class="radar-blip" cx="900" cy="710" r="8" style="animation-delay:4.2s"></circle>
-    <circle class="radar-blip" cx="350" cy="250" r="8" style="animation-delay:4.8s"></circle>
-    <circle class="radar-blip" cx="850" cy="550" r="8" style="animation-delay:5.4s"></circle>
-  </svg>
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div class="hero-banner">
-<div class="hero-content">
-<p>Welcome to <strong>ISSS626 Geo-spatial Analytics</strong> Home Page.</p>
-<p>In this website, you will find my coursework prepared for this course.</p>
-<p>Within it will have my Hands-on exercises as well as take home exercise submissions.</p>
-<p>Click on the Hands-on Exercise dropdown to select and review all lessons learnt at home before class.</p>
-<p>Click on the Take-Home Exercise dropdown to select and review all assignments that are completed within this course.</p>
+<div class="callout-title-container flex-fill">
+Warning
 </div>
 </div>
-<section id="coursework" class="level2">
-<h2 class="anchored" data-anchor-id="coursework">Coursework</h2>
-<div id="listing-recent-exercises" class="quarto-listing quarto-listing-container-table">
-<table class="quarto-listing-table table">
-<thead>
-<tr>
-
-<th>
-Title
-</th>
-
-<th>
-Last Modified
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-listing-file-modified-sort="1790408165280" data-listing-reading-time-sort="3" data-listing-word-count-sort="463" data-listing-title-sort="In class exercise 5" data-listing-filename-sort="In-class_ex05.qmd">
-<td>
-<a href="./Hands-on_Ex/In-class_ex05.html" class="title listing-title">In class exercise 5</a>
-</td>
-<td>
-<span class="listing-date-modified">&nbsp;</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-listing-date-sort="1790956800000" data-listing-file-modified-sort="1791003922519" data-listing-date-modified-sort="1791003922000" data-listing-reading-time-sort="2" data-listing-word-count-sort="280" data-listing-title-sort="Take Home Exercise 2" data-listing-filename-sort="Take-Home_ex02.qmd">
-<td>
-<a href="./Hands-on_Ex/Take-Home_ex02.html" class="title listing-title">Take Home Exercise 2</a>
-</td>
-<td>
-<span class="listing-date-modified">Oct 3, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-listing-date-sort="1790524800000" data-listing-file-modified-sort="1790761008860" data-listing-date-modified-sort="1790761008000" data-listing-reading-time-sort="39" data-listing-word-count-sort="7694" data-listing-title-sort="Hands on Exercise 6" data-listing-filename-sort="Hands-on_ex06.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex06.html" class="title listing-title">Hands on Exercise 6</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 30, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-listing-date-sort="1789142400000" data-listing-file-modified-sort="1790440811136" data-listing-date-modified-sort="1790440811000" data-listing-reading-time-sort="62" data-listing-word-count-sort="12377" data-listing-title-sort="Take-Home Exercise 1" data-listing-filename-sort="Take-Home_ex01.qmd">
-<td>
-<a href="./Hands-on_Ex/Take-Home_ex01.html" class="title listing-title">Take-Home Exercise 1</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 27, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-listing-date-sort="1790352000000" data-listing-file-modified-sort="1790439188186" data-listing-date-modified-sort="1790439188000" data-listing-reading-time-sort="5" data-listing-word-count-sort="864" data-listing-title-sort="Take Home Exercise 1" data-listing-filename-sort="Take-Home_ex01 Presentation.qmd">
-<td>
-<a href="./Hands-on_Ex/Take-Home_ex01 Presentation.html" class="title listing-title">Take Home Exercise 1</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 27, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-listing-date-sort="1790092800000" data-listing-file-modified-sort="1790176025989" data-listing-date-modified-sort="1790176025000" data-listing-reading-time-sort="25" data-listing-word-count-sort="4984" data-listing-title-sort="Hands-on Exercise 5B" data-listing-filename-sort="Hands-on_ex05B.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex05B.html" class="title listing-title">Hands-on Exercise 5B</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 23, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="6" data-listing-date-sort="1790092800000" data-listing-file-modified-sort="1790176023969" data-listing-date-modified-sort="1790176023000" data-listing-reading-time-sort="16" data-listing-word-count-sort="3124" data-listing-title-sort="Hands-on Exercise 5A" data-listing-filename-sort="Hands-on_ex05A.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex05A.html" class="title listing-title">Hands-on Exercise 5A</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 23, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="7" data-listing-date-sort="1789747200000" data-listing-file-modified-sort="1790148171964" data-listing-date-modified-sort="1790148171000" data-listing-reading-time-sort="4" data-listing-word-count-sort="793" data-listing-title-sort="In-Class Exercise 4" data-listing-filename-sort="In-class_ex04.qmd">
-<td>
-<a href="./Hands-on_Ex/In-class_ex04.html" class="title listing-title">In-Class Exercise 4</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 23, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="8" data-listing-date-sort="1789401600000" data-listing-file-modified-sort="1789561492233" data-listing-date-modified-sort="1789561492000" data-listing-reading-time-sort="16" data-listing-word-count-sort="3193" data-listing-title-sort="Hands-on Exercise 4" data-listing-filename-sort="Hands-on_ex04.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex04.html" class="title listing-title">Hands-on Exercise 4</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 16, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="9" data-listing-date-sort="1787673600000" data-listing-file-modified-sort="1789124755447" data-listing-date-modified-sort="1789124755000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1101" data-listing-title-sort="Hands on Exercise 1A" data-listing-filename-sort="Hands-on_ex01.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex01.html" class="title listing-title">Hands on Exercise 1A</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="10" data-listing-date-sort="1788278400000" data-listing-file-modified-sort="1789124319509" data-listing-date-modified-sort="1789124319000" data-listing-reading-time-sort="19" data-listing-word-count-sort="3797" data-listing-title-sort="Hands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods" data-listing-filename-sort="Hands-on_ex02A.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex02A.html" class="title listing-title">Hands-on Exercise 2A - 1st Order Spatial Point Patterns Analysis Methods</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="11" data-listing-date-sort="1787760000000" data-listing-file-modified-sort="1789124317940" data-listing-date-modified-sort="1789124317000" data-listing-reading-time-sort="24" data-listing-word-count-sort="4609" data-listing-title-sort="Hands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R" data-listing-filename-sort="Hands-on_ex01B.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex01B.html" class="title listing-title">Hands-On Exercise 1B : Thematic Mapping and GeoVisualisation with R</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="12" data-listing-date-sort="1788364800000" data-listing-file-modified-sort="1789124316131" data-listing-date-modified-sort="1789124316000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1871" data-listing-title-sort="Hands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods" data-listing-filename-sort="Hands-on_ex02B.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex02B.html" class="title listing-title">Hands on Exercise 2B - 2nd Order Spatial Point Patterns Analysis Methods</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 11, 2026</span>
-</td>
-
-</tr>
-
-<tr data-index="13" data-listing-date-sort="1788710400000" data-listing-file-modified-sort="1789046873969" data-listing-date-modified-sort="1789046873000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1812" data-listing-title-sort="Hands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis" data-listing-filename-sort="Hands-on_ex03.qmd">
-<td>
-<a href="./Hands-on_Ex/Hands-on_ex03.html" class="title listing-title">Hands-on Exercise 3 - Spatio-Temporal Point Patterns Analysis</a>
-</td>
-<td>
-<span class="listing-date-modified">Sep 10, 2026</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-<nav id="recent-exercises-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
+<div class="callout-body-container callout-body">
+<p>STILL A WORK IN PROGRESS (WIP)</p>
+<p>NOT DONE YET ONLY DRAFTING OF OUTLINE!</p>
 </div>
-
+</div>
+<p>Myanmar has been in armed conflict since 1948, when the country, then known as Burma, gained independence from the United Kingdom. The conflict has largely been ethnic-based, with ethnic armed organisations fighting Myanmar’s armed forces, the Tatmadaw, for self-determination. Despite numerous ceasefires and the creation of autonomous self-administered zones in 2008, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar. It is the world’s longest ongoing civil war, spanning almost eight decades.</p>
+<p>In February 2021, Myanmar’s military seized control of the country, overthrowing the government elected in 2020 and led by the National League for Democracy. Initially, some believed that the newly established military government would quickly suppress protests and restore order. Instead, the junta’s repression – marked by arbitrary arrests and indiscriminate violence – intensified the conflict. Since then, Myanmar has descended into civil war, causing thousands of deaths and displacing over three million people. Many civilians fled to forests and mountainous areas or joined the armed groups opposing the military, abandoning peaceful protests in favor of armed resistance. The country soon became fragmented into multiple zones controlled by different groups, with large areas slipping almost entirely out of the junta’s grasp.</p>
+<section id="objectives" class="level2">
+<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+</section>
+</section>
+<section id="literature-review" class="level1">
+<h1>Literature Review</h1>
+</section>
+<section id="data" class="level1">
+<h1>Data</h1>
+</section>
+<section id="getting-started" class="level1">
+<h1>Getting Started</h1>
+<section id="importing-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-of-data">Importing of Data</h2>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
+</section>
+<section id="assumptions-limitations-in-data" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions-limitations-in-data">Assumptions &amp; Limitations in data</h2>
+</section>
+</section>
+<section id="task-1-geospatial-data-science" class="level1">
+<h1>Task 1 : Geospatial Data Science</h1>
+<section id="data-aggregation-conflict-variable-construction-township-level" class="level2">
+<h2 class="anchored" data-anchor-id="data-aggregation-conflict-variable-construction-township-level">Data aggregation &amp; conflict variable construction (township level)</h2>
+</section>
+<section id="space-time-cube-construction" class="level2">
+<h2 class="anchored" data-anchor-id="space-time-cube-construction">Space-time cube construction</h2>
+</section>
+<section id="geovisualisation-choropleth-hot-spot-prelim-cube-viz" class="level2">
+<h2 class="anchored" data-anchor-id="geovisualisation-choropleth-hot-spot-prelim-cube-viz">Geovisualisation (choropleth, hot-spot prelim, cube viz)</h2>
+</section>
+</section>
+<section id="task-2-local-measures-of-spatial-association-lmsa-analysis" class="level1">
+<h1>Task 2 : Local Measures of Spatial Association (LMSA) Analysis</h1>
+</section>
+<section id="task-3-emerging-hot-spot-analysisehsa" class="level1">
+<h1>Task 3: Emerging Hot Spot Analysis(EHSA)</h1>
+</section>
+<section id="analysis-summary-conclusions" class="level1">
+<h1>Analysis Summary &amp; Conclusions</h1>
+</section>
+<section id="limitations-future-research" class="level1">
+<h1>Limitations &amp; Future Research</h1>
 
 
 </section>
