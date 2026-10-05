@@ -28,6 +28,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -75,6 +110,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -176,6 +215,10 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="../Hands-on_Ex/In-class_ex05.html">
  <span class="dropdown-text">In-Class Exercise 5</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_Ex/In-class_ex06.html">
+ <span class="dropdown-text">In-Class Exercise 6</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -208,22 +251,28 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives">Objectives</a></li>
   </ul></li>
-  <li><a href="#literature-review" id="toc-literature-review" class="nav-link" data-scroll-target="#literature-review">Literature Review</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+  <li><a href="#geospatial-data" id="toc-geospatial-data" class="nav-link" data-scroll-target="#geospatial-data">Geospatial Data</a></li>
+  <li><a href="#aspatial-data" id="toc-aspatial-data" class="nav-link" data-scroll-target="#aspatial-data">Aspatial Data</a></li>
+  </ul></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a>
   <ul class="collapse">
-  <li><a href="#importing-of-data" id="toc-importing-of-data" class="nav-link" data-scroll-target="#importing-of-data">Importing of Data</a></li>
-  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
-  <li><a href="#assumptions-limitations-in-data" id="toc-assumptions-limitations-in-data" class="nav-link" data-scroll-target="#assumptions-limitations-in-data">Assumptions &amp; Limitations in data</a></li>
-  </ul></li>
-  <li><a href="#task-1-geospatial-data-science" id="toc-task-1-geospatial-data-science" class="nav-link" data-scroll-target="#task-1-geospatial-data-science">Task 1 : Geospatial Data Science</a>
+  <li><a href="#loading-of-packages" id="toc-loading-of-packages" class="nav-link" data-scroll-target="#loading-of-packages">Loading of Packages</a></li>
+  <li><a href="#importing-of-data" id="toc-importing-of-data" class="nav-link" data-scroll-target="#importing-of-data">Importing of Data</a>
   <ul class="collapse">
-  <li><a href="#data-aggregation-conflict-variable-construction-township-level" id="toc-data-aggregation-conflict-variable-construction-township-level" class="nav-link" data-scroll-target="#data-aggregation-conflict-variable-construction-township-level">Data aggregation &amp; conflict variable construction (township level)</a></li>
-  <li><a href="#space-time-cube-construction" id="toc-space-time-cube-construction" class="nav-link" data-scroll-target="#space-time-cube-construction">Space-time cube construction</a></li>
-  <li><a href="#geovisualisation-choropleth-hot-spot-prelim-cube-viz" id="toc-geovisualisation-choropleth-hot-spot-prelim-cube-viz" class="nav-link" data-scroll-target="#geovisualisation-choropleth-hot-spot-prelim-cube-viz">Geovisualisation (choropleth, hot-spot prelim, cube viz)</a></li>
+  <li><a href="#geospatial-data-1" id="toc-geospatial-data-1" class="nav-link" data-scroll-target="#geospatial-data-1">Geospatial Data</a></li>
+  <li><a href="#aspatial-data-1" id="toc-aspatial-data-1" class="nav-link" data-scroll-target="#aspatial-data-1">Aspatial Data</a></li>
   </ul></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
+  <li><a href="#assumptions-limitations-in-data" id="toc-assumptions-limitations-in-data" class="nav-link" data-scroll-target="#assumptions-limitations-in-data">Assumptions &amp; Limitations in data</a>
+  <ul class="collapse">
+  <li><a href="#crs-on-both-datasets" id="toc-crs-on-both-datasets" class="nav-link" data-scroll-target="#crs-on-both-datasets">CRS on Both Datasets</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#task-1-geospatial-data-science" id="toc-task-1-geospatial-data-science" class="nav-link" data-scroll-target="#task-1-geospatial-data-science">Task 1 : Geospatial Data Science</a></li>
   <li><a href="#task-2-local-measures-of-spatial-association-lmsa-analysis" id="toc-task-2-local-measures-of-spatial-association-lmsa-analysis" class="nav-link" data-scroll-target="#task-2-local-measures-of-spatial-association-lmsa-analysis">Task 2 : Local Measures of Spatial Association (LMSA) Analysis</a></li>
-  <li><a href="#task-3-emerging-hot-spot-analysisehsa" id="toc-task-3-emerging-hot-spot-analysisehsa" class="nav-link" data-scroll-target="#task-3-emerging-hot-spot-analysisehsa">Task 3: Emerging Hot Spot Analysis(EHSA)</a></li>
+  <li><a href="#task-3-emerging-hot-spot-analysis-ehsa" id="toc-task-3-emerging-hot-spot-analysis-ehsa" class="nav-link" data-scroll-target="#task-3-emerging-hot-spot-analysis-ehsa">Task 3: Emerging Hot Spot Analysis (EHSA)</a></li>
   <li><a href="#analysis-summary-conclusions" id="toc-analysis-summary-conclusions" class="nav-link" data-scroll-target="#analysis-summary-conclusions">Analysis Summary &amp; Conclusions</a></li>
   <li><a href="#limitations-future-research" id="toc-limitations-future-research" class="nav-link" data-scroll-target="#limitations-future-research">Limitations &amp; Future Research</a></li>
   </ul>
@@ -235,6 +284,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Take Home Exercise 2</h1>
+<p class="subtitle lead">Analytics for Peace in Myanmar</p>
 </div>
 
 
@@ -258,7 +308,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 3, 2026</p>
+      <p class="date-modified">October 5, 2026</p>
     </div>
   </div>
     
@@ -285,47 +335,250 @@ Warning
 <p>NOT DONE YET ONLY DRAFTING OF OUTLINE!</p>
 </div>
 </div>
-<p>Myanmar has been in armed conflict since 1948, when the country, then known as Burma, gained independence from the United Kingdom. The conflict has largely been ethnic-based, with ethnic armed organisations fighting Myanmar’s armed forces, the Tatmadaw, for self-determination. Despite numerous ceasefires and the creation of autonomous self-administered zones in 2008, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar. It is the world’s longest ongoing civil war, spanning almost eight decades.</p>
-<p>In February 2021, Myanmar’s military seized control of the country, overthrowing the government elected in 2020 and led by the National League for Democracy. Initially, some believed that the newly established military government would quickly suppress protests and restore order. Instead, the junta’s repression – marked by arbitrary arrests and indiscriminate violence – intensified the conflict. Since then, Myanmar has descended into civil war, causing thousands of deaths and displacing over three million people. Many civilians fled to forests and mountainous areas or joined the armed groups opposing the military, abandoning peaceful protests in favor of armed resistance. The country soon became fragmented into multiple zones controlled by different groups, with large areas slipping almost entirely out of the junta’s grasp.</p>
+<p>Since gaining independence from the UK in 1948, Myanmar has been in one of the world’s longest ongoing civil war. Ethic armed organisations have been fighting Myanmar’s armed forces for self-determination. Even with the numerous ceasefires, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar.</p>
+<p>In February 2021, the military of Myanmar has taken over the country after overthrowing the 2020 elected government that is supposed by the National League for Democracy. However instead of restoring order like many had hoped the Junta’s repression followed with brutal crackdowns instead. This caused millions of civilians to abandon the peaceful protests to take up arms or seek refuge in dense forests and mountainous borderlands. Consequently, the country has descended into an all-out civil war that has claimed thousands of lives, displaced over three million people, and fractured Myanmar into competing zones of control, leaving vast stretches of territory entirely outside the junta’s reach.</p>
 <section id="objectives" class="level2">
 <h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<p>This Take-Home Exercise explores the usage of Local Measures of Spatial Association methods and Emerging Hot Spot Analysis to identify, assess and geovisualizing the spatial distribution, patterns and trends of armed conflict in the Myanmar at township level from <strong>1st January 2021 to 30th September 2025.</strong></p>
+<p>The specific objectives of this take-home exercise are:</p>
+<ul>
+<li><p>To pinpoint exact geographic hotspots, cold spots, and spatial outliers where violence clusters or behaves unusually compared to surrounding townships.</p></li>
+<li><p>To reveal where, how fast, and in what pattern political violence is evolving over space and time.</p></li>
+</ul>
+<p>This is to assist in the overall objectives on peace-building initiatives and preventing further armed conflicts in the country.</p>
 </section>
-</section>
-<section id="literature-review" class="level1">
-<h1>Literature Review</h1>
 </section>
 <section id="data" class="level1">
 <h1>Data</h1>
+<p>These are the datasets used for this exercise</p>
+<section id="geospatial-data" class="level2">
+<h2 class="anchored" data-anchor-id="geospatial-data">Geospatial Data</h2>
+<p><strong>Myanmar Township Boundaries MIMU v9.4</strong> is a geospatial dataset that delineates the boundaries of Myanmar. This data is presented in the ESRI shapefile format and is based on the WGS 84 geographic coordinate system. This data is extracted from <a href="https://geonode.themimu.info/">MIMU Geonode</a>.</p>
+</section>
+<section id="aspatial-data" class="level2">
+<h2 class="anchored" data-anchor-id="aspatial-data">Aspatial Data</h2>
+<p><strong>Armed Conflict Location &amp; Event Data Project (ACLED)</strong> will be used. This is an aspatial tabular dataset (CSV) that records political violence and conflict events across Myanmar from January 2021 to September 2025.Geographic point coordinate attributes (latitude and longitude in decimal degrees) are incorporated for spatial referencing. This data is is taken from SMU’s E-LEARN Site.</p>
+</section>
 </section>
 <section id="getting-started" class="level1">
 <h1>Getting Started</h1>
+<section id="loading-of-packages" class="level2">
+<h2 class="anchored" data-anchor-id="loading-of-packages">Loading of Packages</h2>
+<p>First the required packages will be loaded into R. The details of each package is as follows :</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, lubridate, sfdep, spacetime, Kendall,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               spdep, tmap,kableExtra, viridis, knitr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-hover table-condensed caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Package</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Purpose</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Use Case in Exercise</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 15%; font-weight: bold;">sf</td>
+<td style="text-align: left; width: 45%;">Handles spatial data; imports, manages, and processes vector-based geospatial data.</td>
+<td style="text-align: left; width: 40%;">Importing and managing geospatial data, such as Myanmar's administrative boundary shapefile.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 15%; font-weight: bold;">tidyverse</td>
+<td style="text-align: left; width: 45%;">A collection of R packages for data science tasks like data manipulation, visualization, and modeling.</td>
+<td style="text-align: left; width: 40%;">Wrangling aspatial ACLED conflict data and joining it with geospatial datasets.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 15%; font-weight: bold;">lubridate</td>
+<td style="text-align: left; width: 45%;">Provides functions to work with dates and time intervals easily.</td>
+<td style="text-align: left; width: 40%;">Parsing date fields in the ACLED Myanmar dataset into temporal units (e.g., years, months).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 15%; font-weight: bold;">sfdep</td>
+<td style="text-align: left; width: 45%;">Provides functions for spatial autocorrelation and temporal analysis, including Emerging Hot Spot Analysis (EHSA).</td>
+<td style="text-align: left; width: 40%;">Performing spatio-temporal analysis using Gi* statistics and Mann-Kendall test.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 15%; font-weight: bold;">spacetime</td>
+<td style="text-align: left; width: 45%;">Provides classes and methods for spatio-temporal data handling and aggregation.</td>
+<td style="text-align: left; width: 40%;">Constructing spatio-temporal cubes to structure conflict event data over time and space.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 15%; font-weight: bold;">Kendall</td>
+<td style="text-align: left; width: 45%;">Provides functions for performing the Mann-Kendall test for detecting trends in time series data.</td>
+<td style="text-align: left; width: 40%;">Performing the Mann-Kendall test to assess the trends in Gi* statistics over time.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 15%; font-weight: bold;">spdep</td>
+<td style="text-align: left; width: 45%;">Creates spatial weights matrix objects and tests for spatial autocorrelation.</td>
+<td style="text-align: left; width: 40%;">Constructing spatial weight matrices (e.g., Queen contiguity) for spatial analysis.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 15%; font-weight: bold;">tmap</td>
+<td style="text-align: left; width: 45%;">Creates static and interactive thematic maps in R.</td>
+<td style="text-align: left; width: 40%;">Visualizing spatial distributions and spatio-temporal patterns (e.g., EHSA hotspots) on maps.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 15%; font-weight: bold;">kableExtra</td>
+<td style="text-align: left; width: 45%;">Extends knitr::kable() to build complex, styled HTML and PDF tables.</td>
+<td style="text-align: left; width: 40%;">Formatting and styling summary tables for reporting.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 15%; font-weight: bold;">viridis</td>
+<td style="text-align: left; width: 45%;">Provides colorblind-friendly color maps for data visualization.</td>
+<td style="text-align: left; width: 40%;">Enhancing map legibility with accessible color schemes for spatial and temporal plots.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 15%; font-weight: bold;">knitr</td>
+<td style="text-align: left; width: 45%;">Provides dynamic report generation and table rendering tools in R.</td>
+<td style="text-align: left; width: 40%;">Rendering formatted tables in R Markdown / Quarto documents.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
 <section id="importing-of-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-of-data">Importing of Data</h2>
+<section id="geospatial-data-1" class="level3">
+<h3 class="anchored" data-anchor-id="geospatial-data-1">Geospatial Data</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shan_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/Myanmar"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">layer =</span> <span class="st">"mmr_polbnda_adm3_250k_mimu_1"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `mmr_polbnda_adm3_250k_mimu_1' from data source 
+  `C:\cjmheidii\ISSS626 - Geospatial\Hands-on_Ex\data\geospatial\Myanmar' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 330 features and 8 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 92.1721 ymin: 9.605884 xmax: 101.17 ymax: 28.54554
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+</section>
+<section id="aspatial-data-1" class="level3">
+<h3 class="anchored" data-anchor-id="aspatial-data-1">Aspatial Data</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>acled<span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/ACLED_Data_Myanmar_Jan2021-Sep2025.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>acled</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 87109 features and 29 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -756524.2 ymin: 1103500 xmax: 660830.6 ymax: 3042960
+Projected CRS: WGS 84 / UTM zone 47N
+# A tibble: 87,109 × 30
+   event_id_cnty event_date  year time_precision disorder_type        event_type
+ * &lt;chr&gt;         &lt;date&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;                &lt;chr&gt;     
+ 1 MMR10920      2021-01-01  2021              1 Political violence   Violence …
+ 2 MMR10906      2021-01-01  2021              1 Political violence   Battles   
+ 3 MMR10932      2021-01-01  2021              1 Political violence   Battles   
+ 4 MMR10933      2021-01-01  2021              1 Political violence   Battles   
+ 5 MMR104451     2021-01-01  2021              1 Strategic developme… Strategic…
+ 6 MMR10937      2021-01-02  2021              1 Political violence   Explosion…
+ 7 MMR10935      2021-01-02  2021              1 Political violence   Battles   
+ 8 MMR10934      2021-01-02  2021              1 Political violence   Battles   
+ 9 MMR11022      2021-01-02  2021              1 Political violence   Explosion…
+10 MMR10936      2021-01-02  2021              1 Political violence   Battles   
+# ℹ 87,099 more rows
+# ℹ 24 more variables: sub_event_type &lt;chr&gt;, actor1 &lt;chr&gt;, assoc_actor_1 &lt;chr&gt;,
+#   inter1 &lt;chr&gt;, actor2 &lt;chr&gt;, assoc_actor_2 &lt;chr&gt;, inter2 &lt;chr&gt;,
+#   interaction &lt;chr&gt;, civilian_targeting &lt;chr&gt;, iso &lt;dbl&gt;, region &lt;chr&gt;,
+#   country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;, admin3 &lt;chr&gt;, location &lt;chr&gt;,
+#   geo_precision &lt;dbl&gt;, source &lt;chr&gt;, source_scale &lt;chr&gt;, notes &lt;chr&gt;,
+#   fatalities &lt;dbl&gt;, tags &lt;chr&gt;, timestamp &lt;dbl&gt;, geometry &lt;POINT [m]&gt;</code></pre>
+</div>
+</div>
+<p>From the output above, we can observe that there are 31 columns with 87109 records in this dataset. Now we will check for missing data and duplicate values.</p>
+<section id="duplicate-values" class="level4">
+<h4 class="anchored" data-anchor-id="duplicate-values">Duplicate values</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(acled))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>With this, there are 0 duplicated values in the dataset, every row is unique.</p>
+</section>
+<section id="missing-data" class="level4">
+<h4 class="anchored" data-anchor-id="missing-data">Missing Data</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>null_counts <span class="ot">&lt;-</span> <span class="fu">sapply</span>(acled, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>null_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     event_id_cnty         event_date               year     time_precision 
+                 0                  0                  0                  0 
+     disorder_type         event_type     sub_event_type             actor1 
+                 0                  0                  0                  0 
+     assoc_actor_1             inter1             actor2      assoc_actor_2 
+             65392                  0              27414              70782 
+            inter2        interaction civilian_targeting                iso 
+             27414                  0              70375                  0 
+            region            country             admin1             admin2 
+                 0                  0                  0                  0 
+            admin3           location      geo_precision             source 
+              1118                  0                  0                  0 
+      source_scale              notes         fatalities               tags 
+                 0                  0                  0              42830 
+         timestamp           geometry 
+                 0                  0 </code></pre>
+</div>
+</div>
+<p>It can be noted that there are missing values in <code>assoc_actor_1</code> , <code>actor2</code> , <code>assoc_actor_2</code>, <code>inter2</code>, <code>admin3</code>, and <code>tags</code> , after investigation the columns as shown actually are to provide supplementary data where the empty cells are as such since there no additional data exists.</p>
+<p>E.g An unknown assailant shot a man to death on Jan 2021. This does not have associated actors which is why <code>assoc_actor_1</code> and <code>assoc_actor_2</code> are left as blank (NA).</p>
+<p>However <code>civilian_targeting</code> is a column stating if the event itself in the dataset is a civil dispute targeting a civilian, where original data shows <code>civilian_targeting</code> or NA. Therefore a better way to frame the columns is to put a YES or NO Binary rather than leaving the non Civilian_targeting events as blank. The code chunk below will fix this issue.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Changing cells to a YES/NO binary form </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>acled <span class="ot">&lt;-</span> acled <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">civilian_targeting =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(civilian_targeting), <span class="st">"No"</span>, <span class="st">"Yes"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Verification of data </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>acled <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(civilian_targeting)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 2 features and 2 fields
+Geometry type: MULTIPOINT
+Dimension:     XY
+Bounding box:  xmin: -756524.2 ymin: 1103500 xmax: 660830.6 ymax: 3042960
+Projected CRS: WGS 84 / UTM zone 47N
+# A tibble: 2 × 3
+  civilian_targeting     n                                              geometry
+* &lt;chr&gt;              &lt;int&gt;                                      &lt;MULTIPOINT [m]&gt;
+1 No                 70375 ((-756524.2 1498562), (-208804.4 2357274), (-207135 …
+2 Yes                16734 ((-756524.2 1498562), (-208804.4 2357274), (-206931.…</code></pre>
+</div>
+</div>
+</section>
+</section>
 </section>
 <section id="data-wrangling" class="level2">
 <h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
 </section>
 <section id="assumptions-limitations-in-data" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-limitations-in-data">Assumptions &amp; Limitations in data</h2>
+<section id="crs-on-both-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="crs-on-both-datasets">CRS on Both Datasets</h3>
+<p>The EPSG:4326 is used to importing and storing raw latitude/longitude points for both aspatial and geospatial datasets. However this is not suitable for the spatial analytics in this exercise across Myanmar. Hence a transformation is required to EPSG:32647 (UTM Zone 47N). This is done during the importing of the datasets <code>st_transform(crs = 32647)</code></p>
+</section>
 </section>
 </section>
 <section id="task-1-geospatial-data-science" class="level1">
 <h1>Task 1 : Geospatial Data Science</h1>
-<section id="data-aggregation-conflict-variable-construction-township-level" class="level2">
-<h2 class="anchored" data-anchor-id="data-aggregation-conflict-variable-construction-township-level">Data aggregation &amp; conflict variable construction (township level)</h2>
-</section>
-<section id="space-time-cube-construction" class="level2">
-<h2 class="anchored" data-anchor-id="space-time-cube-construction">Space-time cube construction</h2>
-</section>
-<section id="geovisualisation-choropleth-hot-spot-prelim-cube-viz" class="level2">
-<h2 class="anchored" data-anchor-id="geovisualisation-choropleth-hot-spot-prelim-cube-viz">Geovisualisation (choropleth, hot-spot prelim, cube viz)</h2>
-</section>
 </section>
 <section id="task-2-local-measures-of-spatial-association-lmsa-analysis" class="level1">
 <h1>Task 2 : Local Measures of Spatial Association (LMSA) Analysis</h1>
 </section>
-<section id="task-3-emerging-hot-spot-analysisehsa" class="level1">
-<h1>Task 3: Emerging Hot Spot Analysis(EHSA)</h1>
+<section id="task-3-emerging-hot-spot-analysis-ehsa" class="level1">
+<h1>Task 3: Emerging Hot Spot Analysis (EHSA)</h1>
 </section>
 <section id="analysis-summary-conclusions" class="level1">
 <h1>Analysis Summary &amp; Conclusions</h1>

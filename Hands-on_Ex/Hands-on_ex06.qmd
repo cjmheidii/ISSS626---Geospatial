@@ -12,17 +12,17 @@ execute:
   message: false
 ---
 
-# Overview 
+# Overview
 
 In geobusiness and spatial policy, it is a common practice to delineate the market or planning area into homogeneous regions by using multivariate data.
 
 Because every single area is unique, so many different types of data needs to be collected and analysed at once to get an accurate look at the full picture and make better decisions and policies in the relevant planning or markets.
 
-# Getting Started! 
+# Getting Started!
 
 In this exercise, we will delineate [Shan State](https://en.wikipedia.org/wiki/Shan_State), [Myanmar](https://en.wikipedia.org/wiki/Myanmar) into homogeneous regions by using multiple Information and Communication technology (ICT) measures, namely: Radio, Television, Land line phone, Mobile phone, Computer, and Internet at home.
 
-## Data 
+## Data
 
 Two data sets will be used in this study. They are:
 
@@ -30,9 +30,9 @@ Two data sets will be used in this study. They are:
 
 - *Shan-ICT.csv*: This is an extract of [**The 2014 Myanmar Population and Housing Census Myanmar**](https://myanmar.unfpa.org/en/publications/2014-population-and-housing-census-myanmar-data-sheet) at the township level.
 
-## Importing of Data 
+## Importing of Data
 
-First we load the required libraries : \
+First we load the required libraries :\
 The R packages needed for this exercise are as follows:
 
 - Spatial data handling
@@ -63,7 +63,7 @@ pacman::p_load(spdep, tmap, sf, ClustGeo,
                heatmaply, corrplot, psych, tidyverse, GGally)
 ```
 
-### Shapefile data 
+### Shapefile data
 
 import Myanmar Township Boundary GIS data and its associated attrbiute table into R environment.
 
@@ -93,7 +93,7 @@ Since *shan_sf* is conformed to tidy framework, we can also *glimpse()* to revea
 glimpse(shan_sf)
 ```
 
-### Shan-ICT csv 
+### Shan-ICT csv
 
 ```{r}
 ict <- read_csv("data/aspatial/Shan-ICT.csv")
@@ -107,7 +107,7 @@ summary(ict)
 
 There are a total of eleven fields and 55 observation in the tibble data.frame. There are also no blank rows within the data which is good for our data analysis.
 
-### Deriving of new Variables 
+### Deriving of new Variables
 
 The unit of measurement of the values are number of household in this scenario since we are looking at household population. Using these values directly will be bias by the underlying total number of households. In general, the townships with relatively higher total number of households will also have higher number of households owning radio, TV, etc
 
@@ -348,7 +348,7 @@ tm_shape(shan_sf) +
   - There is an overcoming Population Size Bias, where without the normalization of data, it will be unknown that the radio adoption rate is the greatest in the forementioned smaller communities
 :::
 
-# Correlation Analysis 
+# Correlation Analysis
 
 Before we perform cluster analysis, it is important for us to ensure that the cluster variables are not highly correlated.
 
@@ -432,7 +432,7 @@ Notice the mean and standard deviation of the Z-score standardised clustering va
 ***Warning: Z-score standardisation method should only be used if we would assume all variables come from some normal distribution.***
 :::
 
-## Visualising the Standardised clustering variables 
+## Visualising the Standardised clustering variables
 
 Beside reviewing the summary statistics of the standardised clustering variables, it is also a good practice to visualise their distribution graphical.
 
@@ -499,7 +499,7 @@ ggarrange(r, s, z,
           nrow = 1)
 ```
 
-## Computing Proximity Matrix 
+## Computing Proximity Matrix
 
 In R, many packages provide functions to calculate distance matrix. We will compute the proximity matrix by using [*dist()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/dist.html) of R.
 
@@ -517,7 +517,7 @@ The code chunk below can then be used to list the content of *proxmat* for visua
 proxmat
 ```
 
-## Computing Hierarchical Clustering 
+## Computing Hierarchical Clustering
 
 In R, there are several packages provide hierarchical clustering function. In this hands-on exercise, [*hclust()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/hclust.html) of R stats will be used.
 
@@ -571,7 +571,7 @@ There are [three](https://statweb.stanford.edu/~gwalther/gap) commonly used meth
 
 - [Gap Statistic Method](http://www.web.stanford.edu/~hastie/Papers/gap.pdf)
 
-### Gap Statistic Method 
+### Gap Statistic Method
 
 The [**gap statistic**](http://www.web.stanford.edu/~hastie/Papers/gap.pdf) compares the total within intra-cluster variation for different values of k with their expected values under null reference distribution of the data. The estimate of the optimal clusters will be value that maximize the gap statistic (i.e., that yields the largest gap statistic). This means that the clustering structure is far away from the random uniform distribution of points.
 
@@ -602,7 +602,7 @@ With reference to the gap statistic graph above, the recommended number of clust
 **Note:** In addition to these commonly used approaches, the [NbClust](https://cran.r-project.org/web/packages/NbClust/) package, published by Charrad et al., 2014, provides 30 indices for determining the relevant number of clusters and proposes to users the best clustering scheme from the different results obtained by varying all combinations of number of clusters, distance measures, and clustering methods.
 :::
 
-## Interpreting the Dendograms 
+## Interpreting the Dendograms
 
 In the dendrogram displayed above, each leaf corresponds to one observation. As we move up the tree, observations that are similar to each other are combined into branches, which are themselves fused at a higher height.
 
@@ -623,7 +623,7 @@ In this section, we will learn how to perform visually-driven hiearchical cluste
 
 With **heatmaply**, we are able to build both highly interactive cluster heatmap or static cluster heatmap.
 
-### Transforming Data frame into matrix 
+### Transforming Data frame into matrix
 
 The data was loaded into a data frame, but it has to be a data matrix to make your heatmap.
 
@@ -869,7 +869,7 @@ tmap_arrange(hclust.map, shclust.map,
 
 Functions provided by **ClustGeo** package will be used here to perform non-spatially constrained hierarchical cluster analysis and spatially constrained cluster analysis.
 
-## Introduction to ClustGeo 
+## Introduction to ClustGeo
 
 **ClustGeo** is an R package specially designed to support the need of performing spatially constrained cluster analysis. More specifically, it provides a Ward-like hierarchical clustering algorithm called `hclustgeo()` including spatial/geographical constraints.
 
@@ -1008,9 +1008,9 @@ shan_sf_ngeo_cluster %>%
             mean_COMPUTER_PR = mean(COMPUTER_PR))
 ```
 
-# Examples 
+# Examples
 
-## importing of data 
+## importing of data
 
 ```{r}
 
@@ -1035,7 +1035,7 @@ Since result is 0, we can move on with joining the files.
 hunan <- left_join(hunan, hunan_2012, by = "County")
 ```
 
-## Data engineering & EDA of data. 
+## Data engineering & EDA of data.
 
 As in the Shan exercise, raw totals mostly reflect **county size**, so we will convert them to per-capita measures. Counties with larger populations will naturally have larger deposits, investment, etc..
 
@@ -1055,7 +1055,7 @@ hunan_derived %>%
   summary()
 ```
 
-## EXAMPLE 1 : EDA using Hunan's dataset 
+## EXAMPLE 1 : EDA using Hunan's dataset
 
 Now we will compare the raw total for the GDP as compared to the per-capita version
 
@@ -1110,18 +1110,18 @@ Other than the usual :
 
 <!-- -->
 
--  GIO
+- GIO
 
-  - median : \~11,000
+- median : \~11,000
 
-  -  IQR : \~5,000–22,000
+- IQR : \~5,000–22,000
 
-  - eight outliers stretching to \~150,000.
+- eight outliers stretching to \~150,000.
 
 ***In the initial exercise, normalising cut the outliers from three to one, because they were just the most populous townships. However the outlier count barely changes (about 8 to 7), so these counties are truly industry-intensive, not merely large (as again supporting the histogram visual thats just made).***
 :::
 
-## EXAMPLE 2 : Correlation Analysis 
+## EXAMPLE 2 : Correlation Analysis
 
 So again before the correlation analysis is done we have to create the heatmap to check for highly correlated variables. These should be removed since not doing so would cause the curse of multicollinearity which will affect the overall accuracy of the data.
 
@@ -1181,7 +1181,7 @@ After removing highly correlated variables (\|r\| \> 0.8), the strongest remaini
 
 ## EXAMPLE 3 : Hierarchical Cluster Analysis
 
-### preparing Clustering Data 
+### preparing Clustering Data
 
 ```{r}
 cluster_vars <- hunan_derived %>%
@@ -1192,14 +1192,14 @@ cluster_vars <- hunan_derived %>%
 head(cluster_vars)
 ```
 
-### Standardisation 
+### Standardisation
 
 ```{r}
 hunan_z <- scale(cluster_vars)
 describe(hunan_z)
 ```
 
-### Proximity matrix & Clustering 
+### Proximity matrix & Clustering
 
 ```{r}
 proxmat <- dist(hunan_z, method = "euclidean")
@@ -1226,7 +1226,7 @@ map_dbl(m, ac)
 For this case, similar to the initial Myanmar case, the Ward method is the best to use.
 :::
 
-### Number of clusters (optimal) 
+### Number of clusters (optimal)
 
 Now with the best clustering method we will look at how many clusters is the best for the analysis.
 

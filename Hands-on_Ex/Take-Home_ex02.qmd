@@ -1,5 +1,6 @@
 ---
 title: "Take Home Exercise 2"
+subtitle: "Analytics for Peace in Myanmar"
 author: "Chong Jia Min Heidi"
 format: html
 date: "October 3 2026"
@@ -20,35 +21,143 @@ STILL A WORK IN PROGRESS (WIP)
 NOT DONE YET ONLY DRAFTING OF OUTLINE!
 :::
 
-Myanmar has been in armed conflict since 1948, when the country, then known as Burma, gained independence from the United Kingdom. The conflict has largely been ethnic-based, with ethnic armed organisations fighting Myanmar’s armed forces, the Tatmadaw, for self-determination. Despite numerous ceasefires and the creation of autonomous self-administered zones in 2008, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar. It is the world’s longest ongoing civil war, spanning almost eight decades.
+Since gaining independence from the UK in 1948, Myanmar has been in one of the world's longest ongoing civil war. Ethic armed organisations have been fighting Myanmar's armed forces for self-determination. Even with the numerous ceasefires, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar.
 
-In February 2021, Myanmar’s military seized control of the country, overthrowing the government elected in 2020 and led by the National League for Democracy. Initially, some believed that the newly established military government would quickly suppress protests and restore order. Instead, the junta’s repression – marked by arbitrary arrests and indiscriminate violence – intensified the conflict. Since then, Myanmar has descended into civil war, causing thousands of deaths and displacing over three million people. Many civilians fled to forests and mountainous areas or joined the armed groups opposing the military, abandoning peaceful protests in favor of armed resistance. The country soon became fragmented into multiple zones controlled by different groups, with large areas slipping almost entirely out of the junta’s grasp.
+In February 2021, the military of Myanmar has taken over the country after overthrowing the 2020 elected government that is supposed by the National League for Democracy. However instead of restoring order like many had hoped the Junta's repression followed with brutal crackdowns instead. This caused millions of civilians to abandon the peaceful protests to take up arms or seek refuge in dense forests and mountainous borderlands. Consequently, the country has descended into an all-out civil war that has claimed thousands of lives, displaced over three million people, and fractured Myanmar into competing zones of control, leaving vast stretches of territory entirely outside the junta's reach.
 
-## Objectives 
+## Objectives
 
-# Literature Review 
+This Take-Home Exercise explores the usage of Local Measures of Spatial Association methods and Emerging Hot Spot Analysis to identify, assess and geovisualizing the spatial distribution, patterns and trends of armed conflict in the Myanmar at township level from **1st January 2021 to 30th September 2025.**
 
-# Data 
+The specific objectives of this take-home exercise are:
 
-# Getting Started 
+- To pinpoint exact geographic hotspots, cold spots, and spatial outliers where violence clusters or behaves unusually compared to surrounding townships.
 
-## Importing of Data 
+- To reveal where, how fast, and in what pattern political violence is evolving over space and time.
+
+This is to assist in the overall objectives on peace-building initiatives and preventing further armed conflicts in the country.
+
+# Data
+
+These are the datasets used for this exercise
+
+## Geospatial Data 
+
+**Myanmar Township Boundaries MIMU v9.4** is a geospatial dataset that delineates the boundaries of Myanmar. This data is presented in the ESRI shapefile format and is based on the WGS 84 geographic coordinate system. This data is extracted from [MIMU Geonode](https://geonode.themimu.info/).
+
+## Aspatial Data 
+
+**Armed Conflict Location & Event Data Project (ACLED)** will be used. This is an aspatial tabular dataset (CSV) that records political violence and conflict events across Myanmar from January 2021 to September 2025.Geographic point coordinate attributes (latitude and longitude in decimal degrees) are incorporated for spatial referencing. This data is is taken from SMU's E-LEARN Site.
+
+# Getting Started
+
+## Loading of Packages 
+
+First the required packages will be loaded into R. The details of each package is as follows :
+
+```{r}
+pacman::p_load(sf, tidyverse, lubridate, sfdep, spacetime, Kendall,
+               spdep, tmap,kableExtra, viridis, knitr)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+package_table <- tribble(
+  ~Package, ~Purpose, ~`Use Case in Exercise`,
+  "sf", "Handles spatial data; imports, manages, and processes vector-based geospatial data.", "Importing and managing geospatial data, such as Myanmar's administrative boundary shapefile.",
+  "tidyverse", "A collection of R packages for data science tasks like data manipulation, visualization, and modeling.", "Wrangling aspatial ACLED conflict data and joining it with geospatial datasets.",
+  "lubridate", "Provides functions to work with dates and time intervals easily.", "Parsing date fields in the ACLED Myanmar dataset into temporal units (e.g., years, months).",
+  "sfdep", "Provides functions for spatial autocorrelation and temporal analysis, including Emerging Hot Spot Analysis (EHSA).", "Performing spatio-temporal analysis using Gi* statistics and Mann-Kendall test.",
+  "spacetime", "Provides classes and methods for spatio-temporal data handling and aggregation.", "Constructing spatio-temporal cubes to structure conflict event data over time and space.",
+  "Kendall", "Provides functions for performing the Mann-Kendall test for detecting trends in time series data.", "Performing the Mann-Kendall test to assess the trends in Gi* statistics over time.",
+  "spdep", "Creates spatial weights matrix objects and tests for spatial autocorrelation.", "Constructing spatial weight matrices (e.g., Queen contiguity) for spatial analysis.",
+  "tmap", "Creates static and interactive thematic maps in R.", "Visualizing spatial distributions and spatio-temporal patterns (e.g., EHSA hotspots) on maps.",
+  "kableExtra", "Extends knitr::kable() to build complex, styled HTML and PDF tables.", "Formatting and styling summary tables for reporting.",
+  "viridis", "Provides colorblind-friendly color maps for data visualization.", "Enhancing map legibility with accessible color schemes for spatial and temporal plots.",
+  "knitr", "Provides dynamic report generation and table rendering tools in R.", "Rendering formatted tables in R Markdown / Quarto documents."
+)
+
+package_table %>%
+  kbl(col.names = c("Package", "Purpose", "Use Case in Exercise")) %>%
+  kable_styling(bootstrap_options = c("hover", "condensed"), full_width = TRUE) %>%
+  column_spec(1, bold = TRUE, width = "15%") %>%
+  column_spec(2, width = "45%") %>%
+  column_spec(3, width = "40%")
+```
+
+## Importing of Data
+
+### Geospatial Data
+
+```{r}
+shan_sf <- st_read(dsn = "data/geospatial/Myanmar",
+                   layer = "mmr_polbnda_adm3_250k_mimu_1") %>%
+  st_transform(crs = 32647)
+
+
+```
+
+### Aspatial Data
+
+```{r}
+acled<- read_csv("data/aspatial/ACLED_Data_Myanmar_Jan2021-Sep2025.csv") %>%
+                   st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
+                   st_transform(crs = 32647)
+
+acled
+```
+
+From the output above, we can observe that there are 31 columns with 87109 records in this dataset. Now we will check for missing data and duplicate values.
+
+#### Duplicate values 
+
+```{r}
+sum(duplicated(acled))
+```
+
+With this, there are 0 duplicated values in the dataset, every row is unique.
+
+#### Missing Data 
+
+```{r}
+null_counts <- sapply(acled, function(x) sum(is.na(x)))
+null_counts
+```
+
+It can be noted that there are missing values in `assoc_actor_1` , `actor2` , `assoc_actor_2`, `inter2`, `admin3`, and `tags` , after investigation the columns as shown actually are to provide supplementary data where the empty cells are as such since there no additional data exists.
+
+E.g An unknown assailant shot a man to death on Jan 2021. This does not have associated actors which is why `assoc_actor_1` and `assoc_actor_2` are left as blank (NA).
+
+However `civilian_targeting` is a column stating if the event itself in the dataset is a civil dispute targeting a civilian, where original data shows `civilian_targeting` or NA. Therefore a better way to frame the columns is to put a YES or NO Binary rather than leaving the non Civilian_targeting events as blank. The code chunk below will fix this issue.
+
+```{r}
+# Changing cells to a YES/NO binary form 
+acled <- acled %>%
+  mutate(
+    civilian_targeting = if_else(is.na(civilian_targeting), "No", "Yes")
+  )
+
+#Verification of data 
+acled %>%
+  count(civilian_targeting)
+```
 
 ## Data Wrangling
 
-## Assumptions & Limitations in data 
+## Assumptions & Limitations in data
+
+### CRS on Both Datasets 
+
+The EPSG:4326 is used to importing and storing raw latitude/longitude points for both aspatial and geospatial datasets. However this is not suitable for the spatial analytics in this exercise across Myanmar. Hence a transformation is required to EPSG:32647 (UTM Zone 47N). This is done during the importing of the datasets `st_transform(crs = 32647)`
 
 # Task 1 : Geospatial Data Science
 
-## Data aggregation & conflict variable construction (township level) 
-
-## Space-time cube construction
-
-## Geovisualisation (choropleth, hot-spot prelim, cube viz)
-
 # Task 2 : Local Measures of Spatial Association (LMSA) Analysis
 
-# Task 3: Emerging Hot Spot Analysis(EHSA)
+# Task 3: Emerging Hot Spot Analysis (EHSA)
 
 # Analysis Summary & Conclusions
 
