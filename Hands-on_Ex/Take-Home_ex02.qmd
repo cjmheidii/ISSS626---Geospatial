@@ -41,17 +41,17 @@ This is to assist in the overall objectives on peace-building initiatives and pr
 
 These are the datasets used for this exercise
 
-## Geospatial Data 
+## Geospatial Data
 
 **Myanmar Township Boundaries MIMU v9.4** is a geospatial dataset that delineates the boundaries of Myanmar. This data is presented in the ESRI shapefile format and is based on the WGS 84 geographic coordinate system. This data is extracted from [MIMU Geonode](https://geonode.themimu.info/).
 
-## Aspatial Data 
+## Aspatial Data
 
 **Armed Conflict Location & Event Data Project (ACLED)** will be used. This is an aspatial tabular dataset (CSV) that records political violence and conflict events across Myanmar from January 2021 to September 2025.Geographic point coordinate attributes (latitude and longitude in decimal degrees) are incorporated for spatial referencing. This data is is taken from SMU's E-LEARN Site.
 
 # Getting Started
 
-## Loading of Packages 
+## Loading of Packages
 
 First the required packages will be loaded into R. The details of each package is as follows :
 
@@ -112,7 +112,7 @@ acled
 
 From the output above, we can observe that there are 31 columns with 87109 records in this dataset. Now we will check for missing data and duplicate values.
 
-#### Duplicate values 
+#### Duplicate values
 
 ```{r}
 sum(duplicated(acled))
@@ -120,7 +120,7 @@ sum(duplicated(acled))
 
 With this, there are 0 duplicated values in the dataset, every row is unique.
 
-#### Missing Data 
+#### Missing Data
 
 ```{r}
 null_counts <- sapply(acled, function(x) sum(is.na(x)))
@@ -149,7 +149,7 @@ acled %>%
 
 ## Assumptions & Limitations in data
 
-### CRS on Both Datasets 
+### CRS on Both Datasets
 
 The EPSG:4326 is used to importing and storing raw latitude/longitude points for both aspatial and geospatial datasets. However this is not suitable for the spatial analytics in this exercise across Myanmar. Hence a transformation is required to EPSG:32647 (UTM Zone 47N). This is done during the importing of the datasets `st_transform(crs = 32647)`
 
