@@ -264,7 +264,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#geospatial-data-1" id="toc-geospatial-data-1" class="nav-link" data-scroll-target="#geospatial-data-1">Geospatial Data</a></li>
   <li><a href="#aspatial-data-1" id="toc-aspatial-data-1" class="nav-link" data-scroll-target="#aspatial-data-1">Aspatial Data</a></li>
   </ul></li>
-  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#duplicate-values" id="toc-duplicate-values" class="nav-link" data-scroll-target="#duplicate-values">Duplicate Values</a></li>
+  <li><a href="#missing-data" id="toc-missing-data" class="nav-link" data-scroll-target="#missing-data">Missing Data</a></li>
+  <li><a href="#removing-unnecessary-columns" id="toc-removing-unnecessary-columns" class="nav-link" data-scroll-target="#removing-unnecessary-columns">Removing Unnecessary Columns</a></li>
+  <li><a href="#removing-unnecessary-rows" id="toc-removing-unnecessary-rows" class="nav-link" data-scroll-target="#removing-unnecessary-rows">Removing Unnecessary Rows</a></li>
+  <li><a href="#joining-of-datasets" id="toc-joining-of-datasets" class="nav-link" data-scroll-target="#joining-of-datasets">Joining of datasets</a></li>
+  <li><a href="#creating-spacetime-cube" id="toc-creating-spacetime-cube" class="nav-link" data-scroll-target="#creating-spacetime-cube">Creating SpaceTime Cube</a></li>
+  </ul></li>
+  <li><a href="#plotting-of-data" id="toc-plotting-of-data" class="nav-link" data-scroll-target="#plotting-of-data">Plotting of Data</a></li>
   <li><a href="#assumptions-limitations-in-data" id="toc-assumptions-limitations-in-data" class="nav-link" data-scroll-target="#assumptions-limitations-in-data">Assumptions &amp; Limitations in data</a>
   <ul class="collapse">
   <li><a href="#crs-on-both-datasets" id="toc-crs-on-both-datasets" class="nav-link" data-scroll-target="#crs-on-both-datasets">CRS on Both Datasets</a></li>
@@ -308,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 5, 2026</p>
+      <p class="date-modified">October 11, 2026</p>
     </div>
   </div>
     
@@ -367,7 +376,7 @@ Warning
 <p>First the required packages will be loaded into R. The details of each package is as follows :</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, lubridate, sfdep, spacetime, Kendall,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               spdep, tmap,kableExtra, viridis, knitr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               spdep, tmap,kableExtra, viridis, knitr,gifski)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -445,7 +454,7 @@ Warning
 <section id="geospatial-data-1" class="level3">
 <h3 class="anchored" data-anchor-id="geospatial-data-1">Geospatial Data</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shan_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/Myanmar"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mmr_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/Myanmar"</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">layer =</span> <span class="st">"mmr_polbnda_adm3_250k_mimu_1"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -496,22 +505,66 @@ Projected CRS: WGS 84 / UTM zone 47N
 #   fatalities &lt;dbl&gt;, tags &lt;chr&gt;, timestamp &lt;dbl&gt;, geometry &lt;POINT [m]&gt;</code></pre>
 </div>
 </div>
-<p>From the output above, we can observe that there are 31 columns with 87109 records in this dataset. Now we will check for missing data and duplicate values.</p>
-<section id="duplicate-values" class="level4">
-<h4 class="anchored" data-anchor-id="duplicate-values">Duplicate values</h4>
+<p>From the output above, we can observe that there are 31 columns with 87109 records in this dataset.</p>
+<p>The code below is also run to ensure that the date window of the aspatial dataset is set to Jan 2021 to Sep 2025 as according to objectives of the exercise</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(acled))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>acled <span class="ot">&lt;-</span> acled <span class="sc">%&gt;%</span> <span class="fu">filter</span>(event_date <span class="sc">&gt;=</span> <span class="st">"2021-01-01"</span>, event_date <span class="sc">&lt;=</span> <span class="st">"2025-09-30"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(acled<span class="sc">$</span>event_date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-01-01" "2025-09-30"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
+<p>Within the Data Wrangling, these processes will be conducted to check the data and prepare it for the geospatial analysis (Tasks 1-3)</p>
+<ul>
+<li><p>Duplicate Values</p></li>
+<li><p>Missing Data</p></li>
+<li><p>Removing Unnecessary Columns</p></li>
+<li><p>Removing Unnecessary Rows</p></li>
+<li><p>Joining of datasets</p></li>
+<li><p>Creating Time unit</p></li>
+<li><p>Aggregating and completing cube</p></li>
+</ul>
+<section id="duplicate-values" class="level3">
+<h3 class="anchored" data-anchor-id="duplicate-values">Duplicate Values</h3>
+<p>First, checks are done to the aspatial data to ensure there are no duplicated values (rows and columns). This is to ensure there is no double counting in our values as the analysis can be done. Duplicate values if its present within the data will cause the data to skew and impact the accuracy of analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks for duplicated rows </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(acled))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks for Duplicated Columns</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(<span class="fu">names</span>(acled)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
 </div>
-<p>With this, there are 0 duplicated values in the dataset, every row is unique.</p>
-</section>
-<section id="missing-data" class="level4">
-<h4 class="anchored" data-anchor-id="missing-data">Missing Data</h4>
+</div>
+<p>Now the same will be done to the geospatial data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>null_counts <span class="ot">&lt;-</span> <span class="fu">sapply</span>(acled, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>null_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks for duplicated rows </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(mmr_sf))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks for Duplicated Columns</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(<span class="fu">names</span>(mmr_sf)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<p>With alls outputs being <code>0</code> or <code>FALSE</code>, there are 0 duplicated values in both datasets and it can be concluded that every row and column (event) is unique</p>
+</section>
+<section id="missing-data" class="level3">
+<h3 class="anchored" data-anchor-id="missing-data">Missing Data</h3>
+<p>Sometimes, data collection would not be clean and this is very common in real world datasets. Missing data would again impact the accuracy of the analysis, where some insights may be missed due to the missing data. Therefore the checks here are done.</p>
+<p>First we would check the missing data from the aspatial dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>null_counts <span class="ot">&lt;-</span> <span class="fu">sapply</span>(acled, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>null_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     event_id_cnty         event_date               year     time_precision 
                  0                  0                  0                  0 
@@ -535,15 +588,15 @@ Projected CRS: WGS 84 / UTM zone 47N
 <p>E.g An unknown assailant shot a man to death on Jan 2021. This does not have associated actors which is why <code>assoc_actor_1</code> and <code>assoc_actor_2</code> are left as blank (NA).</p>
 <p>However <code>civilian_targeting</code> is a column stating if the event itself in the dataset is a civil dispute targeting a civilian, where original data shows <code>civilian_targeting</code> or NA. Therefore a better way to frame the columns is to put a YES or NO Binary rather than leaving the non Civilian_targeting events as blank. The code chunk below will fix this issue.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Changing cells to a YES/NO binary form </span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>acled <span class="ot">&lt;-</span> acled <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">civilian_targeting =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(civilian_targeting), <span class="st">"No"</span>, <span class="st">"Yes"</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Verification of data </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>acled <span class="sc">%&gt;%</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(civilian_targeting)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Changing cells to a YES/NO binary form </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>acled <span class="ot">&lt;-</span> acled <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">civilian_targeting =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(civilian_targeting), <span class="st">"No"</span>, <span class="st">"Yes"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Verification of data </span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>acled <span class="sc">%&gt;%</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(civilian_targeting)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Simple feature collection with 2 features and 2 fields
 Geometry type: MULTIPOINT
@@ -557,11 +610,498 @@ Projected CRS: WGS 84 / UTM zone 47N
 2 Yes                16734 ((-756524.2 1498562), (-208804.4 2357274), (-206931.…</code></pre>
 </div>
 </div>
+<p>Now we will look at the geospatial dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>geonull_counts <span class="ot">&lt;-</span> <span class="fu">sapply</span>(mmr_sf, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>geonull_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      ST ST_PCODE       DT DT_PCODE       TS TS_PCODE   TS_MMR  PCode_V 
+       0        0        0        0        0        0        0        0 
+geometry 
+       0 </code></pre>
+</div>
+</div>
+<p>With all values being <code>0</code>, it can be confirmed that the geospatial dataset does NOT have any missing values.</p>
+</section>
+<section id="removing-unnecessary-columns" class="level3">
+<h3 class="anchored" data-anchor-id="removing-unnecessary-columns">Removing Unnecessary Columns</h3>
+<p>For the Datasets, after the analysis of the specifc columns available, the selected columns are kept or removed with the following reasons in the tables below.</p>
+<section id="aspatial-columns" class="level4">
+<h4 class="anchored" data-anchor-id="aspatial-columns">Aspatial Columns</h4>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-hover table-condensed table-striped caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Column</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">event_id_cnty</td>
+<td style="text-align: left;">Unique event ID. Used for the duplicate check.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">event_date</td>
+<td style="text-align: left;">Used to build the monthly time index for the space-time cube.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">disorder_type</td>
+<td style="text-align: left;">Used to define type of armed conflict.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">event_type</td>
+<td style="text-align: left;">Used to filter events and count them by type.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">sub_event_type</td>
+<td style="text-align: left;">Allows a finer breakdown of event types if needed.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">civilian_targeting</td>
+<td style="text-align: left;">Yes/No variable, used to count civilian-targeted events.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">fatalities</td>
+<td style="text-align: left;">To look at the severity of each event (by death count).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">geo_precision</td>
+<td style="text-align: left;">Used to assess how reliable each event location is.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">geometry</td>
+<td style="text-align: left;">Event points, needed for the spatial join to the geospatial dataset</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>acled_removed <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>Column,                                                       <span class="sc">~</span>Reason,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"year"</span>,  <span class="st">"Redundant, as it can be derived from event_date."</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"time_precision"</span>, <span class="st">"Only needed to assess date reliability, which is not part of the objectives."</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"iso, region, country"</span>, <span class="st">"Constant for Myanmar, so they carry no information."</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"admin1, admin2, admin3, location"</span>, <span class="st">"Replaced by the township from the spatial join. admin3 also has 1,118 NAs and its names may not match MIMU."</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"actor1, inter1"</span>,<span class="st">"Optional. Only needed for actor-level breakdowns, which the objectives do not ask for."</span>,<span class="st">"actor2, assoc_actor_1, assoc_actor_2, inter2, interaction"</span>,<span class="st">"Many structural NAs (no second actor or association exists) and not required by the objectives."</span>,<span class="st">"source, source_scale, notes, tags"</span>,<span class="st">"Free text or source metadata with no use in counting events."</span>,<span class="st">"timestamp"</span>, <span class="st">"Data-entry metadata."</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">make_tbl</span>(acled_removed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table table-hover table-condensed table-striped caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Column</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">year</td>
+<td style="text-align: left;">Redundant, as it can be derived from event_date.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">time_precision</td>
+<td style="text-align: left;">Only needed to assess date reliability, which is not part of the objectives.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">iso, region, country</td>
+<td style="text-align: left;">Constant for Myanmar, so they carry no information.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">admin1, admin2, admin3, location</td>
+<td style="text-align: left;">Replaced by the township from the spatial join. admin3 also has 1,118 NAs and its names may not match MIMU.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">actor1, inter1</td>
+<td style="text-align: left;">Optional. Only needed for actor-level breakdowns, which the objectives do not ask for.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">actor2, assoc_actor_1, assoc_actor_2, inter2, interaction</td>
+<td style="text-align: left;">Many structural NAs (no second actor or association exists) and not required by the objectives.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">source, source_scale, notes, tags</td>
+<td style="text-align: left;">Free text or source metadata with no use in counting events.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">timestamp</td>
+<td style="text-align: left;">Data-entry metadata.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now the following code below is used to keep the columns that needs to be kept.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>acled <span class="ot">&lt;-</span> acled <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(event_id_cnty, event_date, disorder_type, event_type,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>         sub_event_type, civilian_targeting, fatalities, geo_precision)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(acled)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "event_id_cnty"      "event_date"         "disorder_type"     
+[4] "event_type"         "sub_event_type"     "civilian_targeting"
+[7] "fatalities"         "geo_precision"      "geometry"          </code></pre>
+</div>
+</div>
+</section>
+<section id="geospatial-columns" class="level4">
+<h4 class="anchored" data-anchor-id="geospatial-columns">Geospatial Columns</h4>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-hover table-condensed table-striped caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Column</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">ST</td>
+<td style="text-align: left;">State/region name. Used to describe where clusters and hotspots sit at the state level.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">DT</td>
+<td style="text-align: left;">District name. Provides context and helps tell apart townships that share a name.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">TS</td>
+<td style="text-align: left;">Township name (English). Used for map labels and for naming hotspots in the write-up.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">TS_PCODE</td>
+<td style="text-align: left;">Unique township code. Used as the join key to the ACLED counts and as the location ID in the space-time cube.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">geometry</td>
+<td style="text-align: left;">Township polygons. Needed for mapping, spatial weights and the spatial join.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>geo_removed <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>Column,      <span class="sc">~</span>Reason,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ST_PCODE"</span>,   <span class="st">"State/region code. Redundant :dataset already has state name (ST) and unique township key (TS_PCODE)."</span>,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"DT_PCODE"</span>,   <span class="st">"District code. Redundant : dataset already has district name (DT) and unique township key (TS_PCODE)."</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TS_MMR"</span>,     <span class="st">"Township name in Burmese. The English version (TS) is already available."</span>,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"PCode_V"</span>,    <span class="st">"Pcode version number. No analytical use."</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fu">make_tbl</span>(geo_removed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table table-hover table-condensed table-striped caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Column</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">ST_PCODE</td>
+<td style="text-align: left;">State/region code. Redundant :dataset already has state name (ST) and unique township key (TS_PCODE).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">DT_PCODE</td>
+<td style="text-align: left;">District code. Redundant : dataset already has district name (DT) and unique township key (TS_PCODE).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">TS_MMR</td>
+<td style="text-align: left;">Township name in Burmese. The English version (TS) is already available.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">PCode_V</td>
+<td style="text-align: left;">Pcode version number. No analytical use.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Therefore the code below will remove the unneeded Columns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mmr_sf <span class="ot">&lt;-</span> mmr_sf <span class="sc">%&gt;%</span> <span class="fu">select</span>(ST, DT, TS, TS_PCODE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mmr_sf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ST"       "DT"       "TS"       "TS_PCODE" "geometry"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="removing-unnecessary-rows" class="level3">
+<h3 class="anchored" data-anchor-id="removing-unnecessary-rows">Removing Unnecessary Rows</h3>
+<p>Since the objectiveis to look at <strong>armed conflict</strong> in the Myanmar specifically, it is crutial to know what are the types of conflicts within the dataset (Myanmar) before proceeding on to the deeper analysis. However as shown through the table below, there are 6 types of conflicts, of which some are NOT armed conflicts.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>acled <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span> <span class="fu">count</span>( event_type, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  event_type                     n
+  &lt;chr&gt;                      &lt;int&gt;
+1 Explosions/Remote violence 22925
+2 Battles                    21121
+3 Strategic developments     17833
+4 Protests                   15203
+5 Violence against civilians  9958
+6 Riots                         69</code></pre>
+</div>
+</div>
+<p>Therefore, according to the table below, the following event types will be kept or filtered out with the reasoning.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-hover table-condensed table-striped caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Event type</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Decision</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Battles</td>
+<td style="text-align: left;">Keep</td>
+<td style="text-align: left;">Direct armed clashes between organised groups.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Explosions/Remote violence</td>
+<td style="text-align: left;">Keep</td>
+<td style="text-align: left;">Airstrikes, shelling, drone strikes, landmines and IEDs. Centrally used in armed conflicts.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Violence against civilians</td>
+<td style="text-align: left;">Keep</td>
+<td style="text-align: left;">Armed attacks on citizems by state or non-state actors. Relevant form of political violence.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Protests</td>
+<td style="text-align: left;">Remove</td>
+<td style="text-align: left;">Mostly peaceful demonstrations for civil unrest, not armed conflict.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Riots</td>
+<td style="text-align: left;">Remove</td>
+<td style="text-align: left;">Mob violence/demonstrations without organised armed actors,a different phenomenon.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Strategic developments</td>
+<td style="text-align: left;">Remove</td>
+<td style="text-align: left;">Non-violent events such as arrests.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>keep_events <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Battles"</span>,</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Explosions/Remote violence"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Violence against civilians"</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>n_before <span class="ot">&lt;-</span> <span class="fu">nrow</span>(acled)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>acled <span class="ot">&lt;-</span> acled <span class="sc">%&gt;%</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(event_type <span class="sc">%in%</span> keep_events)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>n_after <span class="ot">&lt;-</span> <span class="fu">nrow</span>(acled)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co"># check no of rows removed </span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Before:"</span>, n_before, <span class="st">"| After:"</span>, n_after, <span class="st">"| Removed:"</span>, n_before <span class="sc">-</span> n_after, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Before: 87109 | After: 54004 | Removed: 33105 </code></pre>
+</div>
+</div>
+</section>
+<section id="joining-of-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="joining-of-datasets">Joining of datasets</h3>
+<p>Now with the datasets cleaned, the geospatial dataset and aspatial dataset will be joined. However rather than this being a usual attribute join, we will be joining via a spatial join. This is because the two datasets have no shared column. But it is possible to link the datasets via the geometry column (through the location)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Joining of datasets</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>acled_ts <span class="ot">&lt;-</span> <span class="fu">st_join</span>(acled,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                    mmr_sf <span class="sc">%&gt;%</span> <span class="fu">select</span>(TS_PCODE, TS, DT, ST),</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">join =</span> st_within)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Check to ensure no duplicated data </span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(acled_ts) <span class="sc">==</span> <span class="fu">nrow</span>(acled)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check to see number of events that cannot be matched with joined geospatial dataset. </span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(acled_ts<span class="sc">$</span>TS_PCODE))               </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12</code></pre>
+</div>
+</div>
+<p>Since there are 12 rows of data that are not matched after the join. Even though it is also possible to just drop these rows entirely, there is actually no missing values within the Geometry data which is where the coordinates are put in.</p>
+<p>Therefore, the following code below will help to re-assign these 12 events to the nearest township, with assumption that these 12 event locations are at the border of the re-assigned towns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>na_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">is.na</span>(acled_ts<span class="sc">$</span>TS_PCODE))</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>nearest <span class="ot">&lt;-</span> <span class="fu">st_nearest_feature</span>(acled_ts[na_idx, ], mmr_sf)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>acled_ts<span class="sc">$</span>TS_PCODE[na_idx] <span class="ot">&lt;-</span> mmr_sf<span class="sc">$</span>TS_PCODE[nearest]</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(acled_ts<span class="sc">$</span>TS_PCODE))   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Now all the events are matched in the joined dataset, and we can proceed on to the creation of time unit and aggregating the cube for the analysis.</p>
+</section>
+<section id="creating-spacetime-cube" class="level3">
+<h3 class="anchored" data-anchor-id="creating-spacetime-cube">Creating SpaceTime Cube</h3>
+<p>Within the sfdep package, to be able to represent the spatio-temporal data for the Geospatial analysis and Emerging HotSpot Analysis (EHSA) , the spacetime class would be used since it is able to hold both the spatial and temporal aspects of the data required.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/clipboard-3946020328.png" class="img-fluid figure-img" width="356"></p>
+<figcaption>Taken from Session 5 Slide 46 - Spacetime Cube</figcaption>
+</figure>
+</div>
+<p>So to create a spacetime object four items are required :</p>
+<ul>
+<li><p>Data : tibble of conflict counts</p></li>
+<li><p>geometry : an sf object of township boundaries (mmr_sf)</p></li>
+<li><p>location identifier : Column in both data in geometry (TS_PCODE)</p></li>
+<li><p>Time : Month index in data to as a column holding the temporal based data.</p></li>
+</ul>
+<p>In here, every township should appear in every month, including township without any conflicts to ensure the cube is complete. The 4 steps below would help to create the cube :</p>
+<section id="creating-time-unit" class="level4">
+<h4 class="anchored" data-anchor-id="creating-time-unit">Creating Time unit</h4>
+<p>First the time unit of the months would be created since the Time factor as stated above is required to create the spacetime cube.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>acled_ts <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">floor_date</span>(event_date, <span class="st">"month"</span>),</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">t_idx =</span> <span class="fu">interval</span>(<span class="fu">ymd</span>(<span class="st">"2021-01-01"</span>), month) <span class="sc">%/%</span> <span class="fu">months</span>(<span class="dv">1</span>) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(acled_ts<span class="sc">$</span>t_idx)   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1 57</code></pre>
+</div>
+</div>
+<p>Since we know there are 57 months output should be 1, 57. Which is the case so there is no issues with this first step and can proceed on to step 2.</p>
+</section>
+<section id="no-of-conflict-event-by-township-month" class="level4">
+<h4 class="anchored" data-anchor-id="no-of-conflict-event-by-township-month">No of conflict event by Township &amp; Month</h4>
+<p>The code below will count by Month (Temporal) and Township (Spatial) the number of conflicts that had occurred in the 57 months.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(TS_PCODE, t_idx) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_events =</span> <span class="fu">n</span>(), <span class="at">fatalities =</span> <span class="fu">sum</span>(fatalities), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="accounting-for-zeros" class="level4">
+<h4 class="anchored" data-anchor-id="accounting-for-zeros">Accounting for Zeros</h4>
+<p>Townships with no events in a month will not appear in <code>counts</code>. So an additional step is required to add these township back with zero counts.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>cube_df <span class="ot">&lt;-</span> counts <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">TS_PCODE =</span> mmr_sf<span class="sc">$</span>TS_PCODE,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">t_idx =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">57</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n_events =</span> <span class="dv">0</span>, <span class="at">fatalities =</span> <span class="dv">0</span>))</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cube_df) <span class="sc">==</span> <span class="fu">nrow</span>(mmr_sf) <span class="sc">*</span> <span class="dv">57</span>   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="create-spacetime-object" class="level4">
+<h4 class="anchored" data-anchor-id="create-spacetime-object">Create spacetime object</h4>
+<p>Finally now the spacetime object can be created.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>acled_st <span class="ot">&lt;-</span> <span class="fu">spacetime</span>(cube_df, mmr_sf,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.loc_col  =</span> <span class="st">"TS_PCODE"</span>,</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.time_col =</span> <span class="st">"t_idx"</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(acled_st)   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>The TRUE Confirms the creation of the spacetime cube!</p>
 </section>
 </section>
 </section>
-<section id="data-wrangling" class="level2">
-<h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
+<section id="plotting-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-of-data">Plotting of Data</h2>
+<p>First a second join is made to get the number of events that had occured in each township so the plotting can be done</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>ts_counts <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(TS_PCODE, <span class="at">name =</span> <span class="st">"n_events"</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>mmr_events <span class="ot">&lt;-</span> mmr_sf <span class="sc">%&gt;%</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ts_counts, <span class="at">by =</span> <span class="st">"TS_PCODE"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_events =</span> <span class="fu">replace_na</span>(n_events, <span class="dv">0</span>))   </span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmr_events<span class="sc">$</span>n_events) <span class="sc">==</span> <span class="fu">nrow</span>(acled_ts) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Now the map will be plotted out.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_ex02_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>…</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>months_lbl <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">ymd</span>(<span class="st">"2021-01-01"</span>), <span class="at">by =</span> <span class="st">"month"</span>, <span class="at">length.out =</span> <span class="dv">57</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>cube_sf <span class="ot">&lt;-</span> mmr_sf <span class="sc">%&gt;%</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(TS_PCODE) <span class="sc">%&gt;%</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(cube_df, <span class="at">by =</span> <span class="st">"TS_PCODE"</span>) <span class="sc">%&gt;%</span>      </span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">format</span>(months_lbl[t_idx], <span class="st">"%b %Y"</span>),</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">format</span>(months_lbl, <span class="st">"%b %Y"</span>)))</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(cube_sf<span class="sc">$</span>n_events)   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 96</code></pre>
+</div>
+</div>
+<p>Now we plot out the time series animated plot</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:\\cjmheidii\\ISSS626 - Geospatial\\Hands-on_Ex\\acled_monthly.gif"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"acled_monthly.gif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="acled_monthly.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="assumptions-limitations-in-data" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-limitations-in-data">Assumptions &amp; Limitations in data</h2>
