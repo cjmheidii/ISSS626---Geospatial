@@ -9,7 +9,7 @@
 <meta name="author" content="Chong Jia Min Heidi">
 <meta name="dcterms.date" content="2026-10-07">
 
-<title>Hands-on Exercise 7 – ISSS626 - Geospatial</title>
+<title>Hands on Exercise 7 – ISSS626 - Geospatial</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -173,6 +173,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex06.html">
  <span class="dropdown-text">Hands-on Exercise 6</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex07.html">
+ <span class="dropdown-text">Hands-on Exercise 7</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -255,13 +259,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#origin-destination-distance-matrix" id="toc-origin-destination-distance-matrix" class="nav-link" data-scroll-target="#origin-destination-distance-matrix">Origin-Destination Distance Matrix</a></li>
   </ul></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a></li>
-  <li><a href="#task-2-geospatial-data-wrangling" id="toc-task-2-geospatial-data-wrangling" class="nav-link" data-scroll-target="#task-2-geospatial-data-wrangling">Task 2: Geospatial Data Wrangling</a>
+  <li><a href="#geospatial-data-wrangling" id="toc-geospatial-data-wrangling" class="nav-link" data-scroll-target="#geospatial-data-wrangling">Geospatial Data Wrangling</a>
   <ul class="collapse">
   <li><a href="#importing-the-geospatial-data" id="toc-importing-the-geospatial-data" class="nav-link" data-scroll-target="#importing-the-geospatial-data">Importing the geospatial data</a></li>
   <li><a href="#updating-the-crs" id="toc-updating-the-crs" class="nav-link" data-scroll-target="#updating-the-crs">Updating the CRS</a></li>
   <li><a href="#cleaning-the-attribute-fields" id="toc-cleaning-the-attribute-fields" class="nav-link" data-scroll-target="#cleaning-the-attribute-fields">Cleaning the attribute fields</a></li>
   </ul></li>
-  <li><a href="#task-3-aspatial-data-wrangling" id="toc-task-3-aspatial-data-wrangling" class="nav-link" data-scroll-target="#task-3-aspatial-data-wrangling">Task 3: Aspatial Data Wrangling</a>
+  <li><a href="#aspatial-data-wrangling" id="toc-aspatial-data-wrangling" class="nav-link" data-scroll-target="#aspatial-data-wrangling">Aspatial Data Wrangling</a>
   <ul class="collapse">
   <li><a href="#importing-the-distance-matrix" id="toc-importing-the-distance-matrix" class="nav-link" data-scroll-target="#importing-the-distance-matrix">Importing the distance matrix</a></li>
   <li><a href="#tidying-the-distance-matrix" id="toc-tidying-the-distance-matrix" class="nav-link" data-scroll-target="#tidying-the-distance-matrix">Tidying the distance matrix</a></li>
@@ -276,14 +280,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#statistical-graphic-visualisation" id="toc-statistical-graphic-visualisation" class="nav-link" data-scroll-target="#statistical-graphic-visualisation">Statistical graphic Visualisation</a></li>
   </ul></li>
-  <li><a href="#task-5-accessibility-using-the-kd2sfca-method" id="toc-task-5-accessibility-using-the-kd2sfca-method" class="nav-link" data-scroll-target="#task-5-accessibility-using-the-kd2sfca-method">Task 5: Accessibility using the KD2SFCA Method</a>
+  <li><a href="#accessibility-using-the-kd2sfca-method" id="toc-accessibility-using-the-kd2sfca-method" class="nav-link" data-scroll-target="#accessibility-using-the-kd2sfca-method">Accessibility using the KD2SFCA Method</a>
   <ul class="collapse">
   <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How it works</a></li>
   <li><a href="#computing-kd2sfca-accessibility" id="toc-computing-kd2sfca-accessibility" class="nav-link" data-scroll-target="#computing-kd2sfca-accessibility">Computing KD2SFCA accessibility</a></li>
   <li><a href="#visualising-kd2sfca-accessibility" id="toc-visualising-kd2sfca-accessibility" class="nav-link" data-scroll-target="#visualising-kd2sfca-accessibility">Visualising KD2SFCA accessibility</a></li>
   <li><a href="#statistical-graphic" id="toc-statistical-graphic" class="nav-link" data-scroll-target="#statistical-graphic">Statistical graphic</a></li>
   </ul></li>
-  <li><a href="#task-6-accessibility-using-the-spatial-accessibility-measure-sam" id="toc-task-6-accessibility-using-the-spatial-accessibility-measure-sam" class="nav-link" data-scroll-target="#task-6-accessibility-using-the-spatial-accessibility-measure-sam">Task 6: Accessibility using the Spatial Accessibility Measure (SAM)</a>
+  <li><a href="#accessibility-using-the-spatial-accessibility-measure-sam" id="toc-accessibility-using-the-spatial-accessibility-measure-sam" class="nav-link" data-scroll-target="#accessibility-using-the-spatial-accessibility-measure-sam">Accessibility using the Spatial Accessibility Measure (SAM)</a>
   <ul class="collapse">
   <li><a href="#how-it-works-1" id="toc-how-it-works-1" class="nav-link" data-scroll-target="#how-it-works-1">How it works</a></li>
   <li><a href="#computing-sam-accessibility" id="toc-computing-sam-accessibility" class="nav-link" data-scroll-target="#computing-sam-accessibility">Computing SAM accessibility</a></li>
@@ -299,7 +303,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-on Exercise 7</h1>
+<h1 class="title">Hands on Exercise 7</h1>
 <p class="subtitle lead">Modelling Geographical Accessibility</p>
 </div>
 
@@ -397,8 +401,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><code>tidyverse</code> already bundles <code>readr</code>, <code>dplyr</code>, <code>tidyr</code>, <code>ggplot2</code> and a few others, so there is no need to load these one by one.</p>
 </section>
-<section id="task-2-geospatial-data-wrangling" class="level1">
-<h1>Task 2: Geospatial Data Wrangling</h1>
+<section id="geospatial-data-wrangling" class="level1">
+<h1>Geospatial Data Wrangling</h1>
 <section id="importing-the-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-the-geospatial-data">Importing the geospatial data</h2>
 <p>We start off by loading in all 3 geospatial layers, which are the subzone boundaries, the hexagons and the eldercare locations.</p>
@@ -530,8 +534,8 @@ Important
 </div>
 </section>
 </section>
-<section id="task-3-aspatial-data-wrangling" class="level1">
-<h1>Task 3: Aspatial Data Wrangling</h1>
+<section id="aspatial-data-wrangling" class="level1">
+<h1>Aspatial Data Wrangling</h1>
 <section id="importing-the-distance-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="importing-the-distance-matrix">Importing the distance matrix</h2>
 <p>Next we bring in the OD matrix csv file. It is stored as a tibble called <code>ODMatrix</code>.</p>
@@ -681,8 +685,8 @@ Important
 <p>The East and West Regions have much wider spreads, and the West Region in particular has the lowest median and the widest box. Its upper whisker is as high as the Central Region’s, which suggests that accessibility within the west is very uneven, with some well-served pockets alongside areas with almost no access. The mean (red dot) is below the median in all regions because of the low outliers on the log scale.</p>
 </section>
 </section>
-<section id="task-5-accessibility-using-the-kd2sfca-method" class="level1">
-<h1>Task 5: Accessibility using the KD2SFCA Method</h1>
+<section id="accessibility-using-the-kd2sfca-method" class="level1">
+<h1>Accessibility using the KD2SFCA Method</h1>
 <section id="how-it-works" class="level2">
 <h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
 <p>KD2SFCA stands for the Kernel Density 2-Step Floating Catchment Area method. As the name says, it works in two steps.</p>
@@ -770,8 +774,8 @@ Important
 <p>Compared with the Hansen boxplot, the East and West Regions score much lower here, which shows that Hansen’s lack of a distance threshold overstates access in areas that are far from any centre.</p>
 </section>
 </section>
-<section id="task-6-accessibility-using-the-spatial-accessibility-measure-sam" class="level1">
-<h1>Task 6: Accessibility using the Spatial Accessibility Measure (SAM)</h1>
+<section id="accessibility-using-the-spatial-accessibility-measure-sam" class="level1">
+<h1>Accessibility using the Spatial Accessibility Measure (SAM)</h1>
 <section id="how-it-works-1" class="level2">
 <h2 class="anchored" data-anchor-id="how-it-works-1">How it works</h2>
 <p>SAM is the third approach and it is also a catchment-based method, similar in spirit to KD2SFCA. It also uses a distance threshold and a decay function, and accounts for the competition for each service. We will run it using the same inputs, so that the only thing changing between this section and the previous one is the method itself. This makes it easier to tell what the difference between the 2 methods is really coming from.</p>

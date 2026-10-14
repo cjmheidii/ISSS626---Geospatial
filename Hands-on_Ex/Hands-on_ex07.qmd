@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 7"
+title: "Hands on Exercise 7"
 subtitle: "Modelling Geographical Accessibility"
 author: "Chong Jia Min Heidi"
 format: html
@@ -89,7 +89,7 @@ pacman::p_load(tmap, SpatialAcc, sf,
 
 `tidyverse` already bundles `readr`, `dplyr`, `tidyr`, `ggplot2` and a few others, so there is no need to load these one by one.
 
-# Task 2: Geospatial Data Wrangling
+# Geospatial Data Wrangling
 
 ## Importing the geospatial data
 
@@ -151,7 +151,7 @@ hexagons <- hexagons %>%
 For this exercise, a constant value of 100 is used for both the demand and the capacity. This is just to keep things simple and to focus on the method. In a real study, the actual elderly population in each hexagon and the actual capacity of each eldercare centre should be used, otherwise the results will only reflect distance and not the true pressure on the services.
 :::
 
-# Task 3: Aspatial Data Wrangling
+# Aspatial Data Wrangling
 
 ## Importing the distance matrix
 
@@ -305,7 +305,7 @@ The Central Region has the highest median accessibility with a tight spread, fol
 
 The East and West Regions have much wider spreads, and the West Region in particular has the lowest median and the widest box. Its upper whisker is as high as the Central Region’s, which suggests that accessibility within the west is very uneven, with some well-served pockets alongside areas with almost no access. The mean (red dot) is below the median in all regions because of the low outliers on the log scale.
 
-# Task 5: Accessibility using the KD2SFCA Method
+# Accessibility using the KD2SFCA Method
 
 ## How it works
 
@@ -395,7 +395,7 @@ The means are only above zero because of a small number of well-served hexagons 
 
 Compared with the Hansen boxplot, the East and West Regions score much lower here, which shows that Hansen’s lack of a distance threshold overstates access in areas that are far from any centre.
 
-# Task 6: Accessibility using the Spatial Accessibility Measure (SAM)
+# Accessibility using the Spatial Accessibility Measure (SAM)
 
 ## How it works
 

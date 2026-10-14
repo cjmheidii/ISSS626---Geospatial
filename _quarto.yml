@@ -30,7 +30,8 @@ website:
           - href: Hands-on_Ex/Hands-on_ex06.html
             text: "Hands-on Exercise 6"    
           - href: Hands-on_Ex/Hands-on_ex07.html
-            text: "Hands-on Exercise 7"  
+            text: "Hands-on Exercise 7"
+            
       - text: "Take-Home Exercise"
         menu:
           - href: Hands-on_Ex/Take-Home_ex01.html 
