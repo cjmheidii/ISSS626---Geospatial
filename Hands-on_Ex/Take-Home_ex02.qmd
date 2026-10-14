@@ -137,7 +137,7 @@ Within the Data Wrangling, these processes will be conducted to check the data a
 
 - Aggregating and completing cube
 
-### Duplicate Values 
+### Duplicate Values
 
 First, checks are done to the aspatial data to ensure there are no duplicated values (rows and columns). This is to ensure there is no double counting in our values as the analysis can be done. Duplicate values if its present within the data will cause the data to skew and impact the accuracy of analysis.
 
@@ -161,7 +161,7 @@ any(duplicated(names(mmr_sf)))
 
 With alls outputs being `0` or `FALSE`, there are 0 duplicated values in both datasets and it can be concluded that every row and column (event) is unique
 
-### Missing Data 
+### Missing Data
 
 Sometimes, data collection would not be clean and this is very common in real world datasets. Missing data would again impact the accuracy of the analysis, where some insights may be missed due to the missing data. Therefore the checks here are done.
 
@@ -203,7 +203,7 @@ With all values being `0`, it can be confirmed that the geospatial dataset does 
 
 For the Datasets, after the analysis of the specifc columns available, the selected columns are kept or removed with the following reasons in the tables below.
 
-#### Aspatial Columns 
+#### Aspatial Columns
 
 ```{r}
 #| echo: false
@@ -266,7 +266,7 @@ acled <- acled %>%
 names(acled)
 ```
 
-#### Geospatial Columns 
+#### Geospatial Columns
 
 ```{r}
 #| echo: false
@@ -314,7 +314,7 @@ mmr_sf <- mmr_sf %>% select(ST, DT, TS, TS_PCODE)
 names(mmr_sf)
 ```
 
-### Removing Unnecessary Rows 
+### Removing Unnecessary Rows
 
 Since the objectiveis to look at **armed conflict** in the Myanmar specifically, it is crutial to know what are the types of conflicts within the dataset (Myanmar) before proceeding on to the deeper analysis. However as shown through the table below, there are 6 types of conflicts, of which some are NOT armed conflicts.
 
@@ -356,7 +356,7 @@ cat("Before:", n_before, "| After:", n_after, "| Removed:", n_before - n_after, 
 
 ```
 
-### Joining of datasets 
+### Joining of datasets
 
 Now with the datasets cleaned, the geospatial dataset and aspatial dataset will be joined. However rather than this being a usual attribute join, we will be joining via a spatial join. This is because the two datasets have no shared column. But it is possible to link the datasets via the geometry column (through the location)
 
@@ -388,7 +388,7 @@ sum(is.na(acled_ts$TS_PCODE))
 
 Now all the events are matched in the joined dataset, and we can proceed on to the creation of time unit and aggregating the cube for the analysis.
 
-### Creating SpaceTime Cube 
+### Creating SpaceTime Cube
 
 Within the sfdep package, to be able to represent the spatio-temporal data for the Geospatial analysis and Emerging HotSpot Analysis (EHSA) , the spacetime class would be used since it is able to hold both the spatial and temporal aspects of the data required.
 
@@ -406,7 +406,7 @@ So to create a spacetime object four items are required :
 
 In here, every township should appear in every month, including township without any conflicts to ensure the cube is complete. The 4 steps below would help to create the cube :
 
-#### Creating Time unit 
+#### Creating Time unit
 
 First the time unit of the months would be created since the Time factor as stated above is required to create the spacetime cube.
 
@@ -420,7 +420,7 @@ range(acled_ts$t_idx)
 
 Since we know there are 57 months output should be 1, 57. Which is the case so there is no issues with this first step and can proceed on to step 2.
 
-#### No of conflict event by Township & Month 
+#### No of conflict event by Township & Month
 
 The code below will count by Month (Temporal) and Township (Spatial) the number of conflicts that had occurred in the 57 months.
 
@@ -431,7 +431,7 @@ counts <- acled_ts %>%
   summarise(n_events = n(), fatalities = sum(fatalities), .groups = "drop")
 ```
 
-#### Accounting for Zeros 
+#### Accounting for Zeros
 
 Townships with no events in a month will not appear in `counts`. So an additional step is required to add these township back with zero counts.
 
@@ -444,7 +444,7 @@ cube_df <- counts %>%
 nrow(cube_df) == nrow(mmr_sf) * 57   
 ```
 
-#### Create spacetime object 
+#### Create spacetime object
 
 Finally now the spacetime object can be created.
 
@@ -498,12 +498,6 @@ tm_shape(mmr_events) +
             outer.margins = 0, inner.margins = 0.02)
 ```
 
-::: callout-note
-## Analysis
-
-...
-:::
-
 ```{r}
 months_lbl <- seq(ymd("2021-01-01"), by = "month", length.out = 57)
 
@@ -516,7 +510,55 @@ cube_sf <- mmr_sf %>%
 max(cube_sf$n_events)   
 ```
 
-Now we plot out the time series animated plot
+## Assumptions & Limitations in data
+
+### CRS on Both Datasets
+
+The EPSG:4326 is used to importing and storing raw latitude/longitude points for both aspatial and geospatial datasets. However this is not suitable for the spatial analytics in this exercise across Myanmar. Hence a transformation is required to EPSG:32647 (UTM Zone 47N). This is done during the importing of the datasets `st_transform(crs = 32647)`
+
+# Task 1 : Geospatial Data Science
+
+For a good spatial profiling, there is a need to look in deeper onto the fatality counts from these armed conflicts as well as a breakdown on the types of armed violence which had been identified from the previous data preparations. Therefore, a simple re-aggregation is redone specifically for this visualization section.
+
+## Armed Event Frequency by Township 
+
+```{r}
+#| fig-width: 9
+#| fig-height: 14
+#| echo: false
+#| message: false
+#| warning: false
+
+tm_shape(mmr_events) +
+  tm_polygons(col = "n_events",
+              style = "jenks", n = 6,
+              palette = "Reds",
+              title = "Number of events",
+              border.col = "grey60", lwd = 0.3) +
+  tm_layout(main.title = "Armed conflict events by township (Frequency)",
+            main.title.size = 1.1,
+            legend.position = c("left", "bottom"),
+            legend.text.size = 0.8, legend.title.size = 1,
+            frame = FALSE,
+            outer.margins = 0, inner.margins = 0.02)
+```
+
+::: {#Analysis .callout-note}
+## Analysis
+
+Armed conflict events are unevenly distributed across Myanmar's townships. The most frequent armed conclicts occurred form a broad north western area ([Sagaing, Magway and Chin regions](https://imgv2-1-f.scribdassets.com/img/document/407246563/original/3ff265836c/1?v=1)) , where several townships record between 454 and 1,048 events over the study period.
+
+A second major cluster runs along the eastern corridor the Thai border (East of Myanmar), with several townships in the upper-middle classes.
+
+The North region is a mid-sized hotspot, with a several more red concentrated armed conflict occurances in townships along the coast. This signals a third, more fragmented cluster.
+
+The central and Southern region in Mynmar shows a pale fewer than 58 event count.
+
+This shows that in overall the geography is bi-modal and border-anchored, where the conflict concentrates along the country's peripheries, where ethnic mobilisation and terrain has more prolonged clashes, while the demographic and agricultural heartland remains comparatively untouched.
+:::
+
+\
+Now to have a better temporal breakdown, an animated map is plotted out to see how the armed conflicts trends occured over the analysis timeframe.
 
 ```{r}
 #| echo: false
@@ -549,17 +591,281 @@ gifski(list.files("frames", pattern = "png$", full.names = TRUE),
        delay = 0.6)
 ```
 
+Now the animated graph is plotted here
+
 ```{r}
 knitr::include_graphics("acled_monthly.gif")
 ```
 
-## Assumptions & Limitations in data
+::: callout-note
+## Analysis
 
-### CRS on Both Datasets
+Across the full period, the event frequency escalates significantly, shifting from isolated border activity in early 2021 to widespread, sustained intensity by 2025.
 
-The EPSG:4326 is used to importing and storing raw latitude/longitude points for both aspatial and geospatial datasets. However this is not suitable for the spatial analytics in this exercise across Myanmar. Hence a transformation is required to EPSG:32647 (UTM Zone 47N). This is done during the importing of the datasets `st_transform(crs = 32647)`
+The North Western Mynamar remains a persistent but fluctuating hotspot, while the rest of the Central region shows moderate, localized spikes.
 
-# Task 1 : Geospatial Data Science
+The most striking long-term trend is the South, which evolves from near-zero activity into a dominant, continuous high-intensity corridor along the peninsula.
+
+In terms of seasonality, peaks occur in spring, with brief mid-year dips though the overall number of armed conflicts are overall on the rise in general from the 4 years estimate amount of data.
+:::
+
+## Township Fatalities by Township
+
+Now after looking at occurance counts which also shows how often have the Myanmar citizens lives have been disrupted by these armed conflicts, its also important to see how adverse the armed conflicts are. This is best represented through fatalities, where life cannot be brought back once lost.
+
+First a reaggregation is needed to calculate out the fatality counts to plot, done usingt the code below.
+
+```{r}
+# Re-aggregation of event types for fatality counts
+ts_agg <- acled_ts %>%
+  st_drop_geometry() %>%
+  group_by(TS_PCODE) %>%
+  summarise(
+    n_events       = n(),
+    n_fatalities   = sum(fatalities, na.rm = TRUE),
+    n_battles      = sum(event_type == "Battles"),
+    n_explosions   = sum(event_type == "Explosions/Remote violence"),
+    n_vac          = sum(event_type == "Violence against civilians"),
+    n_civ_targeted = sum(civilian_targeting == "Yes"),
+    n_months_active = n_distinct(t_idx),
+    .groups = "drop"
+  )
+
+# Join onto the township polygons
+mmr_analytical <- mmr_sf %>%
+  left_join(ts_agg, by = "TS_PCODE") %>%
+  mutate(across(where(is.numeric), ~replace_na(.x, 0)))
+
+# Verification of code 
+sum(mmr_analytical$n_events) == nrow(acled_ts)   
+```
+
+```{r}
+#| fig-width: 9
+#| fig-height: 14
+#| echo: false
+#| message: false
+#| warning: false
+
+tm_shape(mmr_analytical) +
+  tm_polygons(col = "n_fatalities",
+              style = "jenks", n = 6,
+              palette = "OrRd",
+              title = "Fatalities",
+              border.col = "grey60", lwd = 0.3) +
+  tm_layout(main.title = "Armed conflict fatalities by township",
+            main.title.size = 1.1,
+            legend.position = c("left", "bottom"),
+            legend.text.size = 0.8, legend.title.size = 1,
+            frame = FALSE,
+            outer.margins = 0, inner.margins = 0.02)
+```
+
+::: callout-note
+## Analysis
+
+The fatality counts follow the previous visuals on armed conflict frequency though this visual shows a sharper, more localised concentration.
+
+The dominant cluster sits in the north Western area (Sagaing, Chin, and Magway) where several townships register the top class of 1,262–1,877 fatalities. This marks the regions and mentioned townships as the most lethal and dangerous areas to be within Myanmar.
+
+A second major cluster appears in the east region where are 2 townships also reach the darkest classes.
+
+However a more important note is that several townships with moderate event counts show elevated fatalities. This implys a higher per-incident letality, which can be caused through the use of artillery and weaponry form of violence.
+
+Conversely, parts of the West and Central region has a paler colour within the plot which suggesting lower-lethality engagements such as standoffs or remote attacks.
+
+The South region death counts remain uniformly low, with most townships under 339 fatalities across the study period. This also fits to the frequency visual where since the number of armed conflicts are low, it also resulted in a low fatality rate, which is normal.
+:::
+
+## Event Type Analysis 
+
+Now for this part of the analysis alone, the townships will be combined into regions so we can analyse more specifically what type of armed conflict occurs more often in each region as well as to understand better which specific event causes greater damage in terms of death occurrence in Myanmar. This will help in setting course on priority and created better targeted solutions for peace-making processes, to resolve the biggest problems first.
+
+So first step, for this specifically since it is too difficult to look just into township since there are too many of them to look across the span, we are creating the next visualisation based on Regions of Myanmar, mainly the North, east ,North West, Central West and South Regions. This is according to the standard region groupings in Myanmar.
+
+The below code helps in printing all townships so we can generate the groupings.
+
+```{r}
+
+acled_ts %>%
+  st_drop_geometry() %>%
+  distinct(ST) %>%
+  arrange(ST) %>%
+  print(n = Inf)
+```
+
+Since there is a NA grouping (No values), we have to check on the number of rows with missing values and classify the event types.
+
+```{r}
+
+acled_ts %>%
+  st_drop_geometry() %>%
+  filter(is.na(ST)) %>%
+  summarise(n_events = n(),
+            fatalities = sum(fatalities, na.rm = TRUE),
+            n_townships = n_distinct(TS_PCODE))
+```
+
+Since only a total of 25 events here show a NA, which is less than 1% of the overall data, we will just filter these out since doing so will not have any major impacts or skew any results.
+
+```{r}
+acled_ts_clean <- acled_ts %>%
+  filter(!is.na(ST))
+
+# Verify the code has run smoothly (should only have 12)
+nrow(acled_ts) - nrow(acled_ts_clean)
+```
+
+Now with the data properly filtered the re-classification of regions are done based on the table below. The classification again is based on the general Myanmar region distribution format.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+region_acled <- tibble::tribble(
+  ~`State / Region`,   ~Region,
+  "Kachin",            "North",
+  "Shan (North)",      "North",
+  "Shan (East)",       "East",
+  "Shan (South)",      "East",
+  "Sagaing",           "North-West",
+  "Chin",              "North-West",
+  "Magway",            "Central",
+  "Mandalay",          "Central",
+  "Nay Pyi Taw",       "Central",
+  "Bago (East)",       "Central",
+  "Bago (West)",       "Central",
+  "Kayah",             "East",
+  "Kayin",             "East",
+  "Mon",               "East",
+  "Rakhine",           "West",
+  "Ayeyarwady",        "South",
+  "Yangon",            "South",
+  "Tanintharyi",       "South"
+)
+
+make_tbl(region_acled)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+region_lookup <- tibble::tribble(
+  ~ST,             ~Region,
+  "Kachin",        "North",
+  "Shan (North)",  "North",
+  "Shan (East)",   "East",
+  "Shan (South)",  "East",
+  "Sagaing",       "North-West",
+  "Chin",          "North-West",
+  "Magway",        "Central",
+  "Mandalay",      "Central",
+  "Nay Pyi Taw",   "Central",
+  "Bago (East)",   "Central",
+  "Bago (West)",   "Central",
+  "Kayah",         "East",
+  "Kayin",         "East",
+  "Mon",           "East",
+  "Rakhine",       "West",
+  "Ayeyarwady",    "South",
+  "Yangon",        "South",
+  "Tanintharyi",   "South"
+)
+
+acled_reg <- acled_ts_clean %>%
+  st_drop_geometry() %>%
+  left_join(region_lookup, by = "ST")
+```
+
+Now a verification is done to ensure the classification is done properly
+
+```{r}
+# Ensure no unmatched ST Values 
+acled_reg %>% filter(is.na(Region)) %>% nrow()      
+
+# Number of events preserved after filtering (should be 53992)
+nrow(acled_reg)                                     
+# Print out the region distribution
+acled_reg %>%
+  count(Region, name = "n_events", sort = TRUE)
+```
+
+Now that the distribution is done properly, the plotting can be done.
+
+```{r}
+#| fig-width: 9
+#| fig-height: 5
+#| echo: false
+#| message: false
+#| warning: false
+
+region_levels <- c("North-West", "East", "North", "Central", "West", "South")
+
+event_region <- acled_reg %>%
+  count(Region, event_type, name = "n_events") %>%
+  mutate(Region = factor(Region, levels = region_levels))
+
+ggplot(event_region,
+       aes(x = Region, y = n_events, fill = event_type)) +
+  geom_col(width = 0.72) +
+  scale_fill_manual(values = c(
+    "Battles"                     = "#67000d",
+    "Explosions/Remote violence"  = "#cb181d",
+    "Violence against civilians"  = "#fb6a4a"
+  )) +
+  labs(x = NULL, y = "Number of events", fill = "Event type",
+       title = "Armed conflict events by type and region, Myanmar (2021–2025)") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top", panel.grid.major.x = element_blank())
+```
+
+::: callout-note
+## Analysis
+
+...
+:::
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+#| echo: false
+#| message: false
+#| warning: false
+
+fatal_type <- acled_reg %>%
+  group_by(event_type) %>%
+  summarise(fatalities = sum(fatalities, na.rm = TRUE), .groups = "drop") %>%
+  mutate(pct = fatalities / sum(fatalities) * 100,
+         event_type = factor(event_type,
+                             levels = c("Battles",
+                                        "Explosions/Remote violence",
+                                        "Violence against civilians")))
+
+ggplot(fatal_type, aes(x = event_type, y = fatalities, fill = event_type)) +
+  geom_col(show.legend = FALSE, width = 0.65) +
+  geom_text(aes(label = sprintf("%s\n(%.1f%%)",
+                                scales::comma(fatalities), pct)),
+            vjust = -0.3, size = 3.4) +
+  scale_fill_manual(values = c(
+    "Battles"                     = "#67000d",
+    "Explosions/Remote violence"  = "#cb181d",
+    "Violence against civilians"  = "#fb6a4a"
+  )) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.18))) +
+  labs(x = NULL, y = "Fatalities",
+       title = "Conflict fatalities by event type, Myanmar (2021–2025)") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+::: callout-note
+## Analysis
+
+...
+:::
 
 # Task 2 : Local Measures of Spatial Association (LMSA) Analysis
 

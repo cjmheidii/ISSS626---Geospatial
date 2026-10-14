@@ -177,6 +177,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex06.html">
  <span class="dropdown-text">Hands-on Exercise 6</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_Ex/Hands-on_ex07.html">
+ <span class="dropdown-text">Hands-on Exercise 7</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -279,7 +283,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#crs-on-both-datasets" id="toc-crs-on-both-datasets" class="nav-link" data-scroll-target="#crs-on-both-datasets">CRS on Both Datasets</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#task-1-geospatial-data-science" id="toc-task-1-geospatial-data-science" class="nav-link" data-scroll-target="#task-1-geospatial-data-science">Task 1 : Geospatial Data Science</a></li>
+  <li><a href="#task-1-geospatial-data-science" id="toc-task-1-geospatial-data-science" class="nav-link" data-scroll-target="#task-1-geospatial-data-science">Task 1 : Geospatial Data Science</a>
+  <ul class="collapse">
+  <li><a href="#armed-event-frequency-by-township" id="toc-armed-event-frequency-by-township" class="nav-link" data-scroll-target="#armed-event-frequency-by-township">Armed Event Frequency by Township</a></li>
+  <li><a href="#township-fatalities-by-township" id="toc-township-fatalities-by-township" class="nav-link" data-scroll-target="#township-fatalities-by-township">Township Fatalities by Township</a></li>
+  <li><a href="#event-type-analysis" id="toc-event-type-analysis" class="nav-link" data-scroll-target="#event-type-analysis">Event Type Analysis</a></li>
+  </ul></li>
   <li><a href="#task-2-local-measures-of-spatial-association-lmsa-analysis" id="toc-task-2-local-measures-of-spatial-association-lmsa-analysis" class="nav-link" data-scroll-target="#task-2-local-measures-of-spatial-association-lmsa-analysis">Task 2 : Local Measures of Spatial Association (LMSA) Analysis</a></li>
   <li><a href="#task-3-emerging-hot-spot-analysis-ehsa" id="toc-task-3-emerging-hot-spot-analysis-ehsa" class="nav-link" data-scroll-target="#task-3-emerging-hot-spot-analysis-ehsa">Task 3: Emerging Hot Spot Analysis (EHSA)</a></li>
   <li><a href="#analysis-summary-conclusions" id="toc-analysis-summary-conclusions" class="nav-link" data-scroll-target="#analysis-summary-conclusions">Analysis Summary &amp; Conclusions</a></li>
@@ -317,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 11, 2026</p>
+      <p class="date-modified">October 15, 2026</p>
     </div>
   </div>
     
@@ -1059,19 +1068,6 @@ geometry
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Analysis
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>…</p>
-</div>
-</div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>months_lbl <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">ymd</span>(<span class="st">"2021-01-01"</span>), <span class="at">by =</span> <span class="st">"month"</span>, <span class="at">length.out =</span> <span class="dv">57</span>)</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1086,22 +1082,6 @@ geometry
 <pre><code>[1] 96</code></pre>
 </div>
 </div>
-<p>Now we plot out the time series animated plot</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "C:\\cjmheidii\\ISSS626 - Geospatial\\Hands-on_Ex\\acled_monthly.gif"</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"acled_monthly.gif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="acled_monthly.gif" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
 </section>
 <section id="assumptions-limitations-in-data" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-limitations-in-data">Assumptions &amp; Limitations in data</h2>
@@ -1113,6 +1093,351 @@ geometry
 </section>
 <section id="task-1-geospatial-data-science" class="level1">
 <h1>Task 1 : Geospatial Data Science</h1>
+<p>For a good spatial profiling, there is a need to look in deeper onto the fatality counts from these armed conflicts as well as a breakdown on the types of armed violence which had been identified from the previous data preparations. Therefore, a simple re-aggregation is redone specifically for this visualization section.</p>
+<section id="armed-event-frequency-by-township" class="level2">
+<h2 class="anchored" data-anchor-id="armed-event-frequency-by-township">Armed Event Frequency by Township</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_ex02_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="Analysis" class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Armed conflict events are unevenly distributed across Myanmar’s townships. The most frequent armed conclicts occurred form a broad north western area (<a href="https://imgv2-1-f.scribdassets.com/img/document/407246563/original/3ff265836c/1?v=1">Sagaing, Magway and Chin regions</a>) , where several townships record between 454 and 1,048 events over the study period.</p>
+<p>A second major cluster runs along the eastern corridor the Thai border (East of Myanmar), with several townships in the upper-middle classes.</p>
+<p>The North region is a mid-sized hotspot, with a several more red concentrated armed conflict occurances in townships along the coast. This signals a third, more fragmented cluster.</p>
+<p>The central and Southern region in Mynmar shows a pale fewer than 58 event count.</p>
+<p>This shows that in overall the geography is bi-modal and border-anchored, where the conflict concentrates along the country’s peripheries, where ethnic mobilisation and terrain has more prolonged clashes, while the demographic and agricultural heartland remains comparatively untouched.</p>
+</div>
+</div>
+<p><br>
+Now to have a better temporal breakdown, an animated map is plotted out to see how the armed conflicts trends occured over the analysis timeframe.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:\\cjmheidii\\ISSS626 - Geospatial\\Hands-on_Ex\\acled_monthly.gif"</code></pre>
+</div>
+</div>
+<p>Now the animated graph is plotted here</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"acled_monthly.gif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="acled_monthly.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Across the full period, the event frequency escalates significantly, shifting from isolated border activity in early 2021 to widespread, sustained intensity by 2025.</p>
+<p>The North Western Mynamar remains a persistent but fluctuating hotspot, while the rest of the Central region shows moderate, localized spikes.</p>
+<p>The most striking long-term trend is the South, which evolves from near-zero activity into a dominant, continuous high-intensity corridor along the peninsula.</p>
+<p>In terms of seasonality, peaks occur in spring, with brief mid-year dips though the overall number of armed conflicts are overall on the rise in general from the 4 years estimate amount of data.</p>
+</div>
+</div>
+</section>
+<section id="township-fatalities-by-township" class="level2">
+<h2 class="anchored" data-anchor-id="township-fatalities-by-township">Township Fatalities by Township</h2>
+<p>Now after looking at occurance counts which also shows how often have the Myanmar citizens lives have been disrupted by these armed conflicts, its also important to see how adverse the armed conflicts are. This is best represented through fatalities, where life cannot be brought back once lost.</p>
+<p>First a reaggregation is needed to calculate out the fatality counts to plot, done usingt the code below.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-aggregation of event types for fatality counts</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>ts_agg <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(TS_PCODE) <span class="sc">%&gt;%</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_events       =</span> <span class="fu">n</span>(),</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_fatalities   =</span> <span class="fu">sum</span>(fatalities, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_battles      =</span> <span class="fu">sum</span>(event_type <span class="sc">==</span> <span class="st">"Battles"</span>),</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_explosions   =</span> <span class="fu">sum</span>(event_type <span class="sc">==</span> <span class="st">"Explosions/Remote violence"</span>),</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_vac          =</span> <span class="fu">sum</span>(event_type <span class="sc">==</span> <span class="st">"Violence against civilians"</span>),</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_civ_targeted =</span> <span class="fu">sum</span>(civilian_targeting <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_months_active =</span> <span class="fu">n_distinct</span>(t_idx),</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Join onto the township polygons</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>mmr_analytical <span class="ot">&lt;-</span> mmr_sf <span class="sc">%&gt;%</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ts_agg, <span class="at">by =</span> <span class="st">"TS_PCODE"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">replace_na</span>(.x, <span class="dv">0</span>)))</span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Verification of code </span></span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmr_analytical<span class="sc">$</span>n_events) <span class="sc">==</span> <span class="fu">nrow</span>(acled_ts)   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_ex02_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The fatality counts follow the previous visuals on armed conflict frequency though this visual shows a sharper, more localised concentration.</p>
+<p>The dominant cluster sits in the north Western area (Sagaing, Chin, and Magway) where several townships register the top class of 1,262–1,877 fatalities. This marks the regions and mentioned townships as the most lethal and dangerous areas to be within Myanmar.</p>
+<p>A second major cluster appears in the east region where are 2 townships also reach the darkest classes.</p>
+<p>However a more important note is that several townships with moderate event counts show elevated fatalities. This implys a higher per-incident letality, which can be caused through the use of artillery and weaponry form of violence.</p>
+<p>Conversely, parts of the West and Central region has a paler colour within the plot which suggesting lower-lethality engagements such as standoffs or remote attacks.</p>
+<p>The South region death counts remain uniformly low, with most townships under 339 fatalities across the study period. This also fits to the frequency visual where since the number of armed conflicts are low, it also resulted in a low fatality rate, which is normal.</p>
+</div>
+</div>
+</section>
+<section id="event-type-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="event-type-analysis">Event Type Analysis</h2>
+<p>Now for this part of the analysis alone, the townships will be combined into regions so we can analyse more specifically what type of armed conflict occurs more often in each region as well as to understand better which specific event causes greater damage in terms of death occurrence in Myanmar. This will help in setting course on priority and created better targeted solutions for peace-making processes, to resolve the biggest problems first.</p>
+<p>So first step, for this specifically since it is too difficult to look just into township since there are too many of them to look across the span, we are creating the next visualisation based on Regions of Myanmar, mainly the North, east ,North West, Central West and South Regions. This is according to the standard region groupings in Myanmar.</p>
+<p>The below code helps in printing all townships so we can generate the groupings.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(ST) <span class="sc">%&gt;%</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ST) <span class="sc">%&gt;%</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 19 × 1
+   ST          
+   &lt;chr&gt;       
+ 1 Ayeyarwady  
+ 2 Bago (East) 
+ 3 Bago (West) 
+ 4 Chin        
+ 5 Kachin      
+ 6 Kayah       
+ 7 Kayin       
+ 8 Magway      
+ 9 Mandalay    
+10 Mon         
+11 Nay Pyi Taw 
+12 Rakhine     
+13 Sagaing     
+14 Shan (East) 
+15 Shan (North)
+16 Shan (South)
+17 Tanintharyi 
+18 Yangon      
+19 &lt;NA&gt;        </code></pre>
+</div>
+</div>
+<p>Since there is a NA grouping (No values), we have to check on the number of rows with missing values and classify the event types.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(ST)) <span class="sc">%&gt;%</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">fatalities =</span> <span class="fu">sum</span>(fatalities, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_townships =</span> <span class="fu">n_distinct</span>(TS_PCODE))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  n_events fatalities n_townships
+     &lt;int&gt;      &lt;dbl&gt;       &lt;int&gt;
+1       12          7           6</code></pre>
+</div>
+</div>
+<p>Since only a total of 25 events here show a NA, which is less than 1% of the overall data, we will just filter these out since doing so will not have any major impacts or skew any results.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>acled_ts_clean <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(ST))</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify the code has run smoothly (should only have 12)</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(acled_ts) <span class="sc">-</span> <span class="fu">nrow</span>(acled_ts_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12</code></pre>
+</div>
+</div>
+<p>Now with the data properly filtered the re-classification of regions are done based on the table below. The classification again is based on the general Myanmar region distribution format.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-hover table-condensed table-striped caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">State / Region</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Region</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Kachin</td>
+<td style="text-align: left;">North</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Shan (North)</td>
+<td style="text-align: left;">North</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Shan (East)</td>
+<td style="text-align: left;">East</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Shan (South)</td>
+<td style="text-align: left;">East</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Sagaing</td>
+<td style="text-align: left;">North-West</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Chin</td>
+<td style="text-align: left;">North-West</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Magway</td>
+<td style="text-align: left;">Central</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Mandalay</td>
+<td style="text-align: left;">Central</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Nay Pyi Taw</td>
+<td style="text-align: left;">Central</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Bago (East)</td>
+<td style="text-align: left;">Central</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Bago (West)</td>
+<td style="text-align: left;">Central</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Kayah</td>
+<td style="text-align: left;">East</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Kayin</td>
+<td style="text-align: left;">East</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Mon</td>
+<td style="text-align: left;">East</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Rakhine</td>
+<td style="text-align: left;">West</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Ayeyarwady</td>
+<td style="text-align: left;">South</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Yangon</td>
+<td style="text-align: left;">South</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">Tanintharyi</td>
+<td style="text-align: left;">South</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now a verification is done to ensure the classification is done properly</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure no unmatched ST Values </span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>acled_reg <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(Region)) <span class="sc">%&gt;%</span> <span class="fu">nrow</span>()      </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of events preserved after filtering (should be 53992)</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(acled_reg)                                     </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 53992</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print out the region distribution</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>acled_reg <span class="sc">%&gt;%</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Region, <span class="at">name =</span> <span class="st">"n_events"</span>, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Region     n_events
+  &lt;chr&gt;         &lt;int&gt;
+1 Central       14679
+2 North-West    14225
+3 East           8312
+4 North          7299
+5 South          6249
+6 West           3228</code></pre>
+</div>
+</div>
+<p>Now that the distribution is done properly, the plotting can be done.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_ex02_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>…</p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_ex02_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>…</p>
+</div>
+</div>
+</section>
 </section>
 <section id="task-2-local-measures-of-spatial-association-lmsa-analysis" class="level1">
 <h1>Task 2 : Local Measures of Spatial Association (LMSA) Analysis</h1>
