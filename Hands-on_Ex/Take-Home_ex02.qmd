@@ -518,9 +518,15 @@ The EPSG:4326 is used to importing and storing raw latitude/longitude points for
 
 # Task 1 : Geospatial Data Science
 
+Now that the general data preparations are already done, we will now look into the Exploratory Data Analysis.
+
+## Exploratory Data Analysis (EDA)
+
 For a good spatial profiling, there is a need to look in deeper onto the fatality counts from these armed conflicts as well as a breakdown on the types of armed violence which had been identified from the previous data preparations. Therefore, a simple re-aggregation is redone specifically for this visualization section.
 
-## Armed Event Frequency by Township 
+After this, to dig out the root cause we need to also understand more about what exactly is happening, or what type of armed conflict is occuring and where? So an Event type analysis is also done below.
+
+### Armed Event Frequency by Township
 
 ```{r}
 #| fig-width: 9
@@ -548,13 +554,13 @@ tm_shape(mmr_events) +
 
 Armed conflict events are unevenly distributed across Myanmar's townships. The most frequent armed conclicts occurred form a broad north western area ([Sagaing, Magway and Chin regions](https://imgv2-1-f.scribdassets.com/img/document/407246563/original/3ff265836c/1?v=1)) , where several townships record between 454 and 1,048 events over the study period.
 
-A second major cluster runs along the eastern corridor the Thai border (East of Myanmar), with several townships in the upper-middle classes.
+A second major cluster runs along the South corridor the Thai border, with several townships in the upper-middle classes.
 
-The North region is a mid-sized hotspot, with a several more red concentrated armed conflict occurances in townships along the coast. This signals a third, more fragmented cluster.
+The North region is a mid-sized hotspot, with a several more red concentrated armed conflict occurrences in townships along the coast. This signals a third, more fragmented cluster.
 
-The central and Southern region in Mynmar shows a pale fewer than 58 event count.
+The Eastern central and South west region in Myanmar shows a pale fewer than 58 event count.
 
-This shows that in overall the geography is bi-modal and border-anchored, where the conflict concentrates along the country's peripheries, where ethnic mobilisation and terrain has more prolonged clashes, while the demographic and agricultural heartland remains comparatively untouched.
+This shows that in overall the geography is bi-modal and border-anchored, where the conflict concentrates along the country's peripheries, where ethnic mobilization and terrain has more prolonged clashes, while the demographic and agricultural heartland remains comparatively untouched.
 :::
 
 \
@@ -602,14 +608,14 @@ knitr::include_graphics("acled_monthly.gif")
 
 Across the full period, the event frequency escalates significantly, shifting from isolated border activity in early 2021 to widespread, sustained intensity by 2025.
 
-The North Western Mynamar remains a persistent but fluctuating hotspot, while the rest of the Central region shows moderate, localized spikes.
+The North Western Mynamar remains a persistent but fluctuating hotspot, while another area to note is the rest of the Central region with moderate, localized spikes.
 
 The most striking long-term trend is the South, which evolves from near-zero activity into a dominant, continuous high-intensity corridor along the peninsula.
 
 In terms of seasonality, peaks occur in spring, with brief mid-year dips though the overall number of armed conflicts are overall on the rise in general from the 4 years estimate amount of data.
 :::
 
-## Township Fatalities by Township
+### Township Fatalities by Township
 
 Now after looking at occurance counts which also shows how often have the Myanmar citizens lives have been disrupted by these armed conflicts, its also important to see how adverse the armed conflicts are. This is best represented through fatalities, where life cannot be brought back once lost.
 
@@ -677,7 +683,7 @@ Conversely, parts of the West and Central region has a paler colour within the p
 The South region death counts remain uniformly low, with most townships under 339 fatalities across the study period. This also fits to the frequency visual where since the number of armed conflicts are low, it also resulted in a low fatality rate, which is normal.
 :::
 
-## Event Type Analysis 
+### Event Type Analysis
 
 Now for this part of the analysis alone, the townships will be combined into regions so we can analyse more specifically what type of armed conflict occurs more often in each region as well as to understand better which specific event causes greater damage in terms of death occurrence in Myanmar. This will help in setting course on priority and created better targeted solutions for peace-making processes, to resolve the biggest problems first.
 
@@ -825,7 +831,13 @@ ggplot(event_region,
 ::: callout-note
 ## Analysis
 
-...
+With this visual it drives the point home that the Cental and North West Myanmar are where all the political violences had occured, both regions having more than 14000 recorded conflicts in the years 2021-2025.
+
+In the Central region, overall event frequency is heavily driven by explosions and remote violence alongside the highest national occurrence of violence against civilians, reflecting asymmetric warfare and intense operations in populated zones. The North-West has a similar composition of direct battles and remote violence, signaling a sustained and high-intensity territorial combat between military forces and anti-junta resistance groups.
+
+In contrast, the East and North regions has moderate event volumes, primarily by direct armed clashes in the borderland areas.
+
+Finally, the South and West present has the lowest conflict counts as compared to the rest of the regions. Overall, armed violence is concentrated in the central agricultural heartland and northwestern highlands.
 :::
 
 ```{r}
@@ -835,39 +847,126 @@ ggplot(event_region,
 #| message: false
 #| warning: false
 
-fatal_type <- acled_reg %>%
-  group_by(event_type) %>%
-  summarise(fatalities = sum(fatalities, na.rm = TRUE), .groups = "drop") %>%
-  mutate(pct = fatalities / sum(fatalities) * 100,
-         event_type = factor(event_type,
-                             levels = c("Battles",
-                                        "Explosions/Remote violence",
-                                        "Violence against civilians")))
 
-ggplot(fatal_type, aes(x = event_type, y = fatalities, fill = event_type)) +
-  geom_col(show.legend = FALSE, width = 0.65) +
-  geom_text(aes(label = sprintf("%s\n(%.1f%%)",
-                                scales::comma(fatalities), pct)),
-            vjust = -0.3, size = 3.4) +
-  scale_fill_manual(values = c(
-    "Battles"                     = "#67000d",
-    "Explosions/Remote violence"  = "#cb181d",
-    "Violence against civilians"  = "#fb6a4a"
-  )) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.18))) +
-  labs(x = NULL, y = "Fatalities",
-       title = "Conflict fatalities by event type, Myanmar (2021–2025)") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.x = element_blank())
+acled_ts %>%
+  st_drop_geometry() %>%
+  group_by(year = factor(year(event_date)), event_type) %>%
+  summarise(fatalities = sum(fatalities, na.rm = TRUE), .groups = "drop") %>%
+  ggplot(aes(x = year, y = fatalities, fill = event_type)) +
+  geom_col(position = "dodge") +
+  geom_text(aes(label = fatalities), position = position_dodge(0.9), vjust = -0.5, size = 3) +
+  scale_fill_manual(values = c("Battles" = "#5c000e", 
+                               "Explosions/Remote violence" = "#cc2121", 
+                               "Violence against civilians" = "#f2654b")) +
+  theme_minimal() +
+  labs(title = "Conflict Fatalities by Event Type and Year (2021–2025)", 
+       x = "Year", y = "Fatalities", fill = "Event Type")
 ```
 
 ::: callout-note
 ## Analysis
 
-...
+Temporal trends first shows the sharp spike in fatality numbers after 2022 where the total annual fatalities has doubled from a sum of 11143 in 2021 to 24046 in 2022, this high fatality numbers maintained till 2024, where it dropped back down 2025. This overall suggests that the main conflicts and clashes has occured from 2022. However it is to note that the drop in 2025 may be because of the fact that 2025 only has a partial year reporting till September.
+
+Overall, the battles type of armed conflicts has dominated in the death rate counts across the 5 years, where these direct clashes consistently accounted for over 60% of yearly fatalities, reaching 15,582 battle deaths in 2022 and remaining above 14,000 annually till 2024.
+
+Explosions and remote violence formed the second most lethal mechanism, topping at 5,690 fatalities in 2022, showing the numerous lives being taken through the heavy human impact of military airstrikes, artillery shelling, and landmine usage.
+
+Meanwhile, direct targeting of civilians peaked at 2,774 deaths in 2022 before showing a gradual downward trend through 2024 and 2025.
 :::
 
 # Task 2 : Local Measures of Spatial Association (LMSA) Analysis
+
+Now, we will move on to the LMSA analysis, which focuses on the relationships between each observation and its surroundings to allow us to learn more about the spatial structure in the Myanmar conflict and its data.
+
+First the Queen Contiguity is used for the Spatial Weights. This is because the Queens Contiguity will define neighbors as polygons that share either a common edge OR a single corner point (vertex) unlike the other available contiguity (Rook) which only looks at the shared boundary line of non-zero length.
+
+```{R}
+#| echo: false
+#| message: false
+#| warning: false
+
+contiguity_table <- tribble(
+  ~Situation, ~`Rook Neighbour`, ~`Queen Neighbour`,
+  "Share a full edge", "✅", "✅",
+  "Share only a single corner point", "❌", "✅",
+  "Share nothing", "❌", "❌",
+  "Touch at a single point (diagonal)", "❌", "✅"
+)
+
+contiguity_table %>%
+  kbl(col.names = c("Situation", "Rook Neighbour", "Queen Neighbour"), align = "lcc") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width = TRUE) %>%
+  column_spec(1, bold = TRUE, width = "50%") %>%
+  column_spec(2, width = "25%") %>%
+  column_spec(3, width = "25%")
+```
+
+So the Queens Contiguity based neighbours are constructed, using the code below.
+
+```{r}
+wm_q <- mmr_analytical %>%
+  mutate(
+    nb = st_contiguity(geometry),
+    wt = st_weights(nb, style = "W", allow_zero = TRUE)
+  )
+```
+
+```{r}
+# Check which townships have 0 neighbors
+islands <- wm_q %>%
+  filter(card(nb) == 0) %>%
+  select(TS_PCODE, TS, ST)
+
+islands
+
+wm_q_filter <- wm_q %>%
+  filter(card(nb) > 0)
+```
+
+Building LISA
+
+```{r}
+lisa_df <- wm_q_filter %>%
+  mutate(local_moran = local_moran(n_events, nb, wt, nsim = 999)) %>%
+  unnest(local_moran) %>%
+  mutate(
+    lisa_cluster = case_when(
+      p_ii_sim >= 0.05 ~ "Not Significant",
+      mean == "High-High" ~ "High-High",
+      mean == "Low-Low" ~ "Low-Low",
+      mean == "High-Low" ~ "High-Low",
+      mean == "Low-High" ~ "Low-High"
+    ),
+    lisa_cluster = factor(
+      lisa_cluster, 
+      levels = c("High-High", "Low-Low", "High-Low", "Low-High", "Not Significant")
+    )
+  )
+```
+
+Computing local Gi\*
+
+```{r}
+gi_df <- wm_q %>%
+  mutate(
+    nb_self = st_nb_add_self(nb),                       # Add self to neighbor list
+    wt_self = st_weights(nb_self, allow_zero = TRUE),   # Recompute weights including self
+    gi_star = local_gstar_perm(n_events, nb_self, wt_self, nsim = 999)
+  ) %>%
+  unnest(gi_star) %>%
+  mutate(
+    gi_cluster = case_when(
+      p_sim >= 0.05 ~ "Not Significant",
+      gi_star > 0 ~ "Hotspot (High)",
+      gi_star < 0 ~ "Coldspot (Low)"
+    ),
+    gi_cluster = factor(
+      gi_cluster, 
+      levels = c("Hotspot (High)", "Coldspot (Low)", "Not Significant")
+    )
+  )
+```
 
 # Task 3: Emerging Hot Spot Analysis (EHSA)
 
