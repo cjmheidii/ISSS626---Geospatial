@@ -13,7 +13,7 @@ execute:
   message: false
 ---
 
-# Overview 
+# Overview
 
 Market area analysis (Trade Area Analysis) is the defining and studying the geographical area from which a business draws its customers.
 
@@ -21,7 +21,7 @@ It involves analyzing data on the following to understand market viability and i
 
 - consumer demographics
 
--  spending habits
+- spending habits
 
 - competitors
 
@@ -31,13 +31,13 @@ Within this analysis the Huff model is commonly used as well. Its a geospatial a
 
 It calculates a store’s market share by considering factors like size or sales for attractiveness and distance or travel time, with the probability decreasing as distance or competition increases. This tool helps businesses assess potential revenue, define trade areas, and make informed decisions about site selection
 
-## Setting the scene 
+## Setting the scene
 
 A fast-food franchise is a business model in which an individual (the franchisee) acquires the rights to operate a restaurant under an established brand owned by a franchisor. This arrangement typically involves franchise fees and adherence to standardized operational procedures. Key considerations prior to investment include the scale of initial capital outlay, the strength of the brand, and the strategic importance of store location. Capital investment requirements vary significantly, generally ranging from approximately \$200,000 to more than \$2 million. Major global fast-food franchise brands include McDonald’s, Burger King, Pizza Hut, KFC, and Taco Bell.
 
 In this exercise, you will assume the role of a data analyst within the business development team of a fast-food franchise. Your objective is to delineate the trade areas of existing stores in Taichung City and to produce corresponding spatial maps to support market analysis and strategic decision-making.
 
-# Data used 
+# Data used
 
 Four data sets will be used in this hands-on exercise, they are:
 
@@ -53,7 +53,7 @@ Four data sets will be used in this hands-on exercise, they are:
 
   - Store_sales_data.csv provides store sales data
 
-# Getting Started 
+# Getting Started
 
 The following are the packages used.
 
@@ -71,11 +71,11 @@ The following are the packages used.
 pacman::p_load(sf, tidyverse, MCI, tmap, ggstatsplot)
 ```
 
-## Importing Datasets 
+## Importing Datasets
 
 First, `st_read()` of sf package will be used to import the three geospatial data sets into R environment by using the code chunk below.
 
-### Geospatial Datasets 
+### Geospatial Datasets
 
 ```{r}
 stores <- st_read(
@@ -129,7 +129,7 @@ store_sales <- read_csv(
 summary(store_sales)
 ```
 
-## Data Preparations 
+## Data Preparations
 
 ### Data Aggregation
 
@@ -143,7 +143,7 @@ store_sales_aggre <- store_sales %>%
     "Total_Sales" = sum(Amount, na.rm = TRUE))
 ```
 
-### Relational Join 
+### Relational Join
 
 In the code chunk below, `left_join()` of **dplyr** package is used to append data from store_sales data.frame onto stores sf data.frame. At the same time a new field called *Store_size* has been created.
 
@@ -218,7 +218,7 @@ any(is.na(village$F_CNT))
 
 ```
 
-### Computing Distance Matrix 
+### Computing Distance Matrix
 
 Instead of calculate the distance between the villages and stores, we will calculate the centroid of each village using the code chunk below. Then, compute the distance between the centroids of the villages and the stores.
 
@@ -263,7 +263,7 @@ interaction_matrix <- distmat_long %>%
 summary(interaction_matrix)
 ```
 
-# Computing Huff Model 
+# Computing Huff Model
 
 ```{r}
 huff_share <- huff.shares(
@@ -323,7 +323,7 @@ Analysis
 From the plot, it suggests that the store has a strong pull on the central region, with a rapid decay in influence as distance increases. This visualization is crucial for market analysis, as it helps identify areas with high potential customer density and areas where the store has little to no market share.
 :::
 
-## Store Sales Analysis 
+## Store Sales Analysis
 
 One of the usage of Huff model is to estimate the store sales by using village population.
 

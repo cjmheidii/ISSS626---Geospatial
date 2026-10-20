@@ -382,7 +382,14 @@ na_idx <- which(is.na(acled_ts$TS_PCODE))
 nearest <- st_nearest_feature(acled_ts[na_idx, ], mmr_sf)
 acled_ts$TS_PCODE[na_idx] <- mmr_sf$TS_PCODE[nearest]
 
-sum(is.na(acled_ts$TS_PCODE))   
+# Refresh TS, DT, ST from the township table so reassigned events are no longer NA
+ts_lookup <- mmr_sf %>% st_drop_geometry() %>% select(TS_PCODE, TS, DT, ST)
+acled_ts <- acled_ts %>%
+  select(-TS, -DT, -ST) %>%
+  left_join(ts_lookup, by = "TS_PCODE")
+
+sum(is.na(acled_ts$TS_PCODE))
+sum(is.na(acled_ts$ST))
 
 ```
 
@@ -550,8 +557,6 @@ tm_shape(mmr_events) +
 ```
 
 ::: {#Analysis .callout-note}
-## Analysis
-
 Armed conflict events are unevenly distributed across Myanmar's townships. The most frequent armed conclicts occurred form a broad north western area ([Sagaing, Magway and Chin regions](https://imgv2-1-f.scribdassets.com/img/document/407246563/original/3ff265836c/1?v=1)) , where several townships record between 454 and 1,048 events over the study period.
 
 A second major cluster runs along the South corridor the Thai border, with several townships in the upper-middle classes.
@@ -603,9 +608,7 @@ Now the animated graph is plotted here
 knitr::include_graphics("acled_monthly.gif")
 ```
 
-::: callout-note
-## Analysis
-
+::: {# Analysis .callout-note}
 Across the full period, the event frequency escalates significantly, shifting from isolated border activity in early 2021 to widespread, sustained intensity by 2025.
 
 The North Western Mynamar remains a persistent but fluctuating hotspot, while another area to note is the rest of the Central region with moderate, localized spikes.
@@ -668,8 +671,6 @@ tm_shape(mmr_analytical) +
 ```
 
 ::: callout-note
-## Analysis
-
 The fatality counts follow the previous visuals on armed conflict frequency though this visual shows a sharper, more localised concentration.
 
 The dominant cluster sits in the north Western area (Sagaing, Chin, and Magway) where several townships register the top class of 1,262–1,877 fatalities. This marks the regions and mentioned townships as the most lethal and dangerous areas to be within Myanmar.
@@ -828,9 +829,7 @@ ggplot(event_region,
   theme(legend.position = "top", panel.grid.major.x = element_blank())
 ```
 
-::: callout-note
-## Analysis
-
+::: {#analysis .callout-note}
 With this visual it drives the point home that the Cental and North West Myanmar are where all the political violences had occured, both regions having more than 14000 recorded conflicts in the years 2021-2025.
 
 In the Central region, overall event frequency is heavily driven by explosions and remote violence alongside the highest national occurrence of violence against civilians, reflecting asymmetric warfare and intense operations in populated zones. The North-West has a similar composition of direct battles and remote violence, signaling a sustained and high-intensity territorial combat between military forces and anti-junta resistance groups.
@@ -863,9 +862,7 @@ acled_ts %>%
        x = "Year", y = "Fatalities", fill = "Event Type")
 ```
 
-::: callout-note
-## Analysis
-
+::: {# analysis .callout-note}
 Temporal trends first shows the sharp spike in fatality numbers after 2022 where the total annual fatalities has doubled from a sum of 11143 in 2021 to 24046 in 2022, this high fatality numbers maintained till 2024, where it dropped back down 2025. This overall suggests that the main conflicts and clashes has occured from 2022. However it is to note that the drop in 2025 may be because of the fact that 2025 only has a partial year reporting till September.
 
 Overall, the battles type of armed conflicts has dominated in the death rate counts across the 5 years, where these direct clashes consistently accounted for over 60% of yearly fatalities, reaching 15,582 battle deaths in 2022 and remaining above 14,000 annually till 2024.
@@ -902,71 +899,340 @@ contiguity_table %>%
   column_spec(3, width = "25%")
 ```
 
-So the Queens Contiguity based neighbours are constructed, using the code below.
+## LISA Analysis Preparations 
+
+First, for the LISA to work, all existing township without neighbours have to be filtered out or it will scramble the indices. Therefore, we need to identify and remove them before the weights are built.
 
 ```{r}
-wm_q <- mmr_analytical %>%
-  mutate(
-    nb = st_contiguity(geometry),
-    wt = st_weights(nb, style = "W", allow_zero = TRUE)
-  )
-```
+nb_all <- st_contiguity(mmr_analytical$geometry)
+island_ids <- mmr_analytical$TS_PCODE[card(nb_all) == 0]
 
-```{r}
-# Check which townships have 0 neighbors
-islands <- wm_q %>%
-  filter(card(nb) == 0) %>%
+mmr_analytical %>%
+  filter(TS_PCODE %in% island_ids) %>%
+  st_drop_geometry() %>%
   select(TS_PCODE, TS, ST)
-
-islands
-
-wm_q_filter <- wm_q %>%
-  filter(card(nb) > 0)
 ```
 
-Building LISA
+From the result, it is known that the townships : Munaung, Chaungzon and Cocokyun have 0 neighbours. So these needs to be dropped, where log-transformed variables should be added to counter the skewed raw counts before the weights are built, using the code chunk below.
+
+This calculation of the polygon spatial weights will help to define the neighbourhood relationships between the townships within Myanmar.
 
 ```{r}
-lisa_df <- wm_q_filter %>%
-  mutate(local_moran = local_moran(n_events, nb, wt, nsim = 999)) %>%
+# Filtering out the Munaung, Chaungzon and Cocokyun townships with 0 neighbours, while transforming log-transformed variables
+mmr_lmsa <- mmr_analytical %>%
+  filter(!TS_PCODE %in% island_ids) %>%
+  mutate(log_events = log1p(n_events),
+         log_fatal  = log1p(n_fatalities))
+
+# Building weights 
+wm_q <- mmr_lmsa %>%
+  mutate(nb = st_contiguity(geometry),
+         wt = st_weights(nb, style = "W"),
+         .before = 1)
+
+summary(wm_q$nb)
+```
+
+::: analysis
+The Queen contiguity neighbour list consists of 327 townships after the removal of the 3 island townships with no neighbours.
+
+In total, there are 1,716 non-zero links, where only 1.6% of the cells in the full weights matrix, so the matrix is sparse. Townships have 5.25 neighbours on average.
+
+Connectivity is uneven at the tails: four townships (35, 194, 287 and 320) have only one neighbour, while a sole township 311 has eleven, the most of any.
+:::
+
+### Global Moran's I 
+
+Before conducting the LMSA itslef for the analysis, there is a need to run the Global Moran to justify that the use of LISA is significant.
+
+```{r}
+set.seed(1234)
+global_moran_perm(wm_q$log_events, wm_q$nb, wm_q$wt, nsim = 999)
+```
+
+::: results
+The statisitic result = 0.67633 which is a positive result. Together with the p value \< 2.2e-16, it proves there is clustering where the results are statistically significant , hence the local statistics are worth running.
+:::
+
+## LISA for Conflict Frequency 
+
+### Computing local Gi\*
+
+To compute local Moran’s I, the local_moran() function of sfdep will be used to compute the local Gi\*. It will compute mainly the following :
+
+- Ii: the local Moran’s I statistics
+
+- E.Ii: the expectation of local moran statistic under the randomisation hypothesis
+
+- Var.Ii: the variance of local moran statistic under the randomisation hypothesis
+
+- Z.Ii:the standard deviate of local moran statistic
+
+- Pr(): the p-value of local moran statistic
+
+```{r}
+lisa_events <- wm_q %>%
+  mutate(local_moran = local_moran(
+    log_events, nb, wt, nsim = 999),
+    .before = 1) %>%
+  unnest(local_moran)
+```
+
+Now the code below will create the cluster classes, where it is classified from insignificant to High-High depending on the number of events within the township and how clustered it is.
+
+```{r}
+lisa_events <- lisa_events %>%
+  mutate(
+    LISA_cluster = ifelse(
+      p_ii_sim < 0.05,
+      as.character(mean),
+      "Insignificant"),
+    LISA_cluster = factor(
+      LISA_cluster,
+      levels = c("Insignificant", "Low-Low", "Low-High", "High-Low", "High-High")
+    )
+  )
+
+lisa_events %>% st_drop_geometry() %>% count(LISA_cluster)
+```
+
+### Plotting of visual 
+
+```{r}
+#| fig-width: 7
+#| fig-height: 10
+
+tm_shape(lisa_events) +
+  tm_polygons(
+    fill = "LISA_cluster",
+    fill.scale = tm_scale_categorical(
+      values = c("Insignificant" = "grey80",
+                 "Low-Low"       = "blue",
+                 "Low-High"      = "lightblue",
+                 "High-Low"      = "pink",
+                 "High-High"     = "red")),
+    fill.legend = tm_legend(
+      title = "LISA Cluster",
+      position = tm_pos_in("left", "bottom"))) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Local Moran's I Clusters of Armed Conflict Events (p < 0.05)")
+```
+
+::: Analysis
+The LISA map shows that there are 2 main High-High Clusters : in the central-northwest (the Sagaing–Magway–Mandalay belt) and the south-eastern strip near the Kayin/Mon border. Most High-High regions are strongly clustered rather than being randomly scattered, suggesting that heavily affected townships neighbour equally affected ones.
+
+Low-Low clusters mark persistently quiet areas: northernmost region, a large block across eastern Shan, a small central pocket and the south-west delta.
+
+The Three Low-High regions should be considered as outliers (pale blue) with the affected townships being sparsely located. and no High-Low outliers are significant with it being barely seen on the map. Grey townships are not significant at p \< 0.05.
+
+Overall, conflict forms contiguous regional blocks rather than isolated townships, which is consistent with the earlier findings that violence concentrates in the north-west and the south-east corridor.
+:::
+
+## HCSA for Conflict Frequency 
+
+### Gi\* for events 
+
+```{r}
+wm_q_gi <- mmr_lmsa %>%
+  mutate(nb = include_self(st_contiguity(geometry)),
+         wt = st_weights(nb, style = "W"),
+         .before = 1)
+```
+
+### Creation of HCSA Clusters 
+
+With the weights created, the HCSA clusters are generated through 999+1 reiterations.
+
+```{r}
+HCSA_events <- wm_q_gi %>%
+  mutate(gistar = local_gstar_perm(
+    log_events, nb, wt, nsim = 999),
+    .before = 1) %>%
+  unnest(gistar)
+```
+
+```{r}
+HCSA_events <- HCSA_events %>%
+  mutate(HCSA_cluster = case_when(
+    p_sim > 0.05 ~ "Insignificant",
+    p_sim <= 0.05 & cluster == "High" ~ "Hot spot",
+    p_sim <= 0.05 & cluster == "Low"  ~ "Cold spot",
+    TRUE ~ "Other"),
+    HCSA_cluster = factor(
+      HCSA_cluster,
+      levels = c("Insignificant", "Hot spot", "Cold spot")),
+    .before = 1)
+
+HCSA_events %>% st_drop_geometry() %>% count(HCSA_cluster)
+```
+
+### Plotting of HCSA for analysis
+
+Now the HCSA is plotted out for analysis.
+
+```{r}
+#| fig-width: 7
+#| fig-height: 10
+
+tm_shape(HCSA_events) +
+  tm_polygons(
+    fill = "HCSA_cluster",
+    fill.scale = tm_scale_categorical(
+      values = c("Insignificant" = "grey80",
+                 "Hot spot"      = "red",
+                 "Cold spot"     = "blue")),
+    fill.legend = tm_legend(
+      title = "HCSA Cluster",
+      position = tm_pos_in("left", "bottom"))) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Gi* Hot and Cold Spots of Armed Conflict Events (p < 0.05)")
+```
+
+::: analysis
+The HCSA map is largely similar to the LISA events map, which strengthens confidence in the main findings.
+
+The central-northwest, north-central, south-eastern hot spots all reappear, while northern Kachin, eastern Shan and the south-west delta remain cold spots. So since both statistics agree on the core clusters, it can be said the pattern is robust.
+
+There are however 2 small differences between both visuals. First, hot spots extends a little further than the LISA plot with the south-eastern strip reaching further north and the central-northwest block widening a little at the edge.
+
+Second, the three Low-High outliers from the LISA map (north-central, north-east and Kayin/Mon) now appear as cold spots. This is due to Gi\* which included each township’s own value in its area. Therefore, the output is flagged as low overall instead of separating a quiet township from its busy neighbours.
+:::
+
+## LISA for fatalities 
+
+```{r}
+lisa_fatal <- wm_q %>%
+  mutate(local_moran = local_moran(
+    log_fatal, nb, wt, nsim = 999),
+    .before = 1) %>%
   unnest(local_moran) %>%
   mutate(
-    lisa_cluster = case_when(
-      p_ii_sim >= 0.05 ~ "Not Significant",
-      mean == "High-High" ~ "High-High",
-      mean == "Low-Low" ~ "Low-Low",
-      mean == "High-Low" ~ "High-Low",
-      mean == "Low-High" ~ "Low-High"
-    ),
-    lisa_cluster = factor(
-      lisa_cluster, 
-      levels = c("High-High", "Low-Low", "High-Low", "Low-High", "Not Significant")
+    LISA_cluster = ifelse(
+      p_ii_sim < 0.05,
+      as.character(mean),
+      "Insignificant"),
+    LISA_cluster = factor(
+      LISA_cluster,
+      levels = c("Insignificant", "Low-Low", "Low-High", "High-Low", "High-High")
     )
   )
+
+lisa_fatal %>% st_drop_geometry() %>% count(LISA_cluster)
 ```
 
-Computing local Gi\*
+### Plotting of visual for Analysis  
 
 ```{r}
-gi_df <- wm_q %>%
-  mutate(
-    nb_self = st_nb_add_self(nb),                       # Add self to neighbor list
-    wt_self = st_weights(nb_self, allow_zero = TRUE),   # Recompute weights including self
-    gi_star = local_gstar_perm(n_events, nb_self, wt_self, nsim = 999)
-  ) %>%
-  unnest(gi_star) %>%
-  mutate(
-    gi_cluster = case_when(
-      p_sim >= 0.05 ~ "Not Significant",
-      gi_star > 0 ~ "Hotspot (High)",
-      gi_star < 0 ~ "Coldspot (Low)"
-    ),
-    gi_cluster = factor(
-      gi_cluster, 
-      levels = c("Hotspot (High)", "Coldspot (Low)", "Not Significant")
-    )
-  )
+#| fig-width: 7
+#| fig-height: 10
+
+tm_shape(lisa_fatal) +
+  tm_polygons(
+    fill = "LISA_cluster",
+    fill.scale = tm_scale_categorical(
+      values = c("Insignificant" = "grey80",
+                 "Low-Low"       = "blue",
+                 "Low-High"      = "lightblue",
+                 "High-Low"      = "pink",
+                 "High-High"     = "red")),
+    fill.legend = tm_legend(
+      title = "LISA Cluster",
+      position = tm_pos_in("left", "bottom"))) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Local Moran's I Clusters of Armed Conflict Fatalities (p < 0.05)")
 ```
+
+::: Analysis
+As compared to the occurence frequency LISA plot, the fatalities show the same overall geography but with larger High-High zones.
+
+The central-northwest cluster now extends north and joins the separate northern patch, suggesting that even if the clashes may not occur frequently at the specific region, neighbour regions to High conflict event clusters would still have a high counts for death.
+
+The south-eastern High-High strip also reaches further north, so some areas with moderate event counts can still be lethal. Low-Low clusters persist in eastern Shan and far northern Myanmar, and the south-west Low-Low zone expands considerably. Low-High outliers appear sparsely at separate areas like within the LISA plot and there are no significant High-Low outliers.
+
+Overall together with consideration of frequency counts, this shows that any neighbouring high conflict regions is also deadly, where fatalities the more spatially extensive measure.
+:::
+
+### Gi\* for Fatalities
+
+```{r}
+HCSA_fatal <- wm_q_gi %>%
+  mutate(gistar = local_gstar_perm(
+    log_fatal, nb, wt, nsim = 999),
+    .before = 1) %>%
+  unnest(gistar) %>%
+  mutate(HCSA_cluster = case_when(
+    p_sim > 0.05 ~ "Insignificant",
+    p_sim <= 0.05 & cluster == "High" ~ "Hot spot",
+    p_sim <= 0.05 & cluster == "Low"  ~ "Cold spot",
+    TRUE ~ "Other"),
+    HCSA_cluster = factor(
+      HCSA_cluster,
+      levels = c("Insignificant", "Hot spot", "Cold spot")),
+    .before = 1)
+
+HCSA_fatal %>% st_drop_geometry() %>% count(HCSA_cluster)
+```
+
+Plot
+
+```{r}
+#| fig-width: 7
+#| fig-height: 10
+
+tm_shape(HCSA_fatal) +
+  tm_polygons(
+    fill = "HCSA_cluster",
+    fill.scale = tm_scale_categorical(
+      values = c("Insignificant" = "grey80",
+                 "Hot spot"      = "red",
+                 "Cold spot"     = "blue")),
+    fill.legend = tm_legend(
+      title = "HCSA Cluster",
+      position = tm_pos_in("left", "bottom"))) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Gi* Hot and Cold Spots of Armed Conflict Fatalities (p < 0.05)")
+```
+
+::: analysis
+Again, the HCSA fatalities map is very similar to the LISA Fatalities plot, where it matches the HCSA frequency output for the central-northwest, south-eastern hot spots, proving that these areas are robust across both statistics and both variables.
+
+Notably, there is a hot spot on the far northern border, where it is a pure cold spot for frequency counts, showing that township has comparatively few events but high fatalities or a higher fatality count per event. This suggests a case-fatality-ratio analysis to delve in deeper.
+
+The other regions stay similar like Eastern Shan and the south-west staying as cold spots, where the delta’s cold zone is larger than in the events map (similar pattern to LISA Fatality map as comparing to the conflict frequency plots).
+:::
+
+## Moran Scatterplot
+
+```{r}
+lisa_events <- lisa_events %>%
+  mutate(lag_events = st_lag(log_events, nb, wt),
+         z_events = as.vector(scale(log_events)),
+         z_lag_events = as.vector(scale(lag_events)))
+
+ggplot(data = lisa_events,
+       aes(x = z_events, y = z_lag_events, color = mean)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_vline(xintercept = 0, lty = 2) +
+  scale_color_manual(
+    values = c("High-High" = "red", "Low-Low" = "blue",
+               "Low-High" = "lightblue", "High-Low" = "pink")) +
+  labs(x = "Standardised log events",
+       y = "Standardised spatial lag",
+       title = "Moran Scatterplot with LISA Quadrants") +
+  theme_minimal()
+```
+
+::: Analysis
+The Moran scatterplot of standardised log events against their spatial lag has a clear positive slope of roughly 0.8, so high conflict townships tend to neighbour high conflict ones and quiet townships neighbour quiet ones.
+
+This supports the clusters in the LMSA plots, showing that the patterns are not driven by a handful of townships.
+
+Most points fall in High-High (top right) and Low-Low (bottom left), with far fewer points in the Low-High (pale blue) and High-Low (pink) regions.
+
+These are all consistent to the output shown within the 4 plots for the Local Measures of Spatial Association Plot Analysis.
+:::
 
 # Task 3: Emerging Hot Spot Analysis (EHSA)
 
