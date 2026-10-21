@@ -17,8 +17,6 @@ execute:
 
 ::: callout-warning
 STILL A WORK IN PROGRESS (WIP)
-
-NOT DONE YET ONLY DRAFTING OF OUTLINE!
 :::
 
 Since gaining independence from the UK in 1948, Myanmar has been in one of the world's longest ongoing civil war. Ethic armed organisations have been fighting Myanmar's armed forces for self-determination. Even with the numerous ceasefires, armed groups continue to call for independence, increased autonomy, democracy, or the federalisation of Myanmar.
@@ -608,7 +606,7 @@ Now the animated graph is plotted here
 knitr::include_graphics("acled_monthly.gif")
 ```
 
-::: {# Analysis .callout-note}
+::: callout-note
 Across the full period, the event frequency escalates significantly, shifting from isolated border activity in early 2021 to widespread, sustained intensity by 2025.
 
 The North Western Mynamar remains a persistent but fluctuating hotspot, while another area to note is the rest of the Central region with moderate, localized spikes.
@@ -688,7 +686,7 @@ The South region death counts remain uniformly low, with most townships under 33
 
 Now for this part of the analysis alone, the townships will be combined into regions so we can analyse more specifically what type of armed conflict occurs more often in each region as well as to understand better which specific event causes greater damage in terms of death occurrence in Myanmar. This will help in setting course on priority and created better targeted solutions for peace-making processes, to resolve the biggest problems first.
 
-So first step, for this specifically since it is too difficult to look just into township since there are too many of them to look across the span, we are creating the next visualisation based on Regions of Myanmar, mainly the North, east ,North West, Central West and South Regions. This is according to the standard region groupings in Myanmar.
+So first step, for this specifically since it is too difficult to look just into township since there are too many of them to look across the span, we are creating the next visualisation based on Regions of Myanmar, mainly the North, east ,North West, Central West and South Regions. The 6 regions are created from the references of MIMU state maps and administrative divisions of Myanmar.
 
 The below code helps in printing all townships so we can generate the groupings.
 
@@ -713,15 +711,7 @@ acled_ts %>%
             n_townships = n_distinct(TS_PCODE))
 ```
 
-Since only a total of 25 events here show a NA, which is less than 1% of the overall data, we will just filter these out since doing so will not have any major impacts or skew any results.
-
-```{r}
-acled_ts_clean <- acled_ts %>%
-  filter(!is.na(ST))
-
-# Verify the code has run smoothly (should only have 12)
-nrow(acled_ts) - nrow(acled_ts_clean)
-```
+The 18 state/region units in the joined data contain no NA values, because the 12 unmatched events were reassigned to their nearest township during the spatial join.
 
 Now with the data properly filtered the re-classification of regions are done based on the table below. The classification again is based on the general Myanmar region distribution format.
 
@@ -782,19 +772,17 @@ region_lookup <- tibble::tribble(
   "Tanintharyi",   "South"
 )
 
-acled_reg <- acled_ts_clean %>%
+acled_reg <- acled_ts %>%
   st_drop_geometry() %>%
-  left_join(region_lookup, by = "ST")
+  left_join(region_lookup, by = "ST")  
 ```
 
 Now a verification is done to ensure the classification is done properly
 
 ```{r}
 # Ensure no unmatched ST Values 
-acled_reg %>% filter(is.na(Region)) %>% nrow()      
+nrow(acled_reg) == nrow(acled_ts)   
 
-# Number of events preserved after filtering (should be 53992)
-nrow(acled_reg)                                     
 # Print out the region distribution
 acled_reg %>%
   count(Region, name = "n_events", sort = TRUE)
@@ -862,7 +850,7 @@ acled_ts %>%
        x = "Year", y = "Fatalities", fill = "Event Type")
 ```
 
-::: {# analysis .callout-note}
+::: callout-note
 Temporal trends first shows the sharp spike in fatality numbers after 2022 where the total annual fatalities has doubled from a sum of 11143 in 2021 to 24046 in 2022, this high fatality numbers maintained till 2024, where it dropped back down 2025. This overall suggests that the main conflicts and clashes has occured from 2022. However it is to note that the drop in 2025 may be because of the fact that 2025 only has a partial year reporting till September.
 
 Overall, the battles type of armed conflicts has dominated in the death rate counts across the 5 years, where these direct clashes consistently accounted for over 60% of yearly fatalities, reaching 15,582 battle deaths in 2022 and remaining above 14,000 annually till 2024.
@@ -899,7 +887,7 @@ contiguity_table %>%
   column_spec(3, width = "25%")
 ```
 
-## LISA Analysis Preparations 
+## LISA Analysis Preparations
 
 First, for the LISA to work, all existing township without neighbours have to be filtered out or it will scramble the indices. Therefore, we need to identify and remove them before the weights are built.
 
@@ -941,7 +929,7 @@ In total, there are 1,716 non-zero links, where only 1.6% of the cells in the fu
 Connectivity is uneven at the tails: four townships (35, 194, 287 and 320) have only one neighbour, while a sole township 311 has eleven, the most of any.
 :::
 
-### Global Moran's I 
+### Global Moran's I
 
 Before conducting the LMSA itslef for the analysis, there is a need to run the Global Moran to justify that the use of LISA is significant.
 
@@ -954,9 +942,9 @@ global_moran_perm(wm_q$log_events, wm_q$nb, wm_q$wt, nsim = 999)
 The statisitic result = 0.67633 which is a positive result. Together with the p value \< 2.2e-16, it proves there is clustering where the results are statistically significant , hence the local statistics are worth running.
 :::
 
-## LISA for Conflict Frequency 
+## LISA for Conflict Frequency
 
-### Computing local Gi\*
+### Computing local Moran's I
 
 To compute local Moran’s I, the local_moran() function of sfdep will be used to compute the local Gi\*. It will compute mainly the following :
 
@@ -971,6 +959,7 @@ To compute local Moran’s I, the local_moran() function of sfdep will be used t
 - Pr(): the p-value of local moran statistic
 
 ```{r}
+set.seed(1234)
 lisa_events <- wm_q %>%
   mutate(local_moran = local_moran(
     log_events, nb, wt, nsim = 999),
@@ -996,7 +985,7 @@ lisa_events <- lisa_events %>%
 lisa_events %>% st_drop_geometry() %>% count(LISA_cluster)
 ```
 
-### Plotting of visual 
+### Plotting of visual
 
 ```{r}
 #| fig-width: 7
@@ -1018,7 +1007,7 @@ tm_shape(lisa_events) +
   tm_title("Local Moran's I Clusters of Armed Conflict Events (p < 0.05)")
 ```
 
-::: Analysis
+::: callout-note
 The LISA map shows that there are 2 main High-High Clusters : in the central-northwest (the Sagaing–Magway–Mandalay belt) and the south-eastern strip near the Kayin/Mon border. Most High-High regions are strongly clustered rather than being randomly scattered, suggesting that heavily affected townships neighbour equally affected ones.
 
 Low-Low clusters mark persistently quiet areas: northernmost region, a large block across eastern Shan, a small central pocket and the south-west delta.
@@ -1028,9 +1017,9 @@ The Three Low-High regions should be considered as outliers (pale blue) with the
 Overall, conflict forms contiguous regional blocks rather than isolated townships, which is consistent with the earlier findings that violence concentrates in the north-west and the south-east corridor.
 :::
 
-## HCSA for Conflict Frequency 
+## HCSA for Conflict Frequency
 
-### Gi\* for events 
+### Gi\* for events
 
 ```{r}
 wm_q_gi <- mmr_lmsa %>%
@@ -1039,11 +1028,12 @@ wm_q_gi <- mmr_lmsa %>%
          .before = 1)
 ```
 
-### Creation of HCSA Clusters 
+### Creation of HCSA Clusters
 
 With the weights created, the HCSA clusters are generated through 999+1 reiterations.
 
 ```{r}
+set.seed(1234)
 HCSA_events <- wm_q_gi %>%
   mutate(gistar = local_gstar_perm(
     log_events, nb, wt, nsim = 999),
@@ -1088,7 +1078,7 @@ tm_shape(HCSA_events) +
   tm_title("Gi* Hot and Cold Spots of Armed Conflict Events (p < 0.05)")
 ```
 
-::: analysis
+::: callout-note
 The HCSA map is largely similar to the LISA events map, which strengthens confidence in the main findings.
 
 The central-northwest, north-central, south-eastern hot spots all reappear, while northern Kachin, eastern Shan and the south-west delta remain cold spots. So since both statistics agree on the core clusters, it can be said the pattern is robust.
@@ -1098,9 +1088,10 @@ There are however 2 small differences between both visuals. First, hot spots ext
 Second, the three Low-High outliers from the LISA map (north-central, north-east and Kayin/Mon) now appear as cold spots. This is due to Gi\* which included each township’s own value in its area. Therefore, the output is flagged as low overall instead of separating a quiet township from its busy neighbours.
 :::
 
-## LISA for fatalities 
+## LISA for fatalities
 
 ```{r}
+set.seed(1234)
 lisa_fatal <- wm_q %>%
   mutate(local_moran = local_moran(
     log_fatal, nb, wt, nsim = 999),
@@ -1120,7 +1111,7 @@ lisa_fatal <- wm_q %>%
 lisa_fatal %>% st_drop_geometry() %>% count(LISA_cluster)
 ```
 
-### Plotting of visual for Analysis  
+### Plotting of visual for Analysis
 
 ```{r}
 #| fig-width: 7
@@ -1142,7 +1133,7 @@ tm_shape(lisa_fatal) +
   tm_title("Local Moran's I Clusters of Armed Conflict Fatalities (p < 0.05)")
 ```
 
-::: Analysis
+::: callout-note
 As compared to the occurence frequency LISA plot, the fatalities show the same overall geography but with larger High-High zones.
 
 The central-northwest cluster now extends north and joins the separate northern patch, suggesting that even if the clashes may not occur frequently at the specific region, neighbour regions to High conflict event clusters would still have a high counts for death.
@@ -1155,6 +1146,7 @@ Overall together with consideration of frequency counts, this shows that any nei
 ### Gi\* for Fatalities
 
 ```{r}
+set.seed(1234)
 HCSA_fatal <- wm_q_gi %>%
   mutate(gistar = local_gstar_perm(
     log_fatal, nb, wt, nsim = 999),
@@ -1193,7 +1185,7 @@ tm_shape(HCSA_fatal) +
   tm_title("Gi* Hot and Cold Spots of Armed Conflict Fatalities (p < 0.05)")
 ```
 
-::: analysis
+::: callout-note
 Again, the HCSA fatalities map is very similar to the LISA Fatalities plot, where it matches the HCSA frequency output for the central-northwest, south-eastern hot spots, proving that these areas are robust across both statistics and both variables.
 
 Notably, there is a hot spot on the far northern border, where it is a pure cold spot for frequency counts, showing that township has comparatively few events but high fatalities or a higher fatality count per event. This suggests a case-fatality-ratio analysis to delve in deeper.
@@ -1224,7 +1216,7 @@ ggplot(data = lisa_events,
   theme_minimal()
 ```
 
-::: Analysis
+::: callout-note
 The Moran scatterplot of standardised log events against their spatial lag has a clear positive slope of roughly 0.8, so high conflict townships tend to neighbour high conflict ones and quiet townships neighbour quiet ones.
 
 This supports the clusters in the LMSA plots, showing that the patterns are not driven by a handful of townships.
@@ -1234,8 +1226,193 @@ Most points fall in High-High (top right) and Low-Low (bottom left), with far fe
 These are all consistent to the output shown within the 4 plots for the Local Measures of Spatial Association Plot Analysis.
 :::
 
+## Bonus Analysis on unusually deadly Conflicts 
+
+We have analysed how often violence occurs (events) and of the fatalities from the armed conflicts. However there is no indication on how deadly each incident is. To achieve peace-building needs, there is a need for an integrated understanding on where violence is frequent, and where it is unusually lethal per incident.
+
+So now the investigation here will look at which townships have unusually deadly violence, and do they match the event hot spots found earlier? It goes beyond the core methods by using empirical Bayes rate smoothing, which is not covered in class.
+
+The code below calculates raw lethality for each township (deaths / events) and plots it against the number of events. The red dashed line is the national rate and the red curves show the range expected by chance alone. This checks whether raw lethality can be trusted before it is used in LISA. Townships with no events are set to 0 in this case because their rate is undefined.
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+
+wm_q_eb <- wm_q %>%
+  mutate(raw_rate = if_else(n_events > 0, n_fatalities / n_events, 0))
+
+# National rate, how many average deaths per event conflict
+b <- sum(wm_q_eb$n_fatalities) / sum(wm_q_eb$n_events)
+
+# From b, create a 5% confidence interval (funnel by poisson)
+funnel <- tibble(n_events = exp(seq(log(1), log(1100), length.out = 200))) %>%
+  mutate(upper = b + 1.96 * sqrt(b / n_events),
+         lower = pmax(b - 1.96 * sqrt(b / n_events), 0))
+
+#plot
+ggplot(wm_q_eb %>% filter(n_events > 0),
+       aes(x = n_events, y = raw_rate)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = b, linetype = "dashed", colour = "red") +
+  geom_line(data = funnel, aes(y = upper), colour = "red") +
+  geom_line(data = funnel, aes(y = lower), colour = "red") +
+  scale_x_log10() +
+  labs(x = "Events (log scale)", y = "Raw fatalities per event",
+       title = "When there are few events, raw lethality is unstable",
+       subtitle = "Dashed line = national rate; red curves = range expected from chance alone") +
+  theme_minimal()
+
+print(b)
+```
+
+::: callout-note
+Most of the armed conflict counts in a very narrow band within the funnel plot, but there are outliers where a township with one or two events can show a rate of 3 or 0 purely by chance from the left side of the funnel plot.
+
+Therefore, running LISA for this portion on raw ratios can be misleading since noisy small townships would produce extreme values that skew their neighbours’ local averages, creating false High-High or Low-Low clusters and false outliers.
+
+This is proven further by comparing the red funnel where b=1.65, and many points are outside of the funnel range. Therefore, Empirical Bayes smoothing is done to correct this by shrinking each township’s rate toward the national rate. This is so that the differences that survive smoothing are more likely to reflect genuinely deadlier violence than small-number noise.
+:::
+
+As a note, with b = 1.65, it means that for every recorded armed conflict in Myanmar, there are about 1.65 deaths.
+
+Need to write an exp for the code chunk below
+
+```{r}
+s2 <- sum(wm_q_eb$n_events * (wm_q_eb$raw_rate - b)^2) / sum(wm_q_eb$n_events)
+a  <- max(s2 - b / mean(wm_q_eb$n_events), 0)             
+
+wm_q_eb <- wm_q_eb %>%
+  mutate(eb_w    = a / (a + b / n_events),                # weight on the township's own rate
+         eb_rate = b + eb_w * (raw_rate - b))
+
+```
+
+The code below smooths each township’s rate. With b=1.65 being generated, and a being the township variance, the township weight (`eb_w`) is calculated where value should be between 0 and 1: close to 1 for townships with many armed conflict events, close to 0 for those with few.
+
+The smoothed rate (`eb_rate`) will then blend the township’s own rate with the national rate using that weight. The output, `eb_rate`, replaces the raw ratio in every step that follows. The smoothing will remove the skewing issues as seen in previous visual.
+
+With this issue settled the LISA code is redone.
+
+```{r}
+set.seed(1234)
+lisa_lethal <- wm_q_eb %>%
+  mutate(local_moran = local_moran(
+    eb_rate, nb, wt, nsim = 999),
+    .before = 1) %>%
+  unnest(local_moran) %>%
+  mutate(
+    LISA_cluster = ifelse(p_ii_sim < 0.05, as.character(mean), "Insignificant"),
+    LISA_cluster = factor(LISA_cluster,
+                          levels = c("Insignificant", "Low-Low", "Low-High", "High-Low", "High-High")))
+
+lisa_lethal %>% st_drop_geometry() %>% count(LISA_cluster)
+```
+
+Finally, the smoothed plot is drawn out for analysis.
+
+```{r}
+#| fig-width: 7
+#| fig-height: 10
+
+tm_shape(lisa_lethal) +
+  tm_polygons(
+    fill = "LISA_cluster",
+    fill.scale = tm_scale_categorical(
+      values = c("Insignificant" = "grey80",
+                 "Low-Low"       = "blue",
+                 "Low-High"      = "lightblue",
+                 "High-Low"      = "pink",
+                 "High-High"     = "red")),
+    fill.legend = tm_legend(
+      title = "LISA Cluster",
+      position = tm_pos_in("left", "bottom"))) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("LISA of Smoothed Fatalities per Event (p < 0.05)")
+```
+
+::: callout-note
+In this smoothed lethality plot, the High-High townships, with above-average deaths per event and similar neighbours, lie mainly in Magway area, with smaller patches in far north-east Shan region and along the Bago (East) edge. Unlike the previous plots where the entire North West Region is highlighted as High-High.
+
+The two large Low-Low blocks, central Shan and the south-west delta are the same as previous plots, so those areas are both quieter and less deadly per incident
+
+Kachin, Tanintharyi and eastern Shan however show no significant patterns.
+:::
+
+Now we will combine the frequency and fatality factors together to form a different type of cluster. It looks at these 4 new integrated clusters :
+
+- **Event hot spot and lethal cluster** (frequent and deadly)
+
+- **Event hot spot only** (busy but not unusually deadly)
+
+- **Lethal cluster outside event hot spots (**deadly without being a hot spot of event counts)
+
+- **Neither.**
+
+In overall, this shows if the places where violence is deadly are the same as the places where it is frequent.
+
+```{r}
+freq_tbl <- HCSA_events %>% st_drop_geometry() %>%
+  select(TS_PCODE, freq_cluster = HCSA_cluster)
+
+typology <- lisa_lethal %>%
+  left_join(freq_tbl, by = "TS_PCODE") %>%
+  mutate(type = case_when(
+    freq_cluster == "Hot spot" & LISA_cluster == "High-High" ~ "Event hot spot and lethal cluster",
+    freq_cluster == "Hot spot"                               ~ "Event hot spot only",
+    LISA_cluster == "High-High"                              ~ "Lethal cluster outside event hot spots",
+    TRUE                                                     ~ "Neither"),
+    type = factor(type, levels = c("Neither",
+                                   "Event hot spot only",
+                                   "Lethal cluster outside event hot spots",
+                                   "Event hot spot and lethal cluster")))
+
+typology %>% st_drop_geometry() %>% count(type) %>% as.data.frame()
+
+typology %>% st_drop_geometry() %>%
+  filter(type == "Lethal cluster outside event hot spots") %>%
+  select(TS, ST, n_events, n_fatalities, eb_rate, eb_w)
+```
+
+```{r}
+#| fig-width: 7
+#| fig-height: 10
+
+type_cols <- c("grey85", "#fee08b", "#4575b4", "#b2182b")
+names(type_cols) <- levels(typology$type)
+
+tm_shape(typology) +
+  tm_polygons(
+    fill = "type",
+    fill.scale = tm_scale_categorical(values = type_cols),
+    fill.legend = tm_legend(
+      title = "Type",
+      position = tm_pos_in("left", "bottom"))) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Event Hot Spots versus Lethal Clusters")
+```
+
+::: callout-note
+Only 6 of the 49 event hot spots (about 12%) are lethal clusters as well (red), where all of them are at the western side of the central-northwest hot spot. These regions are known to have frequent armed conflicts, where all of them are very deadly as well, the most dangerous townships to be in during the 57 months.
+
+The other 43 (yellow) are busy but not unusually deadly per incident, including the north-central patch and every south-eastern hot spot in Mon, Kayin and Tanintharyi. This suggests the south-east corridor’s high fatalities is due to the volume of events, rather than it being deadly incidents.
+
+Fifteen townships (blue) are lethal clusters outside any event hot spot. They ring the north and west of the main hot spot. These are clusters that are affected as a consequence to armed conflicts in the yellow or red area, which shows that there are quite a number of townships where peace is affected due to neighbouring regions.
+:::
+
+## Assumption 
+
+Deaths per event are treated as Poisson-like, but real counts vary more, so the smoothing strength is approximate. Events are the exposure, so results show lethality **per incident**, not risk per resident. Shrinkage pulls every township towards one national rate, even though the funnel plot shows lethality rising with event volume, so small townships in very deadly areas may be understated. ACLED fatality figures are reported estimates and may be undercounted. Clusters depend on the 5% threshold across about 327 simultaneous tests, with no multiple-testing adjustment. Results describe spatial association, not causes.
+
 # Task 3: Emerging Hot Spot Analysis (EHSA)
 
 # Analysis Summary & Conclusions
 
 # Limitations & Future Research
+
+# References
+
+- Administrative divisions of Myanmar (7 regions, 7 states, 1 union territory): <https://en.wikipedia.org/wiki/Administrative_divisions_of_Myanmar>
+
+- MIMU Shan State map, showing why Shan is split into North, East and South: <https://themimu.info/sites/themimu.info/files/documents/State_Map_Tsp_Shan_MIMU1682v01_27Nov2019_A4.pdf>
+
+- The Upper/Lower Myanmar distinction: <https://en.wikipedia.org/wiki/Upper_Myanmar>
