@@ -52,7 +52,9 @@ website:
           - href: Hands-on_Ex/In-class_ex05.html
             text: "In-Class Exercise 5"   
           - href: Hands-on_Ex/In-class_ex06.html
-            text: "In-Class Exercise 6"               
+            text: "In-Class Exercise 6"   
+          - href: Hands-on_Ex/In-class_ex08.html
+            text: "In-Class Exercise 8"   
     right:
       - href: index.qmd
         text: Home
