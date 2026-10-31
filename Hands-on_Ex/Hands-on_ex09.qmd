@@ -1,5 +1,5 @@
 ---
-title: "Hands on Exercise 9"
+title: "Hands on Exercise 10"
 subtitle: "Modelling Geographical Accessibility"
 author: "Chong Jia Min Heidi"
 format: html
@@ -13,7 +13,7 @@ execute:
   message: false
 ---
 
-# Overview 
+# Overview
 
 The geography of accessibility measures how easily people can overcome distance and spatial barriers to reach important destinations like jobs, schools, healthcare, and shops. It moves beyond raw physical distance to evaluate how time, transport networks, cost, and individual constraints shape real-world
 
@@ -53,7 +53,7 @@ All the values of the cost related fields are in **metres**.
 
 **Reminder:** *Except `MP14_SUBZONE_NO_SEA_PL` data set, the other three data set are specially prepared by Prof. Kam for teaching and research purpose. Formal approval is required to use dataset!.*
 
-# Getting started 
+# Getting started
 
 The R packages need for this exercise are as follows:
 
@@ -131,9 +131,9 @@ The code chunk below uses *read_cvs()* of **readr** package to import `OD_Matrix
 ODMatrix <- read_csv("data/aspatial/OD_Matrix.csv", skip = 0)
 ```
 
-# Data Wrangling 
+# Data Wrangling
 
-## Updating CRS information 
+## Updating CRS information
 
 The code chunk below updates the newly imported *mpsz* with the correct ESPG code (i.e. 3414)
 
